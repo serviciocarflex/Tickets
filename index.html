@@ -9,51 +9,55 @@
 
 <button onclick="login()">Entrar</button>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<!-- ✅ SDK correcto -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 
 <script>
 
-const supabase = window.supabase.createClient(
+// ✅ crear cliente correctamente
+const supabase = supabase.createClient(
   "https://cglpqxwuleilocifwuma.supabase.co",
   "sb_publishable_vDeRR2vZXRpRgZVHSKArwQ_EuCD0poY"
 );
 
-// 🔹 LOGIN
+
+// 🔐 LOGIN
 async function login() {
+
+  console.log("intentando login");
 
   const email = document.getElementById("email").value;
   const password = document.getElementById("password").value;
 
   const { data, error } = await supabase.auth.signInWithPassword({
-    email,
-    password
+    email: email,
+    password: password
   });
 
-  if(error){
-    alert("Login incorrecto");
+  console.log(data);
+  console.log(error);
+
+  if (error) {
+    alert(error.message);
     return;
   }
 
   alert("Login correcto");
 
-  // ✅ redirigir al panel
   window.location.href = "panel.html";
 }
 
 
-// 🔹 VERIFICAR SI YA ESTÁ LOGUEADO
+// ✅ VERIFICAR SESIÓN
 async function verificarSesion() {
 
-  const { data: { session } } = await supabase.auth.getSession();
+  const { data } = await supabase.auth.getSession();
 
-  if(session){
-    // si ya está logueado entra directo al panel
+  if (data.session) {
     window.location.href = "panel.html";
   }
-
 }
 
-// revisar sesión al cargar la página
 verificarSesion();
 
 </script>
