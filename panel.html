@@ -1,183 +1,99 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Panel de Tickets | Carflex</title>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <style>
-        :root { --primary: #2563eb; --bg: #f8fafc; --text: #1e293b; }
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: var(--bg); color: var(--text); margin: 0; display: flex; }
-        .sidebar { width: 260px; background: #0f172a; color: white; height: 100vh; position: fixed; padding: 20px; box-sizing: border-box; }
-        .sidebar h2 { font-size: 1.2rem; margin-bottom: 30px; border-bottom: 1px solid #334155; padding-bottom: 10px; }
-        .nav-btn { width: 100%; padding: 12px; margin-bottom: 10px; border: none; border-radius: 6px; cursor: pointer; text-align: left; font-weight: 600; transition: 0.3s; }
-        .btn-main { background: var(--primary); color: white; }
-        .btn-sec { background: transparent; color: #cbd5e1; }
-        .btn-sec:hover { background: #1e293b; }
-        .main { margin-left: 260px; padding: 40px; width: 100%; }
-        .card { background: white; border-radius: 12px; padding: 25px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
-        .grid-form { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px; }
-        .form-group { display: flex; flex-direction: column; }
-        label { font-size: 0.85rem; font-weight: 600; margin-bottom: 5px; color: #64748b; }
-        input, select, textarea { padding: 10px; border: 1px solid #e2e8f0; border-radius: 6px; font-size: 1rem; }
-        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-        th { text-align: left; background: #f1f5f9; padding: 12px; font-size: 0.85rem; text-transform: uppercase; color: #64748b; }
-        td { padding: 12px; border-bottom: 1px solid #f1f5f9; }
-        .status-badge { padding: 4px 8px; border-radius: 20px; font-size: 0.75rem; font-weight: bold; background: #fef3c7; color: #92400e; }
-    </style>
-</head>
-<body>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+<script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
 
-<div class="sidebar">
-    <h2>Carflex Operaciones</h2>
-    <button class="nav-btn btn-main" onclick="verSeccion('lista')">📋 Mis Tickets</button>
-    <button class="nav-btn btn-sec" onclick="verSeccion('nuevo')">➕ Nuevo Ticket</button>
-    <div style="position: absolute; bottom: 20px; width: 220px;">
-        <p id="user-display" style="font-size: 0.8rem; color: #94a3b8;"></p>
-        <button onclick="logout()" class="nav-btn btn-sec" style="color: #f87171;">Cerrar Sesión</button>
-    </div>
-</div>
+<style>
+    /* Estilos extra para profesionalismo */
+    .card {
+        border: none;
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+    }
+    
+    .nav-btn {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        transition: transform 0.2s;
+    }
+    
+    .nav-btn:active { transform: scale(0.95); }
 
-<div class="main">
-    <div id="view-lista" class="card">
-        <h3>Historial de Tickets</h3>
-        <table>
-            <thead>
-                <tr>
-                    <th>Patente</th>
-                    <th>Zona</th>
-                    <th>Tipo</th>
-                    <th>Estado</th>
-                    <th>Fecha</th>
-                </tr>
-            </thead>
-            <tbody id="tabla-body">
-                <tr><td colspan="5">Cargando tickets...</td></tr>
-            </tbody>
-        </table>
-    </div>
+    /* Animación de entrada para las secciones */
+    #view-lista, #view-nuevo {
+        animation: fadeIn 0.4s ease-out;
+    }
 
-    <div id="view-nuevo" class="card" style="display:none;">
-        <h3>Crear Requerimiento Comercial</h3>
-        <div class="grid-form">
-            <div class="form-group">
-                <label>Patente</label>
-                <input type="text" id="patente" placeholder="Ej: AB-CD-12">
-            </div>
-            <div class="form-group">
-                <label>Zona</label>
-                <input type="text" id="zona" maxlength="6" placeholder="Ej: SCL001">
-            </div>
-        </div>
-        <div class="form-group" style="margin-bottom: 15px;">
-            <label>Tipo de Consulta</label>
-            <select id="tipo_consulta_input">
-                <option value="Equipamiento">Equipamiento</option>
-                <option value="Agendamiento">Agendamiento</option>
-                <option value="Mecanica">Mecánica</option>
-                <option value="Siniestro">Siniestro</option>
-                <option value="DyP">DyP</option>
-            </select>
-        </div>
-        <div class="form-group" style="margin-bottom: 20px;">
-            <label>Descripción del Problema</label>
-            <textarea id="descripcion" rows="4" placeholder="Detalla el requerimiento aquí..."></textarea>
-        </div>
-        <button class="nav-btn btn-main" onclick="crearTicket()" id="btn-crear">Enviar a Operaciones</button>
-    </div>
-</div>
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Badge de estado mejorado */
+    .status-badge {
+        background: #dcfce7;
+        color: #166534;
+        padding: 6px 12px;
+        border-radius: 99px;
+        font-weight: 600;
+    }
+</style>
 
 <script>
-    const _supabase = window.supabase.createClient(
-        "https://cglpqxwuleilocifwuma.supabase.co",
-        "sb_publishable_vDeRR2vZXRpRgZVHSKArwQ_EuCD0poY"
-    );
-
-    let currentUserId = null;
-
-    async function checkSession() {
-        const { data: { session } } = await _supabase.auth.getSession();
-        if (!session) {
-            window.location.href = "index.html";
-        } else {
-            currentUserId = session.user.id;
-            document.getElementById('user-display').innerText = session.user.email;
-            cargarTickets();
-        }
-    }
-
-    function verSeccion(id) {
-        document.getElementById('view-lista').style.display = id === 'lista' ? 'block' : 'none';
-        document.getElementById('view-nuevo').style.display = id === 'nuevo' ? 'block' : 'none';
-    }
-
-    async function cargarTickets() {
-        const { data: tickets, error } = await _supabase
-            .from('Tickets')
-            .select('*')
-            .order('create_at', { ascending: false });
-
-        const tbody = document.getElementById('tabla-body');
-        tbody.innerHTML = '';
-
-        if (!tickets || tickets.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="5">No tienes tickets creados aún.</td></tr>';
-            return;
-        }
-
-        tickets.forEach(t => {
-            // NOTA: Para leer la columna con espacios usamos t["tipo de consulta"]
-            tbody.innerHTML += `
-                <tr>
-                    <td><strong>${t.patente || 'N/A'}</strong></td>
-                    <td>${t.zona || 'N/A'}</td>
-                    <td>${t["tipo de consulta"] || 'N/A'}</td>
-                    <td><span class="status-badge">${t.estado || 'Pendiente'}</span></td>
-                    <td>${new Date(t.create_at).toLocaleDateString()}</td>
-                </tr>
-            `;
-        });
+    // Función profesional para mostrar mensajes
+    function mostrarMensaje(texto, color = "#2563eb") {
+        Toastify({
+            text: texto,
+            duration: 3000,
+            gravity: "top",
+            position: "right",
+            style: { background: color, borderRadius: "8px" }
+        }).showToast();
     }
 
     async function crearTicket() {
         const btn = document.getElementById('btn-crear');
+        const originalText = btn.innerText;
+        
+        // Efecto visual de carga
         btn.disabled = true;
-        btn.innerText = "Enviando...";
+        btn.innerHTML = `<span class="spinner"></span> Enviando...`;
 
-        // IMPORTANTE: Los nombres a la izquierda deben ser IDENTICOS a tu base de datos
         const nuevoTicket = {
             creado_por: currentUserId,
-            patente: document.getElementById('patente').value,
-            zona: document.getElementById('zona').value,
+            patente: document.getElementById('patente').value.toUpperCase(),
+            zona: document.getElementById('zona').value.toUpperCase(),
             "tipo de consulta": document.getElementById('tipo_consulta_input').value,
             descripcion: document.getElementById('descripcion').value,
             estado: 'Pendiente'
         };
 
+        // Validación simple
+        if(!nuevoTicket.patente || !nuevoTicket.descripcion) {
+            mostrarMensaje("⚠️ Por favor completa los campos obligatorios", "#ef4444");
+            btn.disabled = false;
+            btn.innerText = originalText;
+            return;
+        }
+
         const { error } = await _supabase.from('Tickets').insert([nuevoTicket]);
 
         if (error) {
-            alert("Error: " + error.message);
+            mostrarMensaje("❌ Error: " + error.message, "#ef4444");
             btn.disabled = false;
-            btn.innerText = "Enviar a Operaciones";
+            btn.innerText = originalText;
         } else {
-            alert("✅ Ticket registrado correctamente");
-            document.getElementById('patente').value = '';
-            document.getElementById('zona').value = '';
-            document.getElementById('descripcion').value = '';
+            mostrarMensaje("✅ Ticket enviado a Operaciones con éxito");
+            
+            // Limpieza fluida
+            document.querySelectorAll('input, textarea').forEach(el => el.value = '');
             btn.disabled = false;
-            btn.innerText = "Enviar a Operaciones";
-            verSeccion('lista');
-            cargarTickets();
+            btn.innerText = originalText;
+            
+            // Volver a la lista con una pequeña espera para el efecto
+            setTimeout(() => {
+                verSeccion('lista');
+                cargarTickets();
+            }, 500);
         }
     }
-
-    async function logout() {
-        await _supabase.auth.signOut();
-        window.location.href = "index.html";
-    }
-
-    checkSession();
 </script>
-</body>
-</html>
