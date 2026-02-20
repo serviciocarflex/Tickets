@@ -2,100 +2,195 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Panel de Tickets</title>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de Tickets | Carflex</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
-        body { font-family: sans-serif; padding: 20px; background-color: #f4f4f4; }
-        .container { max-width: 800px; margin: auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        :root { --primary: #2563eb; --bg: #f8fafc; --text: #1e293b; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: var(--bg); color: var(--text); margin: 0; display: flex; }
+        
+        /* Sidebar */
+        .sidebar { width: 260px; background: #0f172a; color: white; height: 100vh; position: fixed; padding: 20px; box-sizing: border-box; }
+        .sidebar h2 { font-size: 1.2rem; margin-bottom: 30px; border-bottom: 1px solid #334155; padding-bottom: 10px; }
+        .nav-btn { width: 100%; padding: 12px; margin-bottom: 10px; border: none; border-radius: 6px; cursor: pointer; text-align: left; font-weight: 600; transition: 0.3s; }
+        .btn-main { background: var(--primary); color: white; }
+        .btn-sec { background: transparent; color: #cbd5e1; }
+        .btn-sec:hover { background: #1e293b; }
+
+        /* Contenido Principal */
+        .main { margin-left: 260px; padding: 40px; width: 100%; }
+        .card { background: white; border-radius: 12px; padding: 25px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
+        
+        /* Formulario */
+        .grid-form { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px; }
+        .form-group { display: flex; flex-direction: column; }
+        label { font-size: 0.85rem; font-weight: 600; margin-bottom: 5px; color: #64748b; }
+        input, select, textarea { padding: 10px; border: 1px solid #e2e8f0; border-radius: 6px; font-size: 1rem; }
+        
+        /* Tabla */
         table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-        th, td { border: 1px solid #ddd; padding: 12px; text-align: left; }
-        th { background-color: #f8f9fa; }
-        .header { display: flex; justify-content: space-between; align-items: center; }
-        button { cursor: pointer; padding: 8px 12px; }
-        .btn-logout { background: #ff4444; color: white; border: none; border-radius: 4px; }
+        th { text-align: left; background: #f1f5f9; padding: 12px; font-size: 0.85rem; text-transform: uppercase; color: #64748b; }
+        td { padding: 12px; border-bottom: 1px solid #f1f5f9; }
+        .status-badge { padding: 4px 8px; border-radius: 20px; font-size: 0.75rem; font-weight: bold; background: #fef3c7; color: #92400e; }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <div class="header">
-        <h2>Mis Tickets</h2>
-        <div>
-            <span id="user-email"></span>
-            <button class="btn-logout" onclick="logout()">Cerrar Sesión</button>
-        </div>
+<div class="sidebar">
+    <h2>Carflex Operaciones</h2>
+    <button class="nav-btn btn-main" onclick="verSeccion('lista')">📋 Mis Tickets</button>
+    <button class="nav-btn btn-sec" onclick="verSeccion('nuevo')">➕ Nuevo Ticket</button>
+    <div style="position: absolute; bottom: 20px; width: 220px;">
+        <p id="user-display" style="font-size: 0.8rem; color: #94a3b8;"></p>
+        <button onclick="logout()" class="nav-btn btn-sec" style="color: #f87171;">Cerrar Sesión</button>
+    </div>
+</div>
+
+<div class="main">
+    <div id="view-lista" class="card">
+        <h3>Historial de Tickets</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Patente</th>
+                    <th>Zona</th>
+                    <th>Tipo</th>
+                    <th>Estado</th>
+                    <th>Fecha</th>
+                </tr>
+            </thead>
+            <tbody id="tabla-body">
+                <tr><td colspan="5">Cargando tickets...</td></tr>
+            </tbody>
+        </table>
     </div>
 
-    <table id="tickets-table">
-        <thead>
-            <tr>
-                <th>Título</th>
-                <th>Estado</th>
-                <th>Prioridad</th>
-                <th>Fecha</th>
-            </tr>
-        </thead>
-        <tbody id="tickets-body">
-            </tbody>
-    </table>
+    <div id="view-nuevo" class="card" style="display:none;">
+        <h3>Crear Requerimiento Comercial</h3>
+        <div class="grid-form">
+            <div class="form-group">
+                <label>Patente</label>
+                <input type="text" id="patente" placeholder="Ej: AB-CD-12">
+            </div>
+            <div class="form-group">
+                <label>Zona</label>
+                <input type="text" id="zona" maxlength="6" placeholder="Ej: SCL001">
+            </div>
+        </div>
+        <div class="form-group" style="margin-bottom: 15px;">
+            <label>Tipo de Consulta</label>
+            <select id="tipo_consulta">
+                <option value="Equipamiento">Equipamiento</option>
+                <option value="Agendamiento">Agendamiento</option>
+                <option value="Mecanica">Mecánica</option>
+                <option value="Siniestro">Siniestro</option>
+                <option value="DyP">DyP</option>
+            </select>
+        </div>
+        <div class="form-group" style="margin-bottom: 20px;">
+            <label>Descripción del Problema</label>
+            <textarea id="descripcion" rows="4" placeholder="Detalla el requerimiento aquí..."></textarea>
+        </div>
+        <button class="nav-btn btn-main" onclick="crearTicket()" id="btn-crear">Enviar a Operaciones</button>
+    </div>
 </div>
 
 <script>
-    // 1. Configurar Supabase (Usa los mismos datos de tu index.html)
-    const supabaseClient = supabase.createClient(
+    // Inicializar Supabase
+    const _supabase = window.supabase.createClient(
         "https://cglpqxwuleilocifwuma.supabase.co",
         "sb_publishable_vDeRR2vZXRpRgZVHSKArwQ_EuCD0poY"
     );
 
-    // 2. Proteger la ruta y cargar datos
-    async function inicializarPanel() {
-        const { data: { session } } = await supabaseClient.auth.getSession();
+    let currentUserId = null;
 
+    // 1. Proteger la página
+    async function checkSession() {
+        const { data: { session } } = await _supabase.auth.getSession();
         if (!session) {
-            // Si no hay sesión, rebota al login
             window.location.href = "index.html";
-            return;
+        } else {
+            currentUserId = session.user.id;
+            document.getElementById('user-display').innerText = session.user.email;
+            cargarTickets();
         }
-
-        document.getElementById('user-email').innerText = session.user.email;
-        cargarTickets(session.user.id);
     }
 
-    // 3. Traer los datos de la tabla "Tickets"
-    async function cargarTickets(userId) {
-        const { data: tickets, error } = await supabaseClient
-            .from('Tickets') // Asegúrate que el nombre coincida exacto con tu tabla
-            .select('*')
-            .eq('creado_por', userId); // Solo trae los tickets de este usuario
+    // 2. Cambiar de vista (Listado o Nuevo)
+    function verSeccion(id) {
+        document.getElementById('view-lista').style.display = id === 'lista' ? 'block' : 'none';
+        document.getElementById('view-nuevo').style.display = id === 'nuevo' ? 'block' : 'none';
+    }
 
-        if (error) {
-            console.error("Error cargando tickets:", error);
+    // 3. Cargar Tickets desde Supabase
+    async function cargarTickets() {
+        const { data: tickets, error } = await _supabase
+            .from('Tickets')
+            .select('*')
+            .order('create_at', { ascending: false });
+
+        const tbody = document.getElementById('tabla-body');
+        tbody.innerHTML = '';
+
+        if (tickets.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="5">No tienes tickets creados aún.</td></tr>';
             return;
         }
 
-        const tbody = document.getElementById('tickets-body');
-        tbody.innerHTML = ''; // Limpiar tabla
-
-        tickets.forEach(ticket => {
-            const fila = `
+        tickets.forEach(t => {
+            tbody.innerHTML += `
                 <tr>
-                    <td>${ticket.titulo}</td>
-                    <td>${ticket.estado}</td>
-                    <td>${ticket.prioridad}</td>
-                    <td>${new Date(ticket.create_at).toLocaleDateString()}</td>
+                    <td><strong>${t.patente || 'N/A'}</strong></td>
+                    <td>${t.zona || 'N/A'}</td>
+                    <td>${t.tipo_consulta}</td>
+                    <td><span class="status-badge">${t.estado || 'Pendiente'}</span></td>
+                    <td>${new Date(t.create_at).toLocaleDateString()}</td>
                 </tr>
             `;
-            tbody.innerHTML += fila;
         });
     }
 
-    // 4. Función para salir
+    // 4. Enviar nuevo ticket a la DB
+    async function crearTicket() {
+        const btn = document.getElementById('btn-crear');
+        btn.disabled = true;
+        btn.innerText = "Enviando...";
+
+        const nuevoTicket = {
+            creado_por: currentUserId,
+            patente: document.getElementById('patente').value,
+            zona: document.getElementById('zona').value,
+            tipo_consulta: document.getElementById('tipo_consulta').value,
+            descripcion: document.getElementById('descripcion').value,
+            estado: 'Pendiente', // Valor fijo inicial
+            prioridad: 'Media'   // Valor fijo inicial
+        };
+
+        const { error } = await _supabase.from('Tickets').insert([nuevoTicket]);
+
+        if (error) {
+            alert("Error: " + error.message);
+            btn.disabled = false;
+            btn.innerText = "Enviar a Operaciones";
+        } else {
+            alert("✅ Ticket registrado correctamente");
+            // Limpiar formulario y volver a la lista
+            document.getElementById('patente').value = '';
+            document.getElementById('zona').value = '';
+            document.getElementById('descripcion').value = '';
+            btn.disabled = false;
+            btn.innerText = "Enviar a Operaciones";
+            verSeccion('lista');
+            cargarTickets();
+        }
+    }
+
     async function logout() {
-        await supabaseClient.auth.signOut();
+        await _supabase.auth.signOut();
         window.location.href = "index.html";
     }
 
-    inicializarPanel();
+    checkSession();
 </script>
 
 </body>
