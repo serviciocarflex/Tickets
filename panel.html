@@ -18,7 +18,6 @@
     
     .nav-btn:active { transform: scale(0.95); }
 
-    /* Animación de entrada */
     #view-lista, #view-nuevo {
         animation: fadeIn 0.4s ease-out;
     }
@@ -28,7 +27,6 @@
         to { opacity: 1; transform: translateY(0); }
     }
 
-    /* Badge de estado mejorado */
     .status-badge {
         background: #dcfce7;
         color: #166534;
@@ -38,7 +36,6 @@
         font-size: 0.85rem;
     }
 
-    /* Estilo para IDs cortos */
     .ticket-id {
         font-family: monospace;
         color: #64748b;
@@ -49,7 +46,6 @@
 </style>
 
 <script>
-    // Función para mostrar mensajes estilo Toast
     function mostrarMensaje(texto, color = "#2563eb") {
         Toastify({
             text: texto,
@@ -60,46 +56,50 @@
         }).showToast();
     }
 
-    // CARGAR TICKETS: Aquí es donde ocurre la magia del nombre
+    // CARGAR TICKETS: Versión Simplificada para evitar pantalla blanca
     async function cargarTickets() {
-        // Pedimos los tickets y "cruzamos" con Perfiles para traer el nombre del creador
-        const { data: tickets, error } = await _supabase
-            .from('Tickets')
-            .select(`
-                *,
-                creador:creado_por ( nombre )
-            `)
-            .order('create_at', { ascending: false });
+        try {
+            const { data: tickets, error } = await _supabase
+                .from('Tickets')
+                .select('*') // Traemos todo simple, sin cruzar tablas por ahora
+                .order('create_at', { ascending: false });
 
-        const tbody = document.getElementById('tabla-body');
-        tbody.innerHTML = '';
+            if (error) {
+                console.warn("Aviso de Supabase (posible RLS):", error.message);
+                // Si hay error de permisos, simplemente mostramos tabla vacía en vez de romper la web
+                document.getElementById('tabla-body').innerHTML = '<tr><td colspan="6" style="text-align:center;">No se pudieron cargar los datos o faltan permisos.</td></tr>';
+                return;
+            }
 
-        if (!tickets || tickets.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;">No hay tickets registrados.</td></tr>';
-            return;
+            const tbody = document.getElementById('tabla-body');
+            tbody.innerHTML = '';
+
+            if (!tickets || tickets.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;">No tienes tickets creados aún.</td></tr>';
+                return;
+            }
+
+            tickets.forEach(t => {
+                const idCorto = t.id ? t.id.substring(0, 5) : '---';
+                // Usamos una fecha segura
+                const fecha = t.create_at ? new Date(t.create_at).toLocaleDateString() : '---';
+
+                tbody.innerHTML += `
+                    <tr>
+                        <td><span class="ticket-id">#${idCorto}</span></td>
+                        <td><strong>${t.patente || 'N/A'}</strong></td>
+                        <td>${t.zona || 'N/A'}</td>
+                        <td>${t["tipo de consulta"] || 'N/A'}</td>
+                        <td>${t.estado || 'Pendiente'}</td>
+                        <td>${fecha}</td>
+                    </tr>
+                `;
+            });
+        } catch (err) {
+            console.error("Error crítico en cargarTickets:", err);
         }
-
-        tickets.forEach(t => {
-            // Extraemos el nombre si existe, si no ponemos 'Sistema'
-            const nombreCreador = t.creador ? t.creador.nombre : 'Usuario';
-            // Acortamos el ID para que se vea profesional (ej: #89986)
-            const idCorto = t.id ? t.id.substring(0, 5) : '---';
-
-            tbody.innerHTML += `
-                <tr>
-                    <td><span class="ticket-id">#${idCorto}</span></td>
-                    <td><strong>${t.patente || 'N/A'}</strong></td>
-                    <td>${t.zona || 'N/A'}</td>
-                    <td>${t["tipo de consulta"] || 'N/A'}</td>
-                    <td>${nombreCreador}</td>
-                    <td><span class="status-badge">${t.estado || 'Pendiente'}</span></td>
-                    <td>${new Date(t.create_at).toLocaleDateString()}</td>
-                </tr>
-            `;
-        });
     }
 
-    // CREAR TICKET: Envío de datos a la base
     async function crearTicket() {
         const btn = document.getElementById('btn-crear');
         const originalText = btn.innerText;
@@ -116,7 +116,6 @@
             estado: 'Pendiente'
         };
 
-        // Validación
         if(!nuevoTicket.patente || !nuevoTicket.descripcion) {
             mostrarMensaje("⚠️ Por favor completa los campos obligatorios", "#ef4444");
             btn.disabled = false;
@@ -131,9 +130,7 @@
             btn.disabled = false;
             btn.innerText = originalText;
         } else {
-            mostrarMensaje("✅ Ticket enviado a Operaciones con éxito");
-            
-            // Limpieza y refresco
+            mostrarMensaje("✅ Ticket registrado correctamente");
             document.querySelectorAll('input, textarea').forEach(el => el.value = '');
             btn.disabled = false;
             btn.innerText = originalText;
