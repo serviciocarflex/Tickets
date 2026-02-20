@@ -8,26 +8,18 @@
     <style>
         :root { --primary: #2563eb; --bg: #f8fafc; --text: #1e293b; }
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: var(--bg); color: var(--text); margin: 0; display: flex; }
-        
-        /* Sidebar */
         .sidebar { width: 260px; background: #0f172a; color: white; height: 100vh; position: fixed; padding: 20px; box-sizing: border-box; }
         .sidebar h2 { font-size: 1.2rem; margin-bottom: 30px; border-bottom: 1px solid #334155; padding-bottom: 10px; }
         .nav-btn { width: 100%; padding: 12px; margin-bottom: 10px; border: none; border-radius: 6px; cursor: pointer; text-align: left; font-weight: 600; transition: 0.3s; }
         .btn-main { background: var(--primary); color: white; }
         .btn-sec { background: transparent; color: #cbd5e1; }
         .btn-sec:hover { background: #1e293b; }
-
-        /* Contenido Principal */
         .main { margin-left: 260px; padding: 40px; width: 100%; }
         .card { background: white; border-radius: 12px; padding: 25px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
-        
-        /* Formulario */
         .grid-form { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px; }
         .form-group { display: flex; flex-direction: column; }
         label { font-size: 0.85rem; font-weight: 600; margin-bottom: 5px; color: #64748b; }
         input, select, textarea { padding: 10px; border: 1px solid #e2e8f0; border-radius: 6px; font-size: 1rem; }
-        
-        /* Tabla */
         table { width: 100%; border-collapse: collapse; margin-top: 20px; }
         th { text-align: left; background: #f1f5f9; padding: 12px; font-size: 0.85rem; text-transform: uppercase; color: #64748b; }
         td { padding: 12px; border-bottom: 1px solid #f1f5f9; }
@@ -79,7 +71,7 @@
         </div>
         <div class="form-group" style="margin-bottom: 15px;">
             <label>Tipo de Consulta</label>
-            <select id="tipo de consulta">
+            <select id="tipo_consulta_input">
                 <option value="Equipamiento">Equipamiento</option>
                 <option value="Agendamiento">Agendamiento</option>
                 <option value="Mecanica">Mecánica</option>
@@ -96,7 +88,6 @@
 </div>
 
 <script>
-    // Inicializar Supabase
     const _supabase = window.supabase.createClient(
         "https://cglpqxwuleilocifwuma.supabase.co",
         "sb_publishable_vDeRR2vZXRpRgZVHSKArwQ_EuCD0poY"
@@ -104,7 +95,6 @@
 
     let currentUserId = null;
 
-    // 1. Proteger la página
     async function checkSession() {
         const { data: { session } } = await _supabase.auth.getSession();
         if (!session) {
@@ -116,13 +106,11 @@
         }
     }
 
-    // 2. Cambiar de vista (Listado o Nuevo)
     function verSeccion(id) {
         document.getElementById('view-lista').style.display = id === 'lista' ? 'block' : 'none';
         document.getElementById('view-nuevo').style.display = id === 'nuevo' ? 'block' : 'none';
     }
 
-    // 3. Cargar Tickets desde Supabase
     async function cargarTickets() {
         const { data: tickets, error } = await _supabase
             .from('Tickets')
@@ -132,17 +120,18 @@
         const tbody = document.getElementById('tabla-body');
         tbody.innerHTML = '';
 
-        if (tickets.length === 0) {
+        if (!tickets || tickets.length === 0) {
             tbody.innerHTML = '<tr><td colspan="5">No tienes tickets creados aún.</td></tr>';
             return;
         }
 
         tickets.forEach(t => {
+            // NOTA: Para leer la columna con espacios usamos t["tipo de consulta"]
             tbody.innerHTML += `
                 <tr>
                     <td><strong>${t.patente || 'N/A'}</strong></td>
                     <td>${t.zona || 'N/A'}</td>
-                    <td>${t.tipo de consulta}</td>
+                    <td>${t["tipo de consulta"] || 'N/A'}</td>
                     <td><span class="status-badge">${t.estado || 'Pendiente'}</span></td>
                     <td>${new Date(t.create_at).toLocaleDateString()}</td>
                 </tr>
@@ -150,19 +139,19 @@
         });
     }
 
-    // 4. Enviar nuevo ticket a la DB
     async function crearTicket() {
         const btn = document.getElementById('btn-crear');
         btn.disabled = true;
         btn.innerText = "Enviando...";
 
+        // IMPORTANTE: Los nombres a la izquierda deben ser IDENTICOS a tu base de datos
         const nuevoTicket = {
             creado_por: currentUserId,
             patente: document.getElementById('patente').value,
             zona: document.getElementById('zona').value,
-            tipo de consulta: document.getElementById('tipo de consulta').value,
+            "tipo de consulta": document.getElementById('tipo_consulta_input').value,
             descripcion: document.getElementById('descripcion').value,
-            estado: 'Pendiente', // Valor fijo inicial
+            estado: 'Pendiente'
         };
 
         const { error } = await _supabase.from('Tickets').insert([nuevoTicket]);
@@ -173,7 +162,6 @@
             btn.innerText = "Enviar a Operaciones";
         } else {
             alert("✅ Ticket registrado correctamente");
-            // Limpiar formulario y volver a la lista
             document.getElementById('patente').value = '';
             document.getElementById('zona').value = '';
             document.getElementById('descripcion').value = '';
@@ -191,6 +179,5 @@
 
     checkSession();
 </script>
-
 </body>
 </html>
