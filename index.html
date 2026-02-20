@@ -3,163 +3,100 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login | Sistema de Tickets</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <title>Carflex - Registro de Gestiones</title>
     <style>
-        :root {
-            --primary: #2563eb;
-            --primary-hover: #1d4ed8;
-            --bg: #f9fafb;
-            --text: #111827;
-        }
-
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: var(--bg);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-            margin: 0;
-        }
-
-        .login-card {
-            background: white;
-            padding: 2rem;
-            border-radius: 12px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
-            width: 100%;
-            max-width: 400px;
-            transition: transform 0.2s;
-        }
-
-        h2 { margin-bottom: 1.5rem; color: var(--text); text-align: center; }
-
-        .input-group { margin-bottom: 1rem; }
-
-        label { display: block; font-size: 0.875rem; font-weight: 600; margin-bottom: 0.5rem; }
-
-        input {
-            width: 100%;
-            padding: 0.75rem;
-            border: 1px solid #d1d5db;
-            border-radius: 8px;
-            box-sizing: border-box;
-            font-size: 1rem;
-            transition: border-color 0.2s;
-        }
-
-        input:focus { outline: none; border-color: var(--primary); ring: 2px var(--primary); }
-
-        button {
-            width: 100%;
-            padding: 0.75rem;
-            background-color: var(--primary);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background 0.2s;
-            margin-top: 1rem;
-        }
-
-        button:hover { background-color: var(--primary-hover); }
-
-        button:disabled { background-color: #93c5fd; cursor: not-allowed; }
-
-        /* Mensajes de error suaves */
-        #error-msg {
-            color: #dc2626;
-            background: #fef2f2;
-            padding: 0.5rem;
-            border-radius: 6px;
-            font-size: 0.875rem;
-            margin-bottom: 1rem;
-            display: none;
-            text-align: center;
-        }
-
-        .loader {
-            display: inline-block;
-            width: 18px;
-            height: 18px;
-            border: 2px solid #ffffff;
-            border-radius: 50%;
-            border-top-color: transparent;
-            animation: spin 0.8s linear infinite;
-            display: none;
-        }
-
-        @keyframes spin { to { transform: rotate(360deg); } }
+        body { font-family: 'Segoe UI', sans-serif; background: #f4f7f6; margin: 0; padding: 20px; display: flex; justify-content: center; }
+        .card { background: white; padding: 30px; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); width: 100%; max-width: 500px; }
+        h2 { color: #1e40af; text-align: center; margin-bottom: 25px; }
+        label { display: block; margin-bottom: 8px; font-weight: 600; color: #4b5563; }
+        input, select, textarea { width: 100%; padding: 12px; margin-bottom: 20px; border: 1px solid #d1d5db; border-radius: 8px; box-sizing: border-box; font-size: 16px; }
+        button { width: 100%; padding: 15px; background: #2563eb; color: white; border: none; border-radius: 8px; font-size: 18px; font-weight: bold; cursor: pointer; transition: background 0.3s; }
+        button:hover { background: #1d4ed8; }
+        button:disabled { background: #94a3b8; }
+        #mensaje { text-align: center; margin-top: 15px; font-weight: bold; display: none; }
     </style>
 </head>
 <body>
 
-<div class="login-card">
-    <h2>Bienvenido</h2>
-    <div id="error-msg"></div>
+<div class="card">
+    <h2>Nueva Gestión Carflex</h2>
+    
+    <label>Agente Comercial</label>
+    <select id="agente">
+        <option value="">Selecciona tu nombre...</option>
+        <option value="Juan Perez">Juan Perez</option>
+        <option value="Maria Garcia">Maria Garcia</option>
+        <option value="Carlos Soto">Carlos Soto</option>
+    </select>
 
-    <div class="input-group">
-        <label>Correo electrónico</label>
-        <input id="email" type="email" placeholder="nombre@empresa.com">
-    </div>
+    <label>Patente (6 caracteres)</label>
+    <input type="text" id="patente" placeholder="Ej: ABCD12" maxlength="6" style="text-transform: uppercase;">
 
-    <div class="input-group">
-        <label>Contraseña</label>
-        <input id="password" type="password" placeholder="••••••••">
-    </div>
+    <label>Zona</label>
+    <select id="zona">
+        <option value="NORTE">ZONA NORTE</option>
+        <option value="CENTRO">ZONA CENTRO</option>
+        <option value="SUR">ZONA SUR</option>
+    </select>
 
-    <button id="loginBtn" onclick="login()">
-        <span id="btnText">Entrar</span>
-        <div id="loader" class="loader"></div>
-    </button>
+    <label>Descripción del caso</label>
+    <textarea id="descripcion" rows="4" placeholder="¿Qué sucede con el vehículo?"></textarea>
+
+    <button id="btnEnviar" onclick="enviarAlWebhook()">Enviar Ticket</button>
+    <div id="mensaje"></div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
 <script>
-    const _supabase = window.supabase.createClient(
-        "https://cglpqxwuleilocifwuma.supabase.co",
-        "sb_publishable_vDeRR2vZXRpRgZVHSKArwQ_EuCD0poY"
-    );
+    async function enviarAlWebhook() {
+        const btn = document.getElementById('btnEnviar');
+        const msg = document.getElementById('mensaje');
+        
+        // REEMPLAZA ESTO CON TU URL DE WEBHOOK DE n8n
+        const WEBHOOK_URL = 'https://tu-n8n-instancia.com/webhook/identificador-unico';
 
-    async function login() {
-        const email = document.getElementById("email").value;
-        const password = document.getElementById("password").value;
-        const btn = document.getElementById("loginBtn");
-        const btnText = document.getElementById("btnText");
-        const loader = document.getElementById("loader");
-        const errorMsg = document.getElementById("error-msg");
+        const datos = {
+            agente: document.getElementById('agente').value,
+            patente: document.getElementById('patente').value.toUpperCase(),
+            zona: document.getElementById('zona').value,
+            descripcion: document.getElementById('descripcion').value,
+            fecha: new Date().toISOString(),
+            estado: 'Pendiente'
+        };
 
-        // Estado de carga
-        errorMsg.style.display = "none";
-        btn.disabled = true;
-        btnText.style.display = "none";
-        loader.style.display = "inline-block";
-
-        const { data, error } = await _supabase.auth.signInWithPassword({ email, password });
-
-        if (error) {
-            errorMsg.innerText = "Credenciales incorrectas o cuenta no validada.";
-            errorMsg.style.display = "block";
-            btn.disabled = false;
-            btnText.style.display = "inline-block";
-            loader.style.display = "none";
+        if (!datos.agente || !datos.patente || !datos.descripcion) {
+            alert("Completa todos los campos antes de enviar.");
             return;
         }
 
-        // Redirección fluida
-        window.location.href = "panel.html";
-    }
+        btn.disabled = true;
+        btn.innerText = "Procesando...";
 
-    // Verificar si ya hay sesión para saltar el login
-    async function checkUser() {
-        const { data } = await _supabase.auth.getSession();
-        if (data?.session) window.location.href = "panel.html";
+        try {
+            const response = await fetch(WEBHOOK_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(datos)
+            });
+
+            if (response.ok) {
+                msg.style.display = "block";
+                msg.style.color = "green";
+                msg.innerText = "✅ ¡Enviado con éxito!";
+                // Limpiar formulario
+                document.getElementById('patente').value = '';
+                document.getElementById('descripcion').value = '';
+            } else {
+                throw new Error();
+            }
+        } catch (error) {
+            msg.style.display = "block";
+            msg.style.color = "red";
+            msg.innerText = "❌ Error al enviar. Revisa n8n.";
+        } finally {
+            btn.disabled = false;
+            btn.innerText = "Enviar Ticket";
+        }
     }
-    checkUser();
 </script>
 
 </body>
