@@ -18,6 +18,7 @@ const supabase = window.supabase.createClient(
   "sb_publishable_vDeRR2vZXRpRgZVHSKArwQ_EuCD0poY"
 );
 
+// 🔹 LOGIN
 async function login() {
 
   const email = document.getElementById("email").value;
@@ -30,10 +31,30 @@ async function login() {
 
   if(error){
     alert("Login incorrecto");
-  } else {
-    alert("Login correcto");
+    return;
   }
+
+  alert("Login correcto");
+
+  // ✅ redirigir al panel
+  window.location.href = "panel.html";
 }
+
+
+// 🔹 VERIFICAR SI YA ESTÁ LOGUEADO
+async function verificarSesion() {
+
+  const { data: { session } } = await supabase.auth.getSession();
+
+  if(session){
+    // si ya está logueado entra directo al panel
+    window.location.href = "panel.html";
+  }
+
+}
+
+// revisar sesión al cargar la página
+verificarSesion();
 
 </script>
 
