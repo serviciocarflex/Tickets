@@ -2,7 +2,7 @@
 <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
 
 <style>
-    /* Estilos extra para profesionalismo */
+    /* Estilos profesionales */
     .card {
         border: none;
         box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
@@ -18,7 +18,7 @@
     
     .nav-btn:active { transform: scale(0.95); }
 
-    /* Animación de entrada para las secciones */
+    /* Animación de entrada */
     #view-lista, #view-nuevo {
         animation: fadeIn 0.4s ease-out;
     }
@@ -35,11 +35,21 @@
         padding: 6px 12px;
         border-radius: 99px;
         font-weight: 600;
+        font-size: 0.85rem;
+    }
+
+    /* Estilo para IDs cortos */
+    .ticket-id {
+        font-family: monospace;
+        color: #64748b;
+        background: #f1f5f9;
+        padding: 2px 6px;
+        border-radius: 4px;
     }
 </style>
 
 <script>
-    // Función profesional para mostrar mensajes
+    // Función para mostrar mensajes estilo Toast
     function mostrarMensaje(texto, color = "#2563eb") {
         Toastify({
             text: texto,
@@ -50,13 +60,52 @@
         }).showToast();
     }
 
+    // CARGAR TICKETS: Aquí es donde ocurre la magia del nombre
+    async function cargarTickets() {
+        // Pedimos los tickets y "cruzamos" con Perfiles para traer el nombre del creador
+        const { data: tickets, error } = await _supabase
+            .from('Tickets')
+            .select(`
+                *,
+                creador:creado_por ( nombre )
+            `)
+            .order('create_at', { ascending: false });
+
+        const tbody = document.getElementById('tabla-body');
+        tbody.innerHTML = '';
+
+        if (!tickets || tickets.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;">No hay tickets registrados.</td></tr>';
+            return;
+        }
+
+        tickets.forEach(t => {
+            // Extraemos el nombre si existe, si no ponemos 'Sistema'
+            const nombreCreador = t.creador ? t.creador.nombre : 'Usuario';
+            // Acortamos el ID para que se vea profesional (ej: #89986)
+            const idCorto = t.id ? t.id.substring(0, 5) : '---';
+
+            tbody.innerHTML += `
+                <tr>
+                    <td><span class="ticket-id">#${idCorto}</span></td>
+                    <td><strong>${t.patente || 'N/A'}</strong></td>
+                    <td>${t.zona || 'N/A'}</td>
+                    <td>${t["tipo de consulta"] || 'N/A'}</td>
+                    <td>${nombreCreador}</td>
+                    <td><span class="status-badge">${t.estado || 'Pendiente'}</span></td>
+                    <td>${new Date(t.create_at).toLocaleDateString()}</td>
+                </tr>
+            `;
+        });
+    }
+
+    // CREAR TICKET: Envío de datos a la base
     async function crearTicket() {
         const btn = document.getElementById('btn-crear');
         const originalText = btn.innerText;
         
-        // Efecto visual de carga
         btn.disabled = true;
-        btn.innerHTML = `<span class="spinner"></span> Enviando...`;
+        btn.innerHTML = `Enviando...`;
 
         const nuevoTicket = {
             creado_por: currentUserId,
@@ -67,7 +116,7 @@
             estado: 'Pendiente'
         };
 
-        // Validación simple
+        // Validación
         if(!nuevoTicket.patente || !nuevoTicket.descripcion) {
             mostrarMensaje("⚠️ Por favor completa los campos obligatorios", "#ef4444");
             btn.disabled = false;
@@ -84,12 +133,11 @@
         } else {
             mostrarMensaje("✅ Ticket enviado a Operaciones con éxito");
             
-            // Limpieza fluida
+            // Limpieza y refresco
             document.querySelectorAll('input, textarea').forEach(el => el.value = '');
             btn.disabled = false;
             btn.innerText = originalText;
             
-            // Volver a la lista con una pequeña espera para el efecto
             setTimeout(() => {
                 verSeccion('lista');
                 cargarTickets();
