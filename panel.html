@@ -1,65 +1,96 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Carflex - Mis Tickets</title>
+    <title>Carflex - Nuevo Ticket</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         body { font-family: sans-serif; padding: 20px; background: #f4f4f4; }
-        .box { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
-        th { background: #2563eb; color: white; }
-        .btn { padding: 10px; cursor: pointer; background: #2563eb; color: white; border: none; border-radius: 4px; }
+        .box { max-width: 400px; margin: auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        input, select, textarea { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box; }
+        .btn { width: 100%; padding: 12px; background: #2563eb; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; }
+        .btn:disabled { background: #94a3b8; }
+        .back-link { display: block; text-align: center; margin-top: 15px; color: #666; text-decoration: none; font-size: 0.9rem; }
     </style>
 </head>
 <body>
-    <div class="box">
-        <h2>Mis Tickets</h2>
-        <button class="btn" onclick="location.href='nuevo.html'">+ Crear Ticket</button>
-        <button onclick="cerrarSesion()" style="float:right">Cerrar Sesión</button>
+
+<div class="box">
+    <h2>Crear Nuevo Ticket</h2>
+    
+    <label>Patente:</label>
+    <input type="text" id="patente" placeholder="Ej: ABCD12" maxlength="6">
+
+    <label>Zona:</label>
+    <select id="zona">
+        <option value="NORTE">NORTE</option>
+        <option value="SUR">SUR</option>
+        <option value="CENTRO">CENTRO</option>
+        <option value="ESTE">ESTE</option>
+        <option value="OESTE">OESTE</option>
+    </select>
+
+    <label>Tipo de Consulta:</label>
+    <select id="tipo_consulta">
+        <option value="Consulta Técnica">Consulta Técnica</option>
+        <option value="Siniestro">Siniestro</option>
+        <option value="Mantenimiento">Mantenimiento</option>
+        <option value="Otros">Otros</option>
+    </select>
+
+    <label>Descripción:</label>
+    <textarea id="descripcion" rows="4" placeholder="Detalles de la solicitud..."></textarea>
+
+    <button class="btn" id="btn-guardar" onclick="guardarTicket()">Enviar Ticket</button>
+    <a href="panel.html" class="back-link">← Volver al listado</a>
+</div>
+
+<script>
+    // Configura tus llaves aquí
+    const _supabase = supabase.createClient('TU_URL', 'TU_KEY');
+
+    async function guardarTicket() {
+        const btn = document.getElementById('btn-guardar');
+        const patente = document.getElementById('patente').value.toUpperCase();
+        const zona = document.getElementById('zona').value;
+        const tipo = document.getElementById('tipo_consulta').value;
+        const desc = document.getElementById('descripcion').value;
+
+        if (!patente || !desc) {
+            alert("Por favor completa la patente y la descripción.");
+            return;
+        }
+
+        btn.disabled = true;
+        btn.innerText = "Guardando...";
+
+        // 1. Obtener el ID del usuario actual
+        const { data: { session } } = await _supabase.auth.getSession();
         
-        <table>
-            <thead>
-                <tr><th>Patente</th><th>Estado</th><th>Fecha</th></tr>
-            </thead>
-            <tbody id="lista"></tbody>
-        </table>
-    </div>
-
-    <script>
-        const _supabase = supabase.createClient('TU_URL', 'TU_KEY');
-
-        async function inicio() {
-            const { data: { session } } = await _supabase.auth.getSession();
-            if (!session) { 
-                window.location.href = 'index.html'; 
-                return; 
-            }
-            
-            // Cargar tickets del usuario
-            const { data } = await _supabase.from('Tickets')
-                .select('*')
-                .eq('creado_por', session.user.id);
-            
-            const lista = document.getElementById('lista');
-            if (!data || data.length === 0) {
-                lista.innerHTML = '<tr><td colspan="3">No tienes tickets aún.</td></tr>';
-            } else {
-                lista.innerHTML = data.map(t => `
-                    <tr>
-                        <td>${t.patente}</td>
-                        <td>${t.estado}</td>
-                        <td>${new Date(t.create_at).toLocaleDateString()}</td>
-                    </tr>`).join('');
-            }
-        }
-
-        async function cerrarSesion() {
-            await _supabase.auth.signOut();
+        if (!session) {
+            alert("Sesión expirada. Vuelve a loguearte.");
             window.location.href = 'index.html';
+            return;
         }
 
-        inicio();
-    </script>
+        // 2. Insertar en la base de datos
+        const { error } = await _supabase.from('Tickets').insert([{
+            creado_por: session.user.id,
+            patente: patente,
+            zona: zona,
+            "tipo de consulta": tipo,
+            descripcion: desc,
+            estado: 'Pendiente'
+        }]);
+
+        if (error) {
+            alert("Error al guardar: " + error.message);
+            btn.disabled = false;
+            btn.innerText = "Enviar Ticket";
+        } else {
+            alert("✅ Ticket creado con éxito");
+            window.location.href = 'panel.html'; // Volver al panel automáticamente
+        }
+    }
+</script>
 </body>
 </html>
