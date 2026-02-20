@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<h2>Panel privado</h2>
+
+<button onclick="logout()">Cerrar sesión</button>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script>
+
+const supabase = window.supabase.createClient(
+  "https://cglpqxwuleilocifwuma.supabase.co",
+  "sb_publishable_vDeRR2vZXRpRgZVHSKArwQ_EuCD0poY"
+);
+
+// ✅ comprobar sesión
+async function verificarSesion(){
+
+  const { data: { session } } = await supabase.auth.getSession();
+
+  if(!session){
+    // si NO está logueado vuelve al login
+    window.location.href = "index.html";
+  }
+}
+
+verificarSesion();
+
+
+// 🔹 logout
+async function logout(){
+  await supabase.auth.signOut();
+  window.location.href = "index.html";
+}
+
+</script>
+
+</body>
+</html>
