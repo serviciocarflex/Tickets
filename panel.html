@@ -1,144 +1,82 @@
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
-<script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
-
-<style>
-    /* Estilos profesionales */
-    .card {
-        border: none;
-        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-        transition: all 0.3s ease;
-    }
-    
-    .nav-btn {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        transition: transform 0.2s;
-    }
-    
-    .nav-btn:active { transform: scale(0.95); }
-
-    #view-lista, #view-nuevo {
-        animation: fadeIn 0.4s ease-out;
-    }
-
-    @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(10px); }
-        to { opacity: 1; transform: translateY(0); }
-    }
-
-    .status-badge {
-        background: #dcfce7;
-        color: #166534;
-        padding: 6px 12px;
-        border-radius: 99px;
-        font-weight: 600;
-        font-size: 0.85rem;
-    }
-
-    .ticket-id {
-        font-family: monospace;
-        color: #64748b;
-        background: #f1f5f9;
-        padding: 2px 6px;
-        border-radius: 4px;
-    }
-</style>
-
 <script>
+    // 1. Verificación inmediata: Si esto no sale en consola, el archivo está roto
+    console.log("El panel se está cargando...");
+
     function mostrarMensaje(texto, color = "#2563eb") {
-        Toastify({
-            text: texto,
-            duration: 3000,
-            gravity: "top",
-            position: "right",
-            style: { background: color, borderRadius: "8px" }
-        }).showToast();
+        if (typeof Toastify === "function") {
+            Toastify({
+                text: texto,
+                duration: 3000,
+                style: { background: color }
+            }).showToast();
+        } else {
+            alert(texto);
+        }
     }
 
-    // CARGAR TICKETS: Versión Simplificada para evitar pantalla blanca
     async function cargarTickets() {
+        console.log("Intentando cargar tickets...");
+        const tbody = document.getElementById('tabla-body');
+        if (!tbody) return;
+
         try {
-            const { data: tickets, error } = await _supabase
+            // Consulta ultra simple para evitar errores
+            const { data, error } = await _supabase
                 .from('Tickets')
-                .select('*') // Traemos todo simple, sin cruzar tablas por ahora
-                .order('create_at', { ascending: false });
+                .select('*');
 
             if (error) {
-                console.warn("Aviso de Supabase (posible RLS):", error.message);
-                // Si hay error de permisos, simplemente mostramos tabla vacía en vez de romper la web
-                document.getElementById('tabla-body').innerHTML = '<tr><td colspan="6" style="text-align:center;">No se pudieron cargar los datos o faltan permisos.</td></tr>';
+                console.error("Error de Supabase:", error);
+                tbody.innerHTML = '<tr><td colspan="6">Error de permisos (SELECT).</td></tr>';
                 return;
             }
 
-            const tbody = document.getElementById('tabla-body');
-            tbody.innerHTML = '';
-
-            if (!tickets || tickets.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;">No tienes tickets creados aún.</td></tr>';
+            if (!data || data.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6">No hay registros.</td></tr>';
                 return;
             }
 
-            tickets.forEach(t => {
-                const idCorto = t.id ? t.id.substring(0, 5) : '---';
-                // Usamos una fecha segura
-                const fecha = t.create_at ? new Date(t.create_at).toLocaleDateString() : '---';
-
-                tbody.innerHTML += `
+            let html = "";
+            data.forEach(t => {
+                html += `
                     <tr>
-                        <td><span class="ticket-id">#${idCorto}</span></td>
-                        <td><strong>${t.patente || 'N/A'}</strong></td>
+                        <td>#${t.id ? t.id.substring(0, 5) : '---'}</td>
+                        <td>${t.patente || 'N/A'}</td>
                         <td>${t.zona || 'N/A'}</td>
                         <td>${t["tipo de consulta"] || 'N/A'}</td>
                         <td>${t.estado || 'Pendiente'}</td>
-                        <td>${fecha}</td>
-                    </tr>
-                `;
+                        <td>${t.create_at ? new Date(t.create_at).toLocaleDateString() : '---'}</td>
+                    </tr>`;
             });
-        } catch (err) {
-            console.error("Error crítico en cargarTickets:", err);
+            tbody.innerHTML = html;
+
+        } catch (e) {
+            console.error("Error crítico:", e);
+            tbody.innerHTML = '<tr><td colspan="6">Error crítico en la carga.</td></tr>';
         }
     }
 
     async function crearTicket() {
-        const btn = document.getElementById('btn-crear');
-        const originalText = btn.innerText;
-        
-        btn.disabled = true;
-        btn.innerHTML = `Enviando...`;
+        const patente = document.getElementById('patente').value;
+        const desc = document.getElementById('descripcion').value;
 
-        const nuevoTicket = {
-            creado_por: currentUserId,
-            patente: document.getElementById('patente').value.toUpperCase(),
-            zona: document.getElementById('zona').value.toUpperCase(),
-            "tipo de consulta": document.getElementById('tipo_consulta_input').value,
-            descripcion: document.getElementById('descripcion').value,
-            estado: 'Pendiente'
-        };
-
-        if(!nuevoTicket.patente || !nuevoTicket.descripcion) {
-            mostrarMensaje("⚠️ Por favor completa los campos obligatorios", "#ef4444");
-            btn.disabled = false;
-            btn.innerText = originalText;
+        if(!patente || !desc) {
+            mostrarMensaje("Completa los campos", "#ef4444");
             return;
         }
 
-        const { error } = await _supabase.from('Tickets').insert([nuevoTicket]);
+        const { error } = await _supabase.from('Tickets').insert([{
+            creado_por: currentUserId,
+            patente: patente.toUpperCase(),
+            descripcion: desc,
+            estado: 'Pendiente'
+        }]);
 
         if (error) {
-            mostrarMensaje("❌ Error: " + error.message, "#ef4444");
-            btn.disabled = false;
-            btn.innerText = originalText;
+            mostrarMensaje("Error al guardar", "#ef4444");
         } else {
-            mostrarMensaje("✅ Ticket registrado correctamente");
-            document.querySelectorAll('input, textarea').forEach(el => el.value = '');
-            btn.disabled = false;
-            btn.innerText = originalText;
-            
-            setTimeout(() => {
-                verSeccion('lista');
-                cargarTickets();
-            }, 500);
+            mostrarMensaje("¡Guardado!");
+            cargarTickets();
         }
     }
 </script>
