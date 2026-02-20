@@ -1,6 +1,6 @@
 <script>
-    // Verificación en consola
-    console.log("Panel de control activo");
+    // 1. Mensaje de control: Si ves esto en la consola (F12), el script cargó bien.
+    console.log("Sistema Carflex iniciado correctamente");
 
     function mostrarMensaje(texto, color = "#2563eb") {
         if (typeof Toastify === "function") {
@@ -17,13 +17,12 @@
     }
 
     async function cargarTickets() {
-        console.log("Intentando cargar la lista...");
+        console.log("Intentando cargar la lista de tickets...");
         const tbody = document.getElementById('tabla-body');
         if (!tbody) return;
 
         try {
-            // Consulta básica. Si no hay política de SELECT, Supabase dará error 
-            // pero el "try/catch" evitará que la pantalla se ponga blanca.
+            // Consulta básica sin cruces de tablas para evitar errores
             const { data, error } = await _supabase
                 .from('Tickets')
                 .select('*')
@@ -43,6 +42,8 @@
             let html = "";
             data.forEach(t => {
                 const idCorto = t.id ? t.id.substring(0, 5) : '---';
+                const fecha = t.create_at ? new Date(t.create_at).toLocaleDateString() : '---';
+                
                 html += `
                     <tr>
                         <td><span class="ticket-id">#${idCorto}</span></td>
@@ -50,25 +51,24 @@
                         <td>${t.zona || 'N/A'}</td>
                         <td>${t["tipo de consulta"] || 'N/A'}</td>
                         <td><span class="status-badge">${t.estado || 'Pendiente'}</span></td>
-                        <td>${t.create_at ? new Date(t.create_at).toLocaleDateString() : '---'}</td>
+                        <td>${fecha}</td>
                     </tr>`;
             });
             tbody.innerHTML = html;
 
         } catch (e) {
-            console.error("Error en la carga visual:", e);
+            console.error("Error en cargarTickets:", e);
         }
     }
 
     async function crearTicket() {
-        // Obtenemos los elementos para poder limpiarlos después
         const patenteInput = document.getElementById('patente');
         const zonaInput = document.getElementById('zona');
         const tipoInput = document.getElementById('tipo_consulta_input');
         const descInput = document.getElementById('descripcion');
         const btn = document.getElementById('btn-crear');
 
-        if(!patenteInput.value || !descInput.value) {
+        if(!patenteInput || !patenteInput.value || !descInput.value) {
             mostrarMensaje("⚠️ Por favor completa los campos obligatorios", "#ef4444");
             return;
         }
@@ -77,34 +77,40 @@
         btn.disabled = true;
         btn.innerHTML = "Enviando...";
 
-        const { error } = await _supabase.from('Tickets').insert([{
-            creado_por: currentUserId,
-            patente: patenteInput.value.toUpperCase(),
-            zona: zonaInput.value ? zonaInput.value.toUpperCase() : 'NORTE',
-            "tipo de consulta": tipoInput.value,
-            descripcion: descInput.value,
-            estado: 'Pendiente'
-        }]);
+        try {
+            const { error } = await _supabase.from('Tickets').insert([{
+                creado_por: currentUserId,
+                patente: patenteInput.value.toUpperCase(),
+                zona: zonaInput.value ? zonaInput.value.toUpperCase() : 'NORTE',
+                "tipo de consulta": tipoInput.value,
+                descripcion: descInput.value,
+                estado: 'Pendiente'
+            }]);
 
-        if (error) {
-            mostrarMensaje("❌ Error al guardar: " + error.message, "#ef4444");
+            if (error) {
+                mostrarMensaje("❌ Error al guardar: " + error.message, "#ef4444");
+                btn.disabled = false;
+                btn.innerText = originalText;
+            } else {
+                mostrarMensaje("✅ ¡Ticket registrado correctamente!");
+                
+                // Limpiamos los campos
+                patenteInput.value = '';
+                descInput.value = '';
+                
+                btn.disabled = false;
+                btn.innerText = originalText;
+                
+                // Volvemos a la lista y recargamos
+                setTimeout(() => {
+                    if (typeof verSeccion === 'function') verSeccion('lista');
+                    cargarTickets();
+                }, 500);
+            }
+        } catch (err) {
+            console.error("Error en crearTicket:", err);
             btn.disabled = false;
             btn.innerText = originalText;
-        } else {
-            mostrarMensaje("✅ ¡Ticket registrado correctamente!");
-            
-            // Limpiar formulario
-            patenteInput.value = '';
-            descInput.value = '';
-            
-            btn.disabled = false;
-            btn.innerText = originalText;
-            
-            // Refrescar vista
-            setTimeout(() => {
-                verSeccion('lista');
-                cargarTickets();
-            }, 500);
         }
     }
 </script>
