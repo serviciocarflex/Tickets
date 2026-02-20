@@ -1,120 +1,66 @@
 <!DOCTYPE html>
-<html lang="es">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <title>Carflex - Panel</title>
+    <title>Carflex - Panel General</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         body { font-family: sans-serif; padding: 20px; background: #f4f4f4; }
-        .box { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); max-width: 800px; margin: auto; }
-        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-        table { width: 100%; border-collapse: collapse; }
+        .box { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); max-width: 900px; margin: auto; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
         th { background: #2563eb; color: white; padding: 12px; text-align: left; }
-        td { padding: 12px; border-bottom: 1px solid #eee; }
-        .btn-crear { padding: 10px 20px; background: #2563eb; color: white; border: none; border-radius: 6px; text-decoration: none; font-weight: bold; }
-        .btn-cerrar { padding: 8px 12px; background: #ef4444; color: white; border: none; border-radius: 6px; cursor: pointer; }
+        td { padding: 12px; border-bottom: 1px solid #ddd; }
+        .btn-crear { padding: 10px 20px; background: #22c55e; color: white; border: none; border-radius: 4px; text-decoration: none; font-weight: bold; }
+        .badge { padding: 4px 8px; border-radius: 12px; font-size: 0.8rem; background: #e2e8f0; }
     </style>
 </head>
 <body>
+    <div class="box">
+        <div style="display:flex; justify-content: space-between; align-items: center;">
+            <h2>Panel de Tickets</h2>
+            <a href="nuevo.html" class="btn-crear">+ Crear Nuevo Ticket</a>
+        </div>
 
-<div class="box">
-    <div class="header">
-        <h2>Mis Gestiones</h2>
-        <button class="btn-cerrar" onclick="cerrarSesion()">Cerrar Sesión</button>
+        <table>
+            <thead>
+                <tr>
+                    <th>Agente</th>
+                    <th>Patente</th>
+                    <th>Estado</th>
+                    <th>Fecha</th>
+                </tr>
+            </thead>
+            <tbody id="tabla-total">
+                <tr><td colspan="4" style="text-align:center;">Cargando todos los registros...</td></tr>
+            </tbody>
+        </table>
     </div>
-    
-    <a href="nuevo.html" class="btn-crear">+ Nueva Solicitud</a>
-    
-    <div id="debug-info" style="color: blue; font-size: 12px; margin: 10px 0;"></div>
 
-    <table>
-        <thead>
-            <tr>
-                <th>Patente</th>
-                <th>Estado</th>
-                <th>Fecha</th>
-            </tr>
-        </thead>
-        <tbody id="tabla-tickets">
-            <tr><td colspan="3" style="text-align:center; padding: 20px;">Iniciando sistema...</td></tr>
-        </tbody>
-    </table>
-</div>
+    <script>
+        const _supabase = supabase.createClient('TU_URL', 'TU_KEY');
 
-<script>
-    // 1. CONFIGURACIÓN (REVISA QUE NO HAYA ESPACIOS)
-    const URL_PROYECTO = 'TU_URL_AQUÍ'; 
-    const KEY_PROYECTO = 'TU_KEY_AQUÍ';
-
-    // Inicialización envuelta en un try para ver errores de conexión
-    let _supabase;
-    try {
-        _supabase = supabase.createClient(URL_PROYECTO, KEY_PROYECTO);
-        document.getElementById('debug-info').innerText = "Estado: Conectando a Supabase...";
-    } catch (e) {
-        document.getElementById('debug-info').style.color = "red";
-        document.getElementById('debug-info').innerText = "Error de Librería: " + e.message;
-    }
-
-    async function cargarTickets() {
-        const tbody = document.getElementById('tabla-tickets');
-        
-        try {
-            // Verificamos si hay sesión
-            const { data: { session }, error: sessionError } = await _supabase.auth.getSession();
-            
-            if (sessionError) throw sessionError;
-            
-            if (!session) {
-                console.log("No hay sesión, redirigiendo...");
-                window.location.href = 'index.html';
-                return;
-            }
-
-            document.getElementById('debug-info').innerText = "Sesión activa: " + session.user.email;
-
-            // Pedimos los datos
+        async function cargarTodo() {
             const { data, error } = await _supabase
                 .from('Tickets')
                 .select('*')
-                .eq('creado_por', session.user.id);
+                .order('created_at', { ascending: false });
 
-            if (error) throw error;
-
-            if (data.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="3" style="text-align:center;">No tienes registros.</td></tr>';
-            } else {
-                tbody.innerHTML = data.map(t => `
-                    <tr>
-                        <td><strong>${t.patente}</strong></td>
-                        <td>${t.estado || 'Pendiente'}</td>
-                        <td>${new Date(t.created_at || t.create_at).toLocaleDateString()}</td>
-                    </tr>
-                `).join('');
+            if (error) {
+                alert("Error: " + error.message);
+                return;
             }
 
-        } catch (err) {
-            console.error("Error crítico:", err);
-            document.getElementById('debug-info').style.color = "red";
-            document.getElementById('debug-info').innerText = "Error: " + err.message;
-            tbody.innerHTML = '<tr><td colspan="3" style="text-align:center;">Error al cargar. Revisa la consola (F12).</td></tr>';
+            const tbody = document.getElementById('tabla-total');
+            tbody.innerHTML = data.map(t => `
+                <tr>
+                    <td><strong>${t.agente || 'S/N'}</strong></td>
+                    <td>${t.patente}</td>
+                    <td><span class="badge">${t.estado || 'Pendiente'}</span></td>
+                    <td>${new Date(t.created_at).toLocaleDateString()}</td>
+                </tr>
+            `).join('');
         }
-    }
 
-    async function cerrarSesion() {
-        try {
-            alert("Cerrando sesión...");
-            const { error } = await _supabase.auth.signOut();
-            if (error) throw error;
-            localStorage.clear(); // Limpiamos todo por si acaso
-            window.location.href = 'index.html';
-        } catch (err) {
-            alert("Error al salir: " + err.message);
-        }
-    }
-
-    // Ejecutar inmediatamente
-    cargarTickets();
-</script>
+        window.onload = cargarTodo;
+    </script>
 </body>
 </html>
