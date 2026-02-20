@@ -4,62 +4,54 @@
 
 <h2>Login</h2>
 
-<input id="email" placeholder="email">
+<input id="email" placeholder="email" type="email">
 <input id="password" type="password" placeholder="password">
 
 <button onclick="login()">Entrar</button>
 
-<!-- ✅ SDK correcto -->
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <script>
-
-// ✅ crear cliente correctamente
-const supabase = supabase.createClient(
+// 1. Inicializar el cliente con un nombre distinto para evitar errores
+const _supabase = window.supabase.createClient(
   "https://cglpqxwuleilocifwuma.supabase.co",
   "sb_publishable_vDeRR2vZXRpRgZVHSKArwQ_EuCD0poY"
 );
 
-
-// 🔐 LOGIN
+// 2. 🔐 LOGIN
 async function login() {
-
-  console.log("intentando login");
+  console.log("Intentando login...");
 
   const email = document.getElementById("email").value;
   const password = document.getElementById("password").value;
 
-  const { data, error } = await supabase.auth.signInWithPassword({
+  // Usamos el cliente con el nuevo nombre _supabase
+  const { data, error } = await _supabase.auth.signInWithPassword({
     email: email,
     password: password
   });
 
-  console.log(data);
-  console.log(error);
-
   if (error) {
-    alert(error.message);
+    console.error("Error detallado:", error);
+    alert("Error: " + error.message);
     return;
   }
 
+  console.log("Datos de sesión:", data);
   alert("Login correcto");
-
   window.location.href = "panel.html";
 }
 
-
-// ✅ VERIFICAR SESIÓN
+// 3. ✅ VERIFICAR SESIÓN
 async function verificarSesion() {
-
-  const { data } = await supabase.auth.getSession();
-
-  if (data.session) {
+  const { data, error } = await _supabase.auth.getSession();
+  if (data?.session) {
+    console.log("Sesión activa detectada");
     window.location.href = "panel.html";
   }
 }
 
 verificarSesion();
-
 </script>
 
 </body>
