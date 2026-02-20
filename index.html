@@ -3,98 +3,239 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Carflex - Registro de Gestiones</title>
+    <title>Carflex | Operaciones</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Segoe UI', sans-serif; background: #f4f7f6; margin: 0; padding: 20px; display: flex; justify-content: center; }
-        .card { background: white; padding: 30px; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); width: 100%; max-width: 500px; }
-        h2 { color: #1e40af; text-align: center; margin-bottom: 25px; }
-        label { display: block; margin-bottom: 8px; font-weight: 600; color: #4b5563; }
-        input, select, textarea { width: 100%; padding: 12px; margin-bottom: 20px; border: 1px solid #d1d5db; border-radius: 8px; box-sizing: border-box; font-size: 16px; }
-        button { width: 100%; padding: 15px; background: #2563eb; color: white; border: none; border-radius: 8px; font-size: 18px; font-weight: bold; cursor: pointer; transition: background 0.3s; }
-        button:hover { background: #1d4ed8; }
-        button:disabled { background: #94a3b8; }
-        #mensaje { text-align: center; margin-top: 15px; font-weight: bold; display: none; }
+        :root {
+            --primary: #1e40af;
+            --primary-hover: #1e3a8a;
+            --bg: #f8fafc;
+            --text: #1e293b;
+            --border: #e2e8f0;
+        }
+
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background-color: var(--bg); 
+            color: var(--text);
+            margin: 0; 
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .ticket-card {
+            background: white;
+            width: 100%;
+            max-width: 450px;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            border: 1px solid var(--border);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header h2 {
+            margin: 0;
+            font-size: 24px;
+            color: var(--primary);
+            letter-spacing: -0.5px;
+        }
+
+        .header p {
+            font-size: 14px;
+            color: #64748b;
+            margin-top: 5px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #475569;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            font-size: 15px;
+            font-family: inherit;
+            transition: all 0.2s;
+            box-sizing: border-box;
+            background: #fdfdfd;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(30, 64, 175, 0.1);
+        }
+
+        textarea { resize: none; }
+
+        .btn-submit {
+            width: 100%;
+            padding: 16px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: transform 0.1s, background 0.2s;
+            margin-top: 10px;
+        }
+
+        .btn-submit:hover {
+            background: var(--primary-hover);
+        }
+
+        .btn-submit:active {
+            transform: scale(0.98);
+        }
+
+        .btn-submit:disabled {
+            background: #94a3b8;
+            cursor: not-allowed;
+        }
+
+        /* Indicador de carga */
+        .loading-dots:after {
+            content: ' .';
+            animation: dots 1s steps(5, end) infinite;
+        }
+
+        @keyframes dots {
+            0%, 20% { color: rgba(0,0,0,0); text-shadow: .25em 0 0 rgba(0,0,0,0), .5em 0 0 rgba(0,0,0,0); }
+            40% { color: white; text-shadow: .25em 0 0 rgba(0,0,0,0), .5em 0 0 rgba(0,0,0,0); }
+            60% { text-shadow: .25em 0 0 white, .5em 0 0 rgba(0,0,0,0); }
+            80%, 100% { text-shadow: .25em 0 0 white, .5em 0 0 white; }
+        }
     </style>
 </head>
 <body>
 
-<div class="card">
-    <h2>Nueva Gestión Carflex</h2>
-    
-    <label>Agente Comercial</label>
-    <select id="agente">
-        <option value="">Selecciona tu nombre...</option>
-        <option value="Juan Perez">Juan Perez</option>
-        <option value="Maria Garcia">Maria Garcia</option>
-        <option value="Carlos Soto">Carlos Soto</option>
-    </select>
+<div class="ticket-card">
+    <div class="header">
+        <h2>CARFLEX</h2>
+        <p>Registro Oficial de Operaciones</p>
+    </div>
 
-    <label>Patente (6 caracteres)</label>
-    <input type="text" id="patente" placeholder="Ej: ABCD12" maxlength="6" style="text-transform: uppercase;">
+    <div class="form-group">
+        <label>Agente Responsable</label>
+        <select id="agente">
+            <option value="">Seleccione Agente</option>
+            <option value="Juan Perez">Juan Perez</option>
+            <option value="Maria Garcia">Maria Garcia</option>
+            <option value="Carlos Soto">Carlos Soto</option>
+        </select>
+    </div>
 
-    <label>Zona</label>
-    <select id="zona">
-        <option value="NORTE">ZONA NORTE</option>
-        <option value="CENTRO">ZONA CENTRO</option>
-        <option value="SUR">ZONA SUR</option>
-    </select>
+    <div class="form-group">
+        <label>Patente Vehículo</label>
+        <input type="text" id="patente" placeholder="Ej: ABCD12" maxlength="6" style="text-transform: uppercase; font-weight: bold; letter-spacing: 2px;">
+    </div>
 
-    <label>Descripción del caso</label>
-    <textarea id="descripcion" rows="4" placeholder="¿Qué sucede con el vehículo?"></textarea>
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+        <div class="form-group">
+            <label>Zona</label>
+            <select id="zona">
+                <option value="NORTE">Norte</option>
+                <option value="CENTRO">Centro</option>
+                <option value="SUR">Sur</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label>Prioridad</label>
+            <select id="prioridad">
+                <option value="Normal">Normal</option>
+                <option value="Alta">Alta</option>
+                <option value="Urgente">Urgente</option>
+            </select>
+        </div>
+    </div>
 
-    <button id="btnEnviar" onclick="enviarAlWebhook()">Enviar Ticket</button>
-    <div id="mensaje"></div>
+    <div class="form-group">
+        <label>Tipo de Consulta</label>
+        <select id="tipo_consulta">
+            <option value="Tecnica">Mecánica / Técnica</option>
+            <option value="Siniestro">Siniestro / Choque</option>
+            <option value="Mantenimiento">Mantenimiento</option>
+            <option value="Legal">Documentación / Legal</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label>Descripción detallada</label>
+        <textarea id="descripcion" rows="4" placeholder="Describa brevemente el requerimiento..."></textarea>
+    </div>
+
+    <button id="btnEnviar" class="btn-submit" onclick="enviarGestion()">GENERAR TICKET</button>
 </div>
 
 <script>
-    async function enviarAlWebhook() {
+    async function enviarGestion() {
         const btn = document.getElementById('btnEnviar');
-        const msg = document.getElementById('mensaje');
         
-        // REEMPLAZA ESTO CON TU URL DE WEBHOOK DE n8n
-        const WEBHOOK_URL = 'https://tu-n8n-instancia.com/webhook/identificador-unico';
+        // --- TU URL DE WEBHOOK DE n8n ---
+        const WEBHOOK_URL = 'https://tu-n8n.com/webhook/identificador';
 
-        const datos = {
+        const payload = {
             agente: document.getElementById('agente').value,
             patente: document.getElementById('patente').value.toUpperCase(),
             zona: document.getElementById('zona').value,
+            prioridad: document.getElementById('prioridad').value,
+            tipo_consulta: document.getElementById('tipo_consulta').value,
             descripcion: document.getElementById('descripcion').value,
-            fecha: new Date().toISOString(),
-            estado: 'Pendiente'
+            timestamp: new Date().toISOString()
         };
 
-        if (!datos.agente || !datos.patente || !datos.descripcion) {
-            alert("Completa todos los campos antes de enviar.");
+        // Validación básica
+        if (!payload.agente || !payload.patente || !payload.descripcion) {
+            alert("Por favor, complete todos los campos obligatorios.");
             return;
         }
 
+        // Estado visual de carga
         btn.disabled = true;
-        btn.innerText = "Procesando...";
+        btn.innerHTML = 'PROCESANDO<span class="loading-dots"></span>';
 
         try {
             const response = await fetch(WEBHOOK_URL, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(datos)
+                body: JSON.stringify(payload)
             });
 
             if (response.ok) {
-                msg.style.display = "block";
-                msg.style.color = "green";
-                msg.innerText = "✅ ¡Enviado con éxito!";
-                // Limpiar formulario
-                document.getElementById('patente').value = '';
-                document.getElementById('descripcion').value = '';
+                alert("✅ Gestión enviada correctamente al centro de operaciones.");
+                
+                // EL COMANDO DE "LIMPIEZA"
+                // Recarga la página limpia para el siguiente ticket
+                window.location.replace(window.location.pathname);
             } else {
                 throw new Error();
             }
         } catch (error) {
-            msg.style.display = "block";
-            msg.style.color = "red";
-            msg.innerText = "❌ Error al enviar. Revisa n8n.";
-        } finally {
+            alert("❌ Error de red. Verifique su conexión o el estado de n8n.");
             btn.disabled = false;
-            btn.innerText = "Enviar Ticket";
+            btn.innerHTML = 'REINTENTAR ENVÍO';
         }
     }
 </script>
