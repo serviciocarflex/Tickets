@@ -163,7 +163,6 @@
             tipo_consulta: document.getElementById('tipo_consulta').value,
             descripcion: document.getElementById('descripcion').value,
             estado: 'Pendiente', // Valor fijo inicial
-            prioridad: 'Media'   // Valor fijo inicial
         };
 
         const { error } = await _supabase.from('Tickets').insert([nuevoTicket]);
