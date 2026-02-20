@@ -1,116 +1,65 @@
-<script>
-    // 1. Mensaje de control: Si ves esto en la consola (F12), el script cargó bien.
-    console.log("Sistema Carflex iniciado correctamente");
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Carflex - Mis Tickets</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        body { font-family: sans-serif; padding: 20px; background: #f4f4f4; }
+        .box { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background: #2563eb; color: white; }
+        .btn { padding: 10px; cursor: pointer; background: #2563eb; color: white; border: none; border-radius: 4px; }
+    </style>
+</head>
+<body>
+    <div class="box">
+        <h2>Mis Tickets</h2>
+        <button class="btn" onclick="location.href='nuevo.html'">+ Crear Ticket</button>
+        <button onclick="cerrarSesion()" style="float:right">Cerrar Sesión</button>
+        
+        <table>
+            <thead>
+                <tr><th>Patente</th><th>Estado</th><th>Fecha</th></tr>
+            </thead>
+            <tbody id="lista"></tbody>
+        </table>
+    </div>
 
-    function mostrarMensaje(texto, color = "#2563eb") {
-        if (typeof Toastify === "function") {
-            Toastify({
-                text: texto,
-                duration: 3000,
-                gravity: "top",
-                position: "right",
-                style: { background: color, borderRadius: "8px" }
-            }).showToast();
-        } else {
-            alert(texto);
-        }
-    }
+    <script>
+        const _supabase = supabase.createClient('TU_URL', 'TU_KEY');
 
-    async function cargarTickets() {
-        console.log("Intentando cargar la lista de tickets...");
-        const tbody = document.getElementById('tabla-body');
-        if (!tbody) return;
-
-        try {
-            // Consulta básica sin cruces de tablas para evitar errores
-            const { data, error } = await _supabase
-                .from('Tickets')
+        async function inicio() {
+            const { data: { session } } = await _supabase.auth.getSession();
+            if (!session) { 
+                window.location.href = 'index.html'; 
+                return; 
+            }
+            
+            // Cargar tickets del usuario
+            const { data } = await _supabase.from('Tickets')
                 .select('*')
-                .order('create_at', { ascending: false });
-
-            if (error) {
-                console.warn("Aviso: No se pueden leer tickets aún (Falta política SELECT)");
-                tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;">No tienes tickets registrados.</td></tr>';
-                return;
-            }
-
+                .eq('creado_por', session.user.id);
+            
+            const lista = document.getElementById('lista');
             if (!data || data.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;">No tienes tickets registrados.</td></tr>';
-                return;
-            }
-
-            let html = "";
-            data.forEach(t => {
-                const idCorto = t.id ? t.id.substring(0, 5) : '---';
-                const fecha = t.create_at ? new Date(t.create_at).toLocaleDateString() : '---';
-                
-                html += `
-                    <tr>
-                        <td><span class="ticket-id">#${idCorto}</span></td>
-                        <td><strong>${t.patente || 'N/A'}</strong></td>
-                        <td>${t.zona || 'N/A'}</td>
-                        <td>${t["tipo de consulta"] || 'N/A'}</td>
-                        <td><span class="status-badge">${t.estado || 'Pendiente'}</span></td>
-                        <td>${fecha}</td>
-                    </tr>`;
-            });
-            tbody.innerHTML = html;
-
-        } catch (e) {
-            console.error("Error en cargarTickets:", e);
-        }
-    }
-
-    async function crearTicket() {
-        const patenteInput = document.getElementById('patente');
-        const zonaInput = document.getElementById('zona');
-        const tipoInput = document.getElementById('tipo_consulta_input');
-        const descInput = document.getElementById('descripcion');
-        const btn = document.getElementById('btn-crear');
-
-        if(!patenteInput || !patenteInput.value || !descInput.value) {
-            mostrarMensaje("⚠️ Por favor completa los campos obligatorios", "#ef4444");
-            return;
-        }
-
-        const originalText = btn.innerText;
-        btn.disabled = true;
-        btn.innerHTML = "Enviando...";
-
-        try {
-            const { error } = await _supabase.from('Tickets').insert([{
-                creado_por: currentUserId,
-                patente: patenteInput.value.toUpperCase(),
-                zona: zonaInput.value ? zonaInput.value.toUpperCase() : 'NORTE',
-                "tipo de consulta": tipoInput.value,
-                descripcion: descInput.value,
-                estado: 'Pendiente'
-            }]);
-
-            if (error) {
-                mostrarMensaje("❌ Error al guardar: " + error.message, "#ef4444");
-                btn.disabled = false;
-                btn.innerText = originalText;
+                lista.innerHTML = '<tr><td colspan="3">No tienes tickets aún.</td></tr>';
             } else {
-                mostrarMensaje("✅ ¡Ticket registrado correctamente!");
-                
-                // Limpiamos los campos
-                patenteInput.value = '';
-                descInput.value = '';
-                
-                btn.disabled = false;
-                btn.innerText = originalText;
-                
-                // Volvemos a la lista y recargamos
-                setTimeout(() => {
-                    if (typeof verSeccion === 'function') verSeccion('lista');
-                    cargarTickets();
-                }, 500);
+                lista.innerHTML = data.map(t => `
+                    <tr>
+                        <td>${t.patente}</td>
+                        <td>${t.estado}</td>
+                        <td>${new Date(t.create_at).toLocaleDateString()}</td>
+                    </tr>`).join('');
             }
-        } catch (err) {
-            console.error("Error en crearTicket:", err);
-            btn.disabled = false;
-            btn.innerText = originalText;
         }
-    }
-</script>
+
+        async function cerrarSesion() {
+            await _supabase.auth.signOut();
+            window.location.href = 'index.html';
+        }
+
+        inicio();
+    </script>
+</body>
+</html>
