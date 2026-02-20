@@ -2,25 +2,17 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Carflex - Panel de Agente</title>
+    <title>Carflex - Panel</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
-        body { font-family: sans-serif; padding: 20px; background: #f4f4f4; margin: 0; }
-        .box { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.08); max-width: 900px; margin: auto; }
+        body { font-family: sans-serif; padding: 20px; background: #f4f4f4; }
+        .box { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); max-width: 800px; margin: auto; }
         .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-        h2 { margin: 0; color: #1e293b; }
-        
-        .btn-crear { padding: 12px 20px; background: #2563eb; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; text-decoration: none; display: inline-block; transition: background 0.2s; }
-        .btn-crear:hover { background: #1d4ed8; }
-        .btn-cerrar { padding: 8px 12px; background: #f1f5f9; border: 1px solid #cbd5e1; cursor: pointer; border-radius: 6px; color: #64748b; }
-        
-        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-        th { background: #f8fafc; color: #64748b; padding: 12px; text-align: left; border-bottom: 2px solid #e2e8f0; font-size: 0.85rem; text-transform: uppercase; }
-        td { padding: 15px 12px; border-bottom: 1px solid #f1f5f9; color: #334155; }
-        
-        .status-badge { background: #dcfce7; color: #166534; padding: 5px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: bold; text-transform: uppercase; }
-        /* Puedes agregar más colores según el estado */
-        .status-pendiente { background: #fef9c3; color: #854d0e; }
+        table { width: 100%; border-collapse: collapse; }
+        th { background: #2563eb; color: white; padding: 12px; text-align: left; }
+        td { padding: 12px; border-bottom: 1px solid #eee; }
+        .btn-crear { padding: 10px 20px; background: #2563eb; color: white; border: none; border-radius: 6px; text-decoration: none; font-weight: bold; }
+        .error-msg { color: red; padding: 20px; text-align: center; border: 1px solid red; margin-top: 10px; }
     </style>
 </head>
 <body>
@@ -28,77 +20,76 @@
 <div class="box">
     <div class="header">
         <h2>Mis Gestiones</h2>
-        <button class="btn-cerrar" onclick="cerrarSesion()">Cerrar Sesión</button>
+        <button onclick="cerrarSesion()">Cerrar Sesión</button>
     </div>
     
     <a href="nuevo.html" class="btn-crear">+ Nueva Solicitud</a>
     
+    <div id="error-container"></div>
+
     <table>
         <thead>
             <tr>
-                <th>Vehículo (Patente)</th>
-                <th>Estado Actual</th>
-                <th>Fecha de Registro</th>
+                <th>Patente</th>
+                <th>Estado</th>
+                <th>Fecha</th>
             </tr>
         </thead>
         <tbody id="tabla-tickets">
-            <tr><td colspan="3" style="text-align:center; padding: 40px;">Verificando credenciales...</td></tr>
+            <tr><td colspan="3" style="text-align:center; padding: 20px;">Cargando registros...</td></tr>
         </tbody>
     </table>
 </div>
 
 <script>
-    // IMPORTANTE: Asegúrate de que estas llaves sean las correctas
-    const URL_PROYECTO = 'TU_URL'; 
-    const KEY_PROYECTO = 'TU_KEY';
+    // 1. REVISA BIEN ESTAS DOS LÍNEAS
+    const URL_PROYECTO = 'TU_URL_AQUÍ'; 
+    const KEY_PROYECTO = 'TU_KEY_AQUÍ';
     const _supabase = supabase.createClient(URL_PROYECTO, KEY_PROYECTO);
 
     async function cargarTickets() {
         const tbody = document.getElementById('tabla-tickets');
-        
+        const errorDiv = document.getElementById('error-container');
+
         try {
-            // 1. Obtener sesión
-            const { data: { session }, error: authError } = await _supabase.auth.getSession();
+            // Verificamos sesión
+            const { data: { session }, error: sessionError } = await _supabase.auth.getSession();
             
-            if (authError || !session) {
-                console.log("No hay sesión activa");
+            if (sessionError) throw new Error("Error de sesión: " + sessionError.message);
+            
+            if (!session) {
                 window.location.href = 'index.html';
                 return;
             }
 
-            // 2. Traer datos filtrados por el usuario
-            // Nota: Si 'create_at' te da error, intenta con 'created_at' (Supabase suele usar la 'd')
+            // Pedimos los datos
+            // IMPORTANTE: Asegúrate de que en Supabase la columna se llama 'created_at'
             const { data, error } = await _supabase
                 .from('Tickets')
-                .select('patente, estado, created_at') 
-                .eq('creado_por', session.user.id)
-                .order('created_at', { ascending: false });
+                .select('patente, estado, created_at')
+                .eq('creado_por', session.user.id);
 
             if (error) throw error;
 
-            // 3. Renderizar
             if (data.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="3" style="text-align:center; padding: 30px; color: #94a3b8;">Aún no has registrado ningún ticket.</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="3" style="text-align:center;">No tienes tickets aún.</td></tr>';
             } else {
-                tbody.innerHTML = data.map(t => {
-                    // Lógica simple para colores de estado
-                    const claseEstado = t.estado === 'Pendiente' ? 'status-pendiente' : '';
-                    return `
-                        <tr>
-                            <td><strong>${t.patente}</strong></td>
-                            <td><span class="status-badge ${claseEstado}">${t.estado || 'Recibido'}</span></td>
-                            <td>${new Date(t.created_at).toLocaleDateString()}</td>
-                        </tr>
-                    `;
-                }).join('');
+                tbody.innerHTML = data.map(t => `
+                    <tr>
+                        <td><strong>${t.patente}</strong></td>
+                        <td>${t.estado || 'Pendiente'}</td>
+                        <td>${new Date(t.created_at).toLocaleDateString()}</td>
+                    </tr>
+                `).join('');
             }
 
         } catch (err) {
-            console.error("Error detallado:", err);
-            tbody.innerHTML = `<tr><td colspan="3" style="text-align:center; color:red; padding: 20px;">
-                Error de conexión: ${err.message}. <br>
-                <small>Verifica si la columna es 'created_at' o 'create_at' en tu base de datos.</small>
-            </td></tr>`;
+            console.error(err);
+            errorDiv.innerHTML = `<div class="error-msg">
+                <strong>Hubo un problema:</strong> ${err.message}<br>
+                <small>Verifica las llaves del proyecto y que la tabla 'Tickets' exista.</small>
+            </div>`;
+            tbody.innerHTML = '<tr><td colspan="3" style="text-align:center;">Error al cargar.</td></tr>';
         }
     }
 
@@ -107,7 +98,8 @@
         window.location.href = 'index.html';
     }
 
-    window.onload = cargarTickets;
+    // Iniciar carga
+    cargarTickets();
 </script>
 </body>
 </html>
