@@ -3,208 +3,258 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistema de Gestión Operativa | Carflex</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <title>Carflex Service Ticket</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=JetBrains+Mono&display=swap" rel="stylesheet">
     <style>
         :root {
-            --slate-50: #f8fafc;
-            --slate-100: #f1f5f9;
-            --slate-200: #e2e8f0;
-            --slate-600: #475569;
-            --slate-800: #1e293b;
-            --accent: #334155; /* Gris analista profesional */
-            --border: #cbd5e1;
+            --carflex-dark: #1a3a3a;
+            --carflex-accent: #2a5a5a;
+            --bg-gray: #e9ecef;
+            --text-main: #333;
         }
 
-        body { 
-            font-family: 'Inter', sans-serif; 
-            background-color: var(--slate-100); 
-            color: var(--slate-800);
-            margin: 0; 
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-gray);
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
+            margin: 0;
         }
 
-        .container {
+        /* Estructura de Ticket */
+        .ticket {
             background: white;
             width: 100%;
-            max-width: 550px;
-            border-radius: 8px;
-            border: 1px solid var(--border);
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-            overflow: hidden;
+            max-width: 500px;
+            border-radius: 4px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            position: relative;
         }
 
-        /* Encabezado Profesional */
-        .header {
+        /* Cabecera Estilo Corporativo */
+        .ticket-header {
+            background-color: var(--carflex-dark);
+            color: white;
             padding: 30px;
-            background: white;
-            border-bottom: 1px solid var(--slate-200);
-            display: flex;
-            align-items: center;
-            gap: 15px;
+            text-align: center;
+            position: relative;
         }
 
-        .ticket-icon {
-            width: 40px;
-            height: 40px;
-            background: var(--slate-800);
-            border-radius: 6px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        /* SVG del logo del ticket */
-        .ticket-icon svg {
-            width: 24px;
-            height: 24px;
-            fill: white;
-        }
-
-        .header-text h1 {
+        .ticket-header h1 {
             margin: 0;
-            font-size: 18px;
-            font-weight: 600;
-            letter-spacing: -0.025em;
-            color: var(--slate-800);
-            text-transform: uppercase;
+            font-size: 22px;
+            letter-spacing: 1px;
+            font-weight: 700;
         }
 
-        .header-text p {
-            margin: 2px 0 0;
+        .ticket-header p {
+            margin: 5px 0 0;
             font-size: 12px;
-            color: var(--slate-600);
+            opacity: 0.8;
             text-transform: uppercase;
-            letter-spacing: 0.05em;
         }
 
-        .form-body {
+        /* Efecto de perforación de ticket real */
+        .perforation {
+            height: 2px;
+            border-top: 2px dashed var(--bg-gray);
+            margin: 0;
+            position: relative;
+        }
+
+        .perforation::before, .perforation::after {
+            content: "";
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: var(--bg-gray);
+            border-radius: 50%;
+            top: -11px;
+        }
+        .perforation::before { left: -10px; }
+        .perforation::after { right: -10px; }
+
+        .ticket-body {
             padding: 30px;
         }
 
-        .form-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-            margin-bottom: 20px;
+        .section-title {
+            font-size: 11px;
+            font-weight: 700;
+            color: #888;
+            text-transform: uppercase;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 5px;
         }
 
-        .field {
+        /* Formulario Limpio */
+        .input-group {
             margin-bottom: 20px;
         }
 
         label {
             display: block;
-            font-size: 11px;
+            font-size: 13px;
             font-weight: 600;
-            margin-bottom: 6px;
-            color: var(--slate-600);
-            text-transform: uppercase;
+            margin-bottom: 8px;
+            color: var(--carflex-dark);
         }
 
-        input, select, textarea {
+        select, input, textarea {
             width: 100%;
-            padding: 10px 12px;
-            border: 1px solid var(--border);
+            padding: 12px;
+            border: 1px solid #ddd;
             border-radius: 4px;
             font-size: 14px;
-            font-family: inherit;
-            color: var(--slate-800);
+            background: #fafafa;
             box-sizing: border-box;
-            background-color: var(--slate-50);
+            font-family: inherit;
         }
 
         input:focus, select:focus, textarea:focus {
             outline: none;
-            border-color: var(--slate-800);
-            background-color: white;
+            border-color: var(--carflex-accent);
+            background: white;
         }
 
-        textarea { resize: vertical; min-height: 80px; }
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
 
-        .btn-submit {
+        /* Descripción con estilo técnico */
+        textarea {
+            resize: none;
+            height: 100px;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .btn-emitir {
             width: 100%;
-            padding: 14px;
-            background: var(--slate-800);
+            padding: 16px;
+            background-color: var(--carflex-dark);
             color: white;
             border: none;
             border-radius: 4px;
-            font-size: 13px;
-            font-weight: 500;
+            font-weight: 700;
+            font-size: 14px;
             cursor: pointer;
             text-transform: uppercase;
-            letter-spacing: 0.05em;
-            transition: background 0.2s;
-            margin-top: 10px;
+            transition: 0.3s;
         }
 
-        .btn-submit:hover {
-            background: #000;
+        .btn-emitir:hover {
+            background-color: var(--carflex-accent);
         }
 
-        .btn-submit:disabled {
-            background: var(--slate-200);
-            color: var(--slate-600);
-            cursor: not-allowed;
-        }
-
-        footer {
-            padding: 15px;
+        .ticket-id {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 10px;
+            color: #aaa;
             text-align: center;
-            font-size: 11px;
-            color: var(--slate-600);
-            background: var(--slate-50);
-            border-top: 1px solid var(--slate-200);
+            margin-top: 20px;
         }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <div class="header">
-        <div class="ticket-icon">
-            <svg viewBox="0 0 24 24">
-                <path d="M15.5 14h1V15h-1v-1m0-2.5h1v1h-1v-1m0-2.5h1v1h-1v-1m-11 10h9v1h-9v-1m14-15c0-1.1-.9-2-2-2H4c-1.1 0-2 .9-2 2v3.28c0 .46.21.9.58 1.2l2.42 1.96V10l-2.42 1.96c-.37.3-.58.74-.58 1.2V21c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2v-3.28c0-.46-.21-.9-.58-1.2L18.5 14.56V14l2.42-1.96c.37-.3.58-.74.58-1.2V4zm-2 11.2V21H4v-5.8l3.42-2.78c.37-.3.58-.74.58-1.2v-2.44c0-.46-.21-.9-.58-1.2L4 4.8V4h16v.8l-3.42 2.78c-.37.3-.58.74-.58 1.2v2.44c0 .46.21.9.58 1.2L20 15.2z"/>
-            </svg>
-        </div>
-        <div class="header-text">
-            <h1>Carflex Operations</h1>
-            <p>Terminal de Registro Operativo</p>
-        </div>
+<div class="ticket">
+    <div class="ticket-header">
+        <h1>CARFLEX</h1>
+        <p>Service & Operations Ticket</p>
     </div>
 
-    <div class="form-body">
-        <div class="field">
-            <label>Agente de Operaciones</label>
+    <div class="perforation"></div>
+
+    <div class="ticket-body">
+        <div class="section-title">Datos del Analista</div>
+        <div class="input-group">
+            <label>Agente Designado</label>
             <select id="agente">
-                <option value="">Seleccione analista...</option>
+                <option value="">-- Seleccionar Agente --</option>
                 <option value="Juan Perez">Juan Perez</option>
                 <option value="Maria Garcia">Maria Garcia</option>
                 <option value="Carlos Soto">Carlos Soto</option>
             </select>
         </div>
 
-        <div class="form-row">
-            <div class="field">
-                <label>Identificación (Patente)</label>
-                <input type="text" id="patente" placeholder="AA-BB-00" maxlength="6" style="text-transform: uppercase; letter-spacing: 1px;">
+        <div class="section-title">Información del Vehículo</div>
+        <div class="grid-2">
+            <div class="input-group">
+                <label>Patente</label>
+                <input type="text" id="patente" placeholder="ABCD12" maxlength="6" style="text-transform: uppercase;">
             </div>
-            <div class="field">
-                <label>Zona Geográfica</label>
+            <div class="input-group">
+                <label>Zona</label>
                 <select id="zona">
-                    <option value="NORTE">Norte</option>
                     <option value="CENTRO">Centro</option>
+                    <option value="NORTE">Norte</option>
                     <option value="SUR">Sur</option>
                 </select>
             </div>
         </div>
 
-        <div class="field">
-            <label>Naturaleza de la Consulta</label>
-            <select id="tipo_consulta">
-                <option value="Tecnica">Incidencia Técnica</option>
-                <option value="Siniestro">Reporte de Siniestro</option>
-                <option value="Mantenimiento">Planificación M
+        <div class="section-title">Detalles de la Consulta</div>
+        <div class="input-group">
+            <label>Área Operativa</label>
+            <select id="area">
+                <option value="Tecnica">Técnica / Mecánica</option>
+                <option value="Siniestro">Siniestro / Accidentes</option>
+                <option value="Legal">Legal / Documentos</option>
+                <option value="Mantenimiento">Mantenimiento</option>
+            </select>
+        </div>
+
+        <div class="input-group">
+            <label>Descripción detallada del caso</label>
+            <textarea id="descripcion" placeholder="Escriba los detalles aquí..."></textarea>
+        </div>
+
+        <button class="btn-emitir" onclick="enviarTicket()">Emitir Ticket</button>
+
+        <div class="ticket-id" id="timestamp-id">READY TO SYNC</div>
+    </div>
+</div>
+
+<script>
+    async function enviarTicket() {
+        const WEBHOOK_URL = 'https://tu-n8n.com/webhook/identificador'; // <--- PEGA TU LINK DE n8n AQUÍ
+
+        const payload = {
+            agente: document.getElementById('agente').value,
+            patente: document.getElementById('patente').value.toUpperCase(),
+            zona: document.getElementById('zona').value,
+            area: document.getElementById('area').value,
+            descripcion: document.getElementById('descripcion').value,
+            id_referencia: Math.floor(Math.random() * 1000000)
+        };
+
+        if (!payload.agente || !payload.patente || !payload.descripcion) {
+            alert("Error: Complete los campos requeridos.");
+            return;
+        }
+
+        try {
+            const res = await fetch(WEBHOOK_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+
+            if (res.ok) {
+                alert("Ticket emitido correctamente.");
+                // COMANDO DE LIMPIEZA TOTAL
+                window.location.replace(window.location.pathname);
+            }
+        } catch (e) {
+            alert("Error de conexión con n8n.");
+        }
+    }
+</script>
+
+</body>
+</html>
