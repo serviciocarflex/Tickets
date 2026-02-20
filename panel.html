@@ -1,40 +1,101 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Panel de Tickets</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+    <style>
+        body { font-family: sans-serif; padding: 20px; background-color: #f4f4f4; }
+        .container { max-width: 800px; margin: auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid #ddd; padding: 12px; text-align: left; }
+        th { background-color: #f8f9fa; }
+        .header { display: flex; justify-content: space-between; align-items: center; }
+        button { cursor: pointer; padding: 8px 12px; }
+        .btn-logout { background: #ff4444; color: white; border: none; border-radius: 4px; }
+    </style>
+</head>
 <body>
 
-<h2>Panel privado</h2>
+<div class="container">
+    <div class="header">
+        <h2>Mis Tickets</h2>
+        <div>
+            <span id="user-email"></span>
+            <button class="btn-logout" onclick="logout()">Cerrar Sesión</button>
+        </div>
+    </div>
 
-<button onclick="logout()">Cerrar sesión</button>
-
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <table id="tickets-table">
+        <thead>
+            <tr>
+                <th>Título</th>
+                <th>Estado</th>
+                <th>Prioridad</th>
+                <th>Fecha</th>
+            </tr>
+        </thead>
+        <tbody id="tickets-body">
+            </tbody>
+    </table>
+</div>
 
 <script>
+    // 1. Configurar Supabase (Usa los mismos datos de tu index.html)
+    const supabaseClient = supabase.createClient(
+        "https://cglpqxwuleilocifwuma.supabase.co",
+        "sb_publishable_vDeRR2vZXRpRgZVHSKArwQ_EuCD0poY"
+    );
 
-const supabase = window.supabase.createClient(
-  "https://cglpqxwuleilocifwuma.supabase.co",
-  "sb_publishable_vDeRR2vZXRpRgZVHSKArwQ_EuCD0poY"
-);
+    // 2. Proteger la ruta y cargar datos
+    async function inicializarPanel() {
+        const { data: { session } } = await supabaseClient.auth.getSession();
 
-// ✅ comprobar sesión
-async function verificarSesion(){
+        if (!session) {
+            // Si no hay sesión, rebota al login
+            window.location.href = "index.html";
+            return;
+        }
 
-  const { data: { session } } = await supabase.auth.getSession();
+        document.getElementById('user-email').innerText = session.user.email;
+        cargarTickets(session.user.id);
+    }
 
-  if(!session){
-    // si NO está logueado vuelve al login
-    window.location.href = "index.html";
-  }
-}
+    // 3. Traer los datos de la tabla "Tickets"
+    async function cargarTickets(userId) {
+        const { data: tickets, error } = await supabaseClient
+            .from('Tickets') // Asegúrate que el nombre coincida exacto con tu tabla
+            .select('*')
+            .eq('creado_por', userId); // Solo trae los tickets de este usuario
 
-verificarSesion();
+        if (error) {
+            console.error("Error cargando tickets:", error);
+            return;
+        }
 
+        const tbody = document.getElementById('tickets-body');
+        tbody.innerHTML = ''; // Limpiar tabla
 
-// 🔹 logout
-async function logout(){
-  await supabase.auth.signOut();
-  window.location.href = "index.html";
-}
+        tickets.forEach(ticket => {
+            const fila = `
+                <tr>
+                    <td>${ticket.titulo}</td>
+                    <td>${ticket.estado}</td>
+                    <td>${ticket.prioridad}</td>
+                    <td>${new Date(ticket.create_at).toLocaleDateString()}</td>
+                </tr>
+            `;
+            tbody.innerHTML += fila;
+        });
+    }
 
+    // 4. Función para salir
+    async function logout() {
+        await supabaseClient.auth.signOut();
+        window.location.href = "index.html";
+    }
+
+    inicializarPanel();
 </script>
 
 </body>
