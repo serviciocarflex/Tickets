@@ -1,260 +1,383 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Carflex Service Ticket</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=JetBrains+Mono&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --carflex-dark: #1a3a3a;
-            --carflex-accent: #2a5a5a;
-            --bg-gray: #e9ecef;
-            --text-main: #333;
-        }
-
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: var(--bg-gray);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            margin: 0;
-        }
-
-        /* Estructura de Ticket */
-        .ticket {
-            background: white;
-            width: 100%;
-            max-width: 500px;
-            border-radius: 4px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-            position: relative;
-        }
-
-        /* Cabecera Estilo Corporativo */
-        .ticket-header {
-            background-color: var(--carflex-dark);
-            color: white;
-            padding: 30px;
-            text-align: center;
-            position: relative;
-        }
-
-        .ticket-header h1 {
-            margin: 0;
-            font-size: 22px;
-            letter-spacing: 1px;
-            font-weight: 700;
-        }
-
-        .ticket-header p {
-            margin: 5px 0 0;
-            font-size: 12px;
-            opacity: 0.8;
-            text-transform: uppercase;
-        }
-
-        /* Efecto de perforación de ticket real */
-        .perforation {
-            height: 2px;
-            border-top: 2px dashed var(--bg-gray);
-            margin: 0;
-            position: relative;
-        }
-
-        .perforation::before, .perforation::after {
-            content: "";
-            position: absolute;
-            width: 20px;
-            height: 20px;
-            background: var(--bg-gray);
-            border-radius: 50%;
-            top: -11px;
-        }
-        .perforation::before { left: -10px; }
-        .perforation::after { right: -10px; }
-
-        .ticket-body {
-            padding: 30px;
-        }
-
-        .section-title {
-            font-size: 11px;
-            font-weight: 700;
-            color: #888;
-            text-transform: uppercase;
-            margin-bottom: 15px;
-            border-bottom: 1px solid #eee;
-            padding-bottom: 5px;
-        }
-
-        /* Formulario Limpio */
-        .input-group {
-            margin-bottom: 20px;
-        }
-
-        label {
-            display: block;
-            font-size: 13px;
-            font-weight: 600;
-            margin-bottom: 8px;
-            color: var(--carflex-dark);
-        }
-
-        select, input, textarea {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            font-size: 14px;
-            background: #fafafa;
-            box-sizing: border-box;
-            font-family: inherit;
-        }
-
-        input:focus, select:focus, textarea:focus {
-            outline: none;
-            border-color: var(--carflex-accent);
-            background: white;
-        }
-
-        .grid-2 {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-        }
-
-        /* Descripción con estilo técnico */
-        textarea {
-            resize: none;
-            height: 100px;
-            font-family: 'Inter', sans-serif;
-        }
-
-        .btn-emitir {
-            width: 100%;
-            padding: 16px;
-            background-color: var(--carflex-dark);
-            color: white;
-            border: none;
-            border-radius: 4px;
-            font-weight: 700;
-            font-size: 14px;
-            cursor: pointer;
-            text-transform: uppercase;
-            transition: 0.3s;
-        }
-
-        .btn-emitir:hover {
-            background-color: var(--carflex-accent);
-        }
-
-        .ticket-id {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 10px;
-            color: #aaa;
-            text-align: center;
-            margin-top: 20px;
-        }
-    </style>
-</head>
-<body>
-
-<div class="ticket">
-    <div class="ticket-header">
-        <h1>CARFLEX</h1>
-        <p>Service & Operations Ticket</p>
-    </div>
-
-    <div class="perforation"></div>
-
-    <div class="ticket-body">
-        <div class="section-title">Datos del Analista</div>
-        <div class="input-group">
-            <label>Agente Designado</label>
-            <select id="agente">
-                <option value="">-- Seleccionar Agente --</option>
-                <option value="Juan Perez">Juan Perez</option>
-                <option value="Maria Garcia">Maria Garcia</option>
-                <option value="Carlos Soto">Carlos Soto</option>
-            </select>
-        </div>
-
-        <div class="section-title">Información del Vehículo</div>
-        <div class="grid-2">
-            <div class="input-group">
-                <label>Patente</label>
-                <input type="text" id="patente" placeholder="ABCD12" maxlength="6" style="text-transform: uppercase;">
-            </div>
-            <div class="input-group">
-                <label>Zona</label>
-                <select id="zona">
-                    <option value="CENTRO">Centro</option>
-                    <option value="NORTE">Norte</option>
-                    <option value="SUR">Sur</option>
-                </select>
-            </div>
-        </div>
-
-        <div class="section-title">Detalles de la Consulta</div>
-        <div class="input-group">
-            <label>Área Operativa</label>
-            <select id="area">
-                <option value="Tecnica">Técnica / Mecánica</option>
-                <option value="Siniestro">Siniestro / Accidentes</option>
-                <option value="Legal">Legal / Documentos</option>
-                <option value="Mantenimiento">Mantenimiento</option>
-            </select>
-        </div>
-
-        <div class="input-group">
-            <label>Descripción detallada del caso</label>
-            <textarea id="descripcion" placeholder="Escriba los detalles aquí..."></textarea>
-        </div>
-
-        <button class="btn-emitir" onclick="enviarTicket()">Emitir Ticket</button>
-
-        <div class="ticket-id" id="timestamp-id">READY TO SYNC</div>
-    </div>
-</div>
-
-<script>
-    async function enviarTicket() {
-        const WEBHOOK_URL = 'https://tu-n8n.com/webhook/identificador'; // <--- PEGA TU LINK DE n8n AQUÍ
-
-        const payload = {
-            agente: document.getElementById('agente').value,
-            patente: document.getElementById('patente').value.toUpperCase(),
-            zona: document.getElementById('zona').value,
-            area: document.getElementById('area').value,
-            descripcion: document.getElementById('descripcion').value,
-            id_referencia: Math.floor(Math.random() * 1000000)
-        };
-
-        if (!payload.agente || !payload.patente || !payload.descripcion) {
-            alert("Error: Complete los campos requeridos.");
-            return;
-        }
-
-        try {
-            const res = await fetch(WEBHOOK_URL, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload)
-            });
-
-            if (res.ok) {
-                alert("Ticket emitido correctamente.");
-                // COMANDO DE LIMPIEZA TOTAL
-                window.location.replace(window.location.pathname);
-            }
-        } catch (e) {
-            alert("Error de conexión con n8n.");
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ticketera Interna | Carflex</title>
+  <style>
+    :root {
+      --primary: #ff7225;
+      --primary-dark: #e65a15;
+      --text: #1f2937;
+      --muted: #6b7280;
+      --border: #e5e7eb;
+      --bg-soft: #f8fafc;
+      --danger: #dc2626;
+      --success: #15803d;
+      --warning: #b45309;
+      --info: #2563eb;
     }
-</script>
 
-</body>
-</html>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Segoe UI', Roboto, sans-serif;
+      min-height: 100vh;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 28px;
+      position: relative;
+      background: #f3f4f6;
+    }
+
+    body::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: url('fondo formulario.jpg') center/cover no-repeat;
+      filter: brightness(.45) blur(4px);
+      z-index: -2;
+    }
+
+    body::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(17, 24, 39, 0.55), rgba(255, 114, 37, 0.18));
+      z-index: -1;
+    }
+
+    .layout {
+      width: 100%;
+      max-width: 1180px;
+      display: grid;
+      grid-template-columns: 1.05fr 0.95fr;
+      gap: 24px;
+      animation: fade .35s ease-out;
+    }
+
+    .panel,
+    .card {
+      background: rgba(255,255,255,.97);
+      border-radius: 24px;
+      box-shadow: 0 25px 50px rgba(0,0,0,.22);
+      backdrop-filter: blur(12px);
+    }
+
+    .panel {
+      padding: 34px;
+    }
+
+    .card {
+      padding: 26px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 22px;
+    }
+
+    .logo {
+      width: 64px;
+      height: 64px;
+      object-fit: contain;
+      border-radius: 16px;
+      background: #fff;
+      padding: 8px;
+      border: 1px solid rgba(0,0,0,.05);
+    }
+
+    .eyebrow {
+      font-size: 12px;
+      letter-spacing: 1.4px;
+      text-transform: uppercase;
+      color: var(--primary);
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+
+    h1 {
+      font-size: 30px;
+      line-height: 1.1;
+      margin-bottom: 8px;
+    }
+
+    .subtitle {
+      color: var(--muted);
+      font-size: 15px;
+      margin-bottom: 26px;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .field.full {
+      grid-column: 1 / -1;
+    }
+
+    .field label {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: .9px;
+    }
+
+    input, select, textarea {
+      width: 100%;
+      border: 2px solid var(--border);
+      border-radius: 14px;
+      padding: 14px 15px;
+      font-size: 15px;
+      font-family: inherit;
+      outline: none;
+      transition: .25s ease;
+      background: #fff;
+    }
+
+    textarea {
+      min-height: 130px;
+      resize: vertical;
+    }
+
+    input:focus, select:focus, textarea:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 4px rgba(255, 114, 37, 0.10);
+    }
+
+    .chips {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .chip-option input {
+      display: none;
+    }
+
+    .chip-option label {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 52px;
+      text-align: center;
+      border: 2px solid var(--border);
+      border-radius: 14px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text);
+      transition: .2s ease;
+      padding: 10px 12px;
+      background: #fff;
+    }
+
+    .chip-option label:hover {
+      border-color: #d1d5db;
+      background: #fafafa;
+    }
+
+    .chip-option input:checked + label {
+      border-color: var(--primary);
+      background: rgba(255,114,37,.09);
+      color: var(--primary-dark);
+    }
+
+    .actions {
+      grid-column: 1 / -1;
+      display: flex;
+      gap: 12px;
+      margin-top: 4px;
+    }
+
+    button {
+      border: none;
+      border-radius: 14px;
+      padding: 15px 18px;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: .25s ease;
+    }
+
+    .btn-primary {
+      flex: 1;
+      background: var(--primary);
+      color: #fff;
+    }
+
+    .btn-primary:hover {
+      background: var(--primary-dark);
+      transform: translateY(-1px);
+    }
+
+    .btn-secondary {
+      background: #eef2f7;
+      color: var(--text);
+    }
+
+    .btn-secondary:hover {
+      background: #e5e7eb;
+    }
+
+    .status-box {
+      margin-top: 14px;
+      min-height: 24px;
+      font-size: 14px;
+    }
+
+    .status-error,
+    .status-ok {
+      padding: 12px 14px;
+      border-radius: 12px;
+      border: 1px solid transparent;
+    }
+
+    .status-error {
+      background: #fef2f2;
+      color: var(--danger);
+      border-color: #fecaca;
+    }
+
+    .status-ok {
+      background: #f0fdf4;
+      color: var(--success);
+      border-color: #bbf7d0;
+    }
+
+    .side-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 18px;
+    }
+
+    .side-title {
+      font-size: 22px;
+      margin-bottom: 6px;
+    }
+
+    .side-text {
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .tag {
+      background: rgba(255,114,37,.12);
+      color: var(--primary-dark);
+      font-weight: 700;
+      font-size: 12px;
+      padding: 9px 12px;
+      border-radius: 999px;
+      white-space: nowrap;
+    }
+
+    .kpis {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+
+    .kpi {
+      background: var(--bg-soft);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 16px;
+    }
+
+    .kpi .label {
+      color: var(--muted);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: .8px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .kpi .value {
+      font-size: 28px;
+      font-weight: 800;
+      line-height: 1;
+    }
+
+    .ticket-list {
+      display: grid;
+      gap: 12px;
+    }
+
+    .ticket-item {
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 16px;
+      background: #fff;
+    }
+
+    .ticket-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 8px;
+    }
+
+    .ticket-code {
+      font-weight: 800;
+      font-size: 15px;
+    }
+
+    .badge {
+      border-radius: 999px;
+      padding: 7px 11px;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .badge.pending { background: #fff7ed; color: var(--warning); }
+    .badge.progress { background: #eff6ff; color: var(--info); }
+    .badge.done { background: #f0fdf4; color: var(--success); }
+
+    .ticket-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      color: var(--muted);
+      font-size: 13px;
+      margin-bottom: 8px;
+    }
+
+    .ticket-desc {
+      color: var(--text);
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .search-box {
+      margin-bottom: 14px;
+    }
+
+    .help-box {
+      margin-top: 18px;
+      padding: 16px;
+      border-radius: 18px;
+      background: linear-gradient(135deg, rgba(255,114,37,.08), rgba(255,255,255,.9));
+      border: 1px solid rgba(255,114,
