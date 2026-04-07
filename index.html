@@ -1,428 +1,529 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Ticketera Operaciones | Carflex</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ticketera Operaciones | Carflex</title>
+  <style>
+    :root {
+      --primary: #6d28d9;
+      --primary-2: #7c3aed;
+      --accent: #ff7225;
+      --dark: #0f172a;
+      --muted: #64748b;
+      --line: #e2e8f0;
+      --bg: #f8fafc;
+      --card: rgba(255, 255, 255, 0.92);
+      --success: #16a34a;
+    }
 
-<style>
-:root {
-  --primary: #6d28d9;
-  --primary-2: #7c3aed;
-  --accent: #ff7225;
-  --dark: #0f172a;
-  --muted: #64748b;
-  --line: #e2e8f0;
-  --bg: #f8fafc;
-  --card: rgba(255, 255, 255, 0.92);
-}
+    * { box-sizing: border-box; }
 
-* { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Inter, "Segoe UI", Arial, sans-serif;
+      color: var(--dark);
+      background:
+        radial-gradient(circle at top left, rgba(109, 40, 217, 0.18), transparent 24%),
+        radial-gradient(circle at top right, rgba(255, 114, 37, 0.12), transparent 20%),
+        linear-gradient(180deg, #eef2ff 0%, #f8fafc 36%, #ffffff 100%);
+      min-height: 100vh;
+    }
 
-body {
-  margin: 0;
-  font-family: Inter, "Segoe UI", Arial, sans-serif;
-  color: var(--dark);
-  background:
-    radial-gradient(circle at top left, rgba(109, 40, 217, 0.18), transparent 24%),
-    radial-gradient(circle at top right, rgba(255, 114, 37, 0.12), transparent 20%),
-    linear-gradient(180deg, #eef2ff 0%, #f8fafc 36%, #ffffff 100%);
-  min-height: 100vh;
-}
+    .shell {
+      width: min(1120px, calc(100% - 32px));
+      margin: 32px auto;
+    }
 
-.shell {
-  width: min(1120px, calc(100% - 32px));
-  margin: 20px auto;
-}
+    .hero {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 20px;
+      margin-bottom: 18px;
+    }
 
-/* HEADER */
-.hero {
-  display: grid;
-  grid-template-columns: 1fr;
-  margin-bottom: 16px;
-}
+    .hero-card,
+    .form-card,
+    .aside-card {
+      background: var(--card);
+      border: 1px solid rgba(255,255,255,0.7);
+      box-shadow: 0 18px 45px rgba(15, 23, 42, 0.08);
+      backdrop-filter: blur(14px);
+      border-radius: 22px;
+    }
 
-.hero-card,
-.form-card,
-.aside-card {
-  background: var(--card);
-  border: 1px solid rgba(255,255,255,0.7);
-  box-shadow: 0 12px 30px rgba(15, 23, 42, 0.06);
-  backdrop-filter: blur(12px);
-  border-radius: 20px;
-}
+    .hero-card {
+      padding: 28px;
+      position: relative;
+      overflow: hidden;
+    }
 
-.hero-card {
-  padding: 22px;
-}
+    .hero-card::after {
+      content: "";
+      position: absolute;
+      inset: auto -80px -80px auto;
+      width: 220px;
+      height: 220px;
+      background: radial-gradient(circle, rgba(124,58,237,0.15), transparent 70%);
+      pointer-events: none;
+    }
 
-.eyebrow {
-  display: inline-flex;
-  background: rgba(109, 40, 217, 0.08);
-  color: var(--primary);
-  padding: 6px 10px;
-  border-radius: 999px;
-  font-size: 11px;
-  font-weight: 700;
-  margin-bottom: 12px;
-}
+    .eyebrow {
+      display: inline-flex;
+      gap: 8px;
+      align-items: center;
+      background: rgba(109, 40, 217, 0.08);
+      color: var(--primary);
+      border: 1px solid rgba(109, 40, 217, 0.15);
+      padding: 8px 12px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: .3px;
+      margin-bottom: 18px;
+    }
 
-.brand {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 18px;
+    }
 
-.brand img {
-  width: 52px;
-  height: 52px;
-  background: #fff;
-  border-radius: 12px;
-  padding: 6px;
-  border: 1px solid var(--line);
-}
+    .brand img {
+      width: 58px;
+      height: 58px;
+      object-fit: contain;
+      background: #fff;
+      border-radius: 16px;
+      padding: 8px;
+      border: 1px solid var(--line);
+    }
 
-h1 {
-  margin: 0;
-  font-size: 26px;
-}
+    h1 {
+      margin: 0;
+      font-size: 34px;
+      line-height: 1.06;
+      letter-spacing: -0.03em;
+    }
 
-.hero p {
-  margin: 8px 0 0;
-  color: var(--muted);
-  font-size: 13px;
-}
+    .hero p {
+      margin: 14px 0 0;
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.6;
+      max-width: 720px;
+    }
 
-/* WORKSPACE */
-.workspace {
-  display: grid;
-  grid-template-columns: 1.2fr 0.8fr;
-  gap: 16px;
-}
+    .workspace {
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 18px;
+      align-items: start;
+    }
 
-.form-card { padding: 22px; }
-.aside-card { padding: 18px; }
+    .form-card {
+      padding: 28px;
+    }
 
-.section-title {
-  margin: 0 0 4px;
-  font-size: 18px;
-}
+    .aside-card {
+      padding: 22px;
+    }
 
-.section-subtitle {
-  margin: 0 0 14px;
-  color: var(--muted);
-  font-size: 13px;
-}
+    .section-title {
+      margin: 0 0 6px;
+      font-size: 22px;
+    }
 
-/* FORM */
-form {
-  display: grid;
-  gap: 14px;
-}
+    .section-subtitle {
+      margin: 0 0 22px;
+      color: var(--muted);
+      font-size: 14px;
+    }
 
-.grid-2 {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px;
-}
+    form {
+      display: grid;
+      gap: 18px;
+    }
 
-.field {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
 
-.field label {
-  font-size: 12px;
-  font-weight: 700;
-}
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
 
-.required::after {
-  content: " *";
-  color: #dc2626;
-}
+    .field label {
+      font-size: 13px;
+      font-weight: 700;
+      color: #334155;
+    }
 
-input, textarea {
-  border: 1.4px solid var(--line);
-  border-radius: 10px;
-  padding: 11px 12px;
-  font-size: 13px;
-}
+    .required::after {
+      content: " *";
+      color: #dc2626;
+    }
 
-input:focus, textarea:focus {
-  outline: none;
-  border-color: rgba(109, 40, 217, 0.5);
-  box-shadow: 0 0 0 3px rgba(109, 40, 217, 0.08);
-}
+    input[type="text"],
+    input[type="email"],
+    textarea,
+    select {
+      width: 100%;
+      border: 1.6px solid var(--line);
+      border-radius: 14px;
+      padding: 14px 15px;
+      font-size: 14px;
+      color: var(--dark);
+      background: #fff;
+      outline: none;
+      transition: 0.2s ease;
+    }
 
-textarea {
-  min-height: 90px;
-}
+    input:focus,
+    textarea:focus,
+    select:focus {
+      border-color: rgba(109, 40, 217, 0.55);
+      box-shadow: 0 0 0 4px rgba(109, 40, 217, 0.08);
+    }
 
-/* CHIPS */
-.chips {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-}
+    textarea {
+      min-height: 130px;
+      resize: vertical;
+    }
 
-.chip input {
-  display: none;
-}
+    .chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
 
-.chip span {
-  padding: 6px 12px;
-  border-radius: 20px;
-  border: 1px solid var(--line);
-  font-size: 12px;
-  cursor: pointer;
-}
+    .chip {
+      position: relative;
+    }
 
-.chip input:checked + span {
-  background: rgba(109, 40, 217, 0.08);
-  border-color: var(--primary);
-  color: var(--primary);
-  font-weight: 700;
-}
+    .chip input {
+      position: absolute;
+      opacity: 0;
+      pointer-events: none;
+    }
 
-/* FILE */
-.dropzone {
-  border: 1.2px dashed var(--line);
-  border-radius: 12px;
-  padding: 14px;
-  text-align: center;
-  font-size: 12px;
-  color: var(--muted);
-}
+    .chip span {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 42px;
+      padding: 0 14px;
+      border-radius: 999px;
+      border: 1.5px solid var(--line);
+      background: #fff;
+      font-size: 14px;
+      cursor: pointer;
+      transition: 0.18s ease;
+    }
 
-/* BUTTONS */
-.actions {
-  display: flex;
-  justify-content: space-between;
-  gap: 10px;
-}
+    .chip input:checked + span {
+      background: rgba(109, 40, 217, 0.08);
+      border-color: rgba(109, 40, 217, 0.32);
+      color: var(--primary);
+      font-weight: 700;
+    }
 
-button {
-  border: 0;
-  border-radius: 10px;
-  padding: 11px 16px;
-  font-size: 13px;
-  font-weight: 700;
-  cursor: pointer;
-}
+    .dropzone {
+      border: 1.6px dashed #cbd5e1;
+      border-radius: 16px;
+      background: #fbfdff;
+      padding: 22px;
+      text-align: center;
+    }
 
-.btn-secondary {
-  background: #f1f5f9;
-}
+    .dropzone p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.5;
+    }
 
-.btn-primary {
-  background: linear-gradient(135deg, var(--primary), var(--primary-2));
-  color: #fff;
-}
+    .dropzone strong {
+      color: var(--dark);
+    }
 
-/* ASIDE */
-.aside-title {
-  font-size: 16px;
-  margin: 0 0 6px;
-}
+    .dropzone input[type="file"] {
+      margin-top: 14px;
+      width: 100%;
+    }
 
-.aside-text {
-  font-size: 12px;
-  margin-bottom: 12px;
-  color: var(--muted);
-}
+    .actions {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      margin-top: 4px;
+    }
 
-.timeline {
-  display: grid;
-  gap: 10px;
-}
+    .btn,
+    button {
+      border: 0;
+      cursor: pointer;
+      border-radius: 14px;
+      padding: 14px 18px;
+      font-size: 14px;
+      font-weight: 700;
+      transition: 0.2s ease;
+    }
 
-.step {
-  display: grid;
-  grid-template-columns: 30px 1fr;
-  gap: 10px;
-}
+    .btn-secondary {
+      background: #f1f5f9;
+      color: #334155;
+    }
 
-.step-badge {
-  width: 30px;
-  height: 30px;
-  border-radius: 8px;
-  background: rgba(109, 40, 217, 0.1);
-  color: var(--primary);
-  font-size: 12px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 800;
-}
+    .btn-primary {
+      background: linear-gradient(135deg, var(--primary), var(--primary-2));
+      color: #fff;
+      box-shadow: 0 10px 24px rgba(109, 40, 217, 0.18);
+    }
 
-.step h4 {
-  margin: 0;
-  font-size: 13px;
-}
+    .btn-primary:hover { transform: translateY(-1px); }
 
-.step p {
-  margin: 0;
-  font-size: 11px;
-  color: var(--muted);
-}
+    .aside-title {
+      margin: 0 0 8px;
+      font-size: 20px;
+    }
 
-.note {
-  margin-top: 12px;
-  padding: 10px;
-  border-radius: 10px;
-  background: #f8fafc;
-  border: 1px solid var(--line);
-  font-size: 12px;
-}
+    .aside-text {
+      margin: 0 0 18px;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.55;
+    }
 
-.footer-tip {
-  margin-top: 12px;
-  padding: 10px;
-  border-radius: 10px;
-  background: #f1f5f9;
-  border: 1px solid var(--line);
-  font-size: 12px;
-}
+    .timeline {
+      display: grid;
+      gap: 14px;
+      margin-bottom: 20px;
+    }
 
-/* RESPONSIVE */
-@media (max-width: 900px) {
-  .workspace {
-    grid-template-columns: 1fr;
-  }
-}
-</style>
+    .step {
+      display: grid;
+      grid-template-columns: 38px 1fr;
+      gap: 12px;
+      align-items: start;
+    }
+
+    .step-badge {
+      width: 38px;
+      height: 38px;
+      border-radius: 12px;
+      background: rgba(109, 40, 217, 0.1);
+      color: var(--primary);
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .step h4 {
+      margin: 2px 0 4px;
+      font-size: 15px;
+    }
+
+    .step p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .note {
+      background: #f8fafc;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 16px;
+      font-size: 13px;
+      color: #475569;
+      line-height: 1.55;
+    }
+
+    .note strong { color: #0f172a; }
+
+    .footer-tip {
+      margin-top: 18px;
+      padding: 14px 16px;
+      border-radius: 16px;
+      background: rgba(22, 163, 74, 0.08);
+      color: #166534;
+      font-size: 13px;
+      border: 1px solid rgba(22, 163, 74, 0.15);
+    }
+
+    @media (max-width: 960px) {
+      .hero,
+      .workspace {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .shell { width: min(100% - 20px, 1120px); margin: 18px auto; }
+      .hero-card, .form-card, .aside-card { border-radius: 20px; }
+      .grid-2, .stats { grid-template-columns: 1fr; }
+      h1 { font-size: 28px; }
+      .actions { flex-direction: column; }
+    }
+  </style>
 </head>
-
 <body>
-
-<main class="shell">
-
-<!-- HEADER -->
-<section class="hero">
-  <div class="hero-card">
-    <div class="eyebrow">Mesa interna · Comercial → Operaciones</div>
-    <div class="brand">
-      <img src="Logo carflex.jpg" alt="Carflex" />
-      <div>
-        <h1>Crear ticket de gestión operativa</h1>
-        <p>Registra solicitudes comerciales en un portal simple y ordenado.</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- WORKSPACE -->
-<section class="workspace">
-
-  <!-- FORM -->
-  <div class="form-card">
-    <h2 class="section-title">Formulario de ingreso</h2>
-    <p class="section-subtitle">Completa la información mínima.</p>
-
-    <form id="ticketForm">
-
-      <div class="grid-2">
-        <div class="field">
-          <label class="required">Correo</label>
-          <input type="email" required>
-        </div>
-
-        <div class="field">
-          <label class="required">Cliente</label>
-          <input type="text" required>
-        </div>
-      </div>
-
-      <div class="grid-2">
-        <div class="field">
-          <label class="required">Patente</label>
-          <input type="text" required>
-        </div>
-
-        <div class="field">
-          <label class="required">Tipo</label>
-          <div class="chips">
-            <label class="chip"><input type="radio" name="tipo" required><span>Agendamiento</span></label>
-            <label class="chip"><input type="radio" name="tipo"><span>Documentación</span></label>
-            <label class="chip"><input type="radio" name="tipo"><span>Mecánica</span></label>
-            <label class="chip"><input type="radio" name="tipo"><span>DyP</span></label>
-            <label class="chip"><input type="radio" name="tipo"><span>Otros</span></label>
+  <main class="shell">
+    <section class="hero">
+      <div class="hero-card">
+        <div class="eyebrow">Mesa interna · Comercial → Operaciones</div>
+        <div class="brand">
+          <img src="Logo carflex.jpg" alt="Carflex" />
+          <div>
+            <h1>Crear ticket de gestión operativa</h1>
+            <p>Registra solicitudes comerciales de forma rápida y ordenada. El requerimiento ingresará al flujo interno para seguimiento por parte del equipo de operaciones.</p>
           </div>
         </div>
       </div>
+    </section>
 
-      <div class="field">
-        <label class="required">Detalle</label>
-        <textarea required></textarea>
+    <section class="workspace">
+      <div class="form-card">
+        <h2 class="section-title">Formulario de ingreso</h2>
+        <p class="section-subtitle">Completa la información mínima del requerimiento. Mientras más claro sea el detalle, más rápida será la gestión.</p>
+
+        <form id="ticketForm" enctype="multipart/form-data">
+          <div class="grid-2">
+            <div class="field">
+              <label class="required" for="correo">Correo</label>
+              <input type="email" id="correo" name="correo" placeholder="nombre@carflex.cl" required />
+            </div>
+
+            <div class="field">
+              <label class="required" for="cliente">Cliente</label>
+              <input list="clientes" id="cliente" name="cliente" placeholder="Busca o escribe cliente" required />
+              <datalist id="clientes">
+                <option value="Cliente Demo 1"></option>
+                <option value="Cliente Demo 2"></option>
+                <option value="Cliente Demo 3"></option>
+                <option value="Cliente Demo 4"></option>
+              </datalist>
+            </div>
+          </div>
+
+          <div class="grid-2">
+            <div class="field">
+              <label class="required" for="patente">Patente</label>
+              <input type="text" id="patente" name="patente" placeholder="Ej: DBS321" required />
+            </div>
+
+            <div class="field">
+              <label class="required">Tipo</label>
+              <div class="chips">
+                <label class="chip"><input type="radio" name="tipo" value="Agendamiento" required><span>Agendamiento</span></label>
+                <label class="chip"><input type="radio" name="tipo" value="Documentación"><span>Documentación</span></label>
+                <label class="chip"><input type="radio" name="tipo" value="Mecánica"><span>Mecánica</span></label>
+                <label class="chip"><input type="radio" name="tipo" value="DyP"><span>DyP</span></label>
+                <label class="chip"><input type="radio" name="tipo" value="Otros"><span>Otros</span></label>
+              </div>
+            </div>
+          </div>
+
+          <div class="field">
+            <label class="required" for="detalle">Detalle</label>
+            <textarea id="detalle" name="detalle" placeholder="Describe el requerimiento, contexto del caso, prioridad comercial u observaciones relevantes" required></textarea>
+          </div>
+
+          <div class="field">
+            <label for="adjuntos">Adjuntos</label>
+            <div class="dropzone">
+              <p><strong>Adjunta fotos o documentos</strong><br>Admite uno o varios archivos: PDF, JPG, PNG u otros soportados por tu flujo.</p>
+              <input type="file" id="adjuntos" name="adjuntos" multiple />
+            </div>
+          </div>
+
+          <div class="actions">
+            <button type="reset" class="btn btn-secondary">Limpiar</button>
+            <button type="submit" class="btn btn-primary">Enviar ticket</button>
+          </div>
+        </form>
       </div>
 
-      <div class="field">
-        <label>Adjuntos</label>
-        <div class="dropzone">
-          Adjunta archivos
-          <input type="file" multiple>
+      <aside class="aside-card">
+        <h3 class="aside-title">¿Cómo funciona?</h3>
+        <p class="aside-text">Este portal está pensado para que el área comercial ingrese requerimientos de forma rápida, mientras operaciones los gestiona desde la plataforma interna.</p>
+
+        <div class="timeline">
+          <div class="step">
+            <div class="step-badge">1</div>
+            <div>
+              <h4>Ingreso del ticket</h4>
+              <p>Comercial completa el formulario con cliente, patente, tipo y detalle del caso.</p>
+            </div>
+          </div>
+
+          <div class="step">
+            <div class="step-badge">2</div>
+            <div>
+              <h4>Registro automático</h4>
+              <p>La solicitud se envía al flujo interno y queda registrada para seguimiento.</p>
+            </div>
+          </div>
+
+          <div class="step">
+            <div class="step-badge">3</div>
+            <div>
+              <h4>Gestión operativa</h4>
+              <p>Operaciones revisa, asigna responsable, actualiza el estado y cierra el ticket cuando corresponde.</p>
+            </div>
+          </div>
         </div>
-      </div>
 
-      <div class="actions">
-        <button type="reset" class="btn-secondary">Limpiar</button>
-        <button type="submit" class="btn-primary">Enviar ticket</button>
-      </div>
-
-    </form>
-  </div>
-
-  <!-- ASIDE -->
-  <aside class="aside-card">
-    <h3 class="aside-title">¿Cómo funciona?</h3>
-    <p class="aside-text">Portal interno para gestión de tickets.</p>
-
-    <div class="timeline">
-      <div class="step">
-        <div class="step-badge">1</div>
-        <div>
-          <h4>Ingreso</h4>
-          <p>Se registra el ticket.</p>
+        <div class="note">
+          <strong>Recomendación:</strong> utiliza información clara y concreta. Si existe documentación de respaldo, súbela junto con el ticket para facilitar la gestión.
         </div>
-      </div>
 
-      <div class="step">
-        <div class="step-badge">2</div>
-        <div>
-          <h4>Registro</h4>
-          <p>Se almacena automáticamente.</p>
+        <div class="footer-tip">
+          Portal sugerido para uso interno. Puedes conectarlo luego a n8n, Airtable y envío automático de correos.
         </div>
-      </div>
+      </aside>
+    </section>
+  </main>
 
-      <div class="step">
-        <div class="step-badge">3</div>
-        <div>
-          <h4>Gestión</h4>
-          <p>Operaciones gestiona el caso.</p>
-        </div>
-      </div>
-    </div>
+  <script>
+    const WEBHOOK_URL = 'https://uncollapsible-melodiously-chung.ngrok-free.dev/webhook/liquidaciones';
 
-    <div class="note">
-      Usa información clara para agilizar.
-    </div>
+    document.getElementById('ticketForm').addEventListener('submit', async function (e) {
+      e.preventDefault();
 
-    <div class="footer-tip">
-      Conectable a n8n y automatizaciones.
-    </div>
-  </aside>
+      const form = e.target;
+      const formData = new FormData(form);
+      const submitBtn = form.querySelector('.btn-primary');
+      const originalText = submitBtn.textContent;
 
-</section>
+      try {
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Enviando...';
 
-</main>
+        const response = await fetch(WEBHOOK_URL, {
+          method: 'POST',
+          body: formData
+        });
 
-<script>
-document.getElementById('ticketForm').addEventListener('submit', function(e){
-  e.preventDefault();
-  alert('Aquí conectarás el envío hacia n8n 🚀');
-});
-</script>
+        if (!response.ok) throw new Error('No se pudo enviar el ticket');
 
+        alert('Ticket enviado correctamente.');
+        form.reset();
+      } catch (error) {
+        alert('No se pudo enviar el ticket. Revisa el webhook o la conexión.');
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = originalText;
+      }
+    });
+  </script>
 </body>
 </html>
