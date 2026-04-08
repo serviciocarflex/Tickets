@@ -21,11 +21,13 @@
       --purple-focus: #8b5cf6;
       --soft-blue-bg: #eff6ff;
       --soft-blue-text: #3b82f6;
-      /* Colores para el cuadrante resaltado */
-      --airtable-bg: #e0f2fe;
-      --airtable-text: #0369a1;
-      --airtable-border: #7dd3fc;
-      --airtable-accent: #0284c7;
+      
+      /* Colores para el cuadrante de Airtable (Actualizados) */
+      --airtable-bg: #f8fafc;
+      --airtable-text: #1e293b;
+      --airtable-border: #cbd5e1;
+      --airtable-btn: #f97316; /* Naranja para resaltar la acción */
+      --airtable-btn-hover: #ea580c;
     }
 
     * { box-sizing: border-box; font-family: 'Inter', system-ui, -apple-system, sans-serif; }
@@ -71,17 +73,6 @@
     .header-text h1 { margin: 0; font-size: 22px; font-weight: 700; color: var(--primary); }
     .header-text p { margin: 4px 0 0; color: var(--text-muted); font-size: 14px; }
 
-    .badge-internal {
-      background: #f8fafc;
-      color: var(--text-muted);
-      padding: 6px 12px;
-      border-radius: 20px;
-      font-size: 11px;
-      font-weight: 600;
-      border: 1px solid var(--border);
-      text-transform: uppercase;
-    }
-
     .main-card {
       background: var(--bg-card);
       padding: 30px;
@@ -125,6 +116,12 @@
       font-size: 14px;
       background: #fff;
       transition: 0.1s;
+    }
+
+    /* Ajuste para el campo de detalle fijo */
+    textarea {
+      resize: none; 
+      overflow-y: auto;
     }
 
     input:focus, textarea:focus {
@@ -235,32 +232,28 @@
     .step-text h4 { margin: 0; font-size: 13px; font-weight: 600; color: var(--text-main); }
     .step-text p { margin: 2px 0 0; font-size: 12px; color: var(--text-muted); line-height: 1.4; }
 
-    /* CUADRANTE AIRTABLE RESALTADO */
+    /* CUADRANTE AIRTABLE ACTUALIZADO */
     .airtable-section {
       background: var(--airtable-bg);
       padding: 20px;
       border-radius: 10px;
       border: 1px solid var(--airtable-border);
-      border-left: 5px solid var(--airtable-accent); /* Borde lateral para énfasis */
       text-align: center;
-      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+      margin-top: 10px;
     }
 
     .airtable-section h4 {
       margin: 0 0 8px;
       font-size: 15px;
       color: var(--airtable-text);
-      font-weight: 800;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
+      font-weight: 700;
     }
 
     .airtable-section p {
-      font-size: 12.5px;
-      color: #334155;
+      font-size: 12px;
+      color: var(--text-muted);
       margin-bottom: 15px;
-      line-height: 1.5;
-      font-weight: 500;
+      line-height: 1.4;
     }
 
     .btn-airtable {
@@ -268,22 +261,19 @@
       align-items: center;
       justify-content: center;
       gap: 8px;
-      background: var(--airtable-accent);
+      background: var(--airtable-btn);
       color: #fff;
       text-decoration: none;
-      padding: 12px;
+      padding: 10px;
       border-radius: 6px;
       font-size: 13px;
       font-weight: 700;
       border: none;
-      transition: 0.2s;
-      box-shadow: 0 2px 4px rgba(2, 132, 199, 0.2);
+      transition: background 0.2s;
     }
 
     .btn-airtable:hover {
-      background: var(--airtable-text);
-      transform: translateY(-1px);
-      box-shadow: 0 4px 8px rgba(2, 132, 199, 0.3);
+      background: var(--airtable-btn-hover);
     }
 
     @media (max-width: 860px) {
@@ -303,8 +293,7 @@
         <p>Registra y gestiona requerimientos comerciales para el equipo de operaciones</p>
       </div>
     </div>
-    <div class="badge-internal">● Mesa interna</div>
-  </header>
+    </header>
 
   <main class="main-card">
     <form id="ticketForm">
