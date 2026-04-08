@@ -21,6 +21,13 @@
       --accent: #2563eb; 
       --accent-hover: #1d4ed8;
       --focus-ring: rgba(37, 99, 235, 0.2);
+
+      /* Colores específicos solicitados para Sidebar */
+      --soft-blue-bg: #eff6ff;
+      --soft-blue-text: #3b82f6;
+      --soft-orange-bg: #fff7ed;
+      --soft-orange-border: #ffedd5;
+      --soft-orange-text: #c2410c;
     }
 
     * { box-sizing: border-box; font-family: 'Inter', system-ui, -apple-system, sans-serif; }
@@ -62,7 +69,6 @@
       align-items: center;
     }
 
-    /* Logo - Solo referencia visual sin cambiar el diseño */
     .brand-container img {
       height: 25px;
       width: auto;
@@ -115,7 +121,6 @@
 
     .field.full { grid-column: 1 / -1; }
 
-    /* Mantenemos los emoticonos y textos */
     .field label {
       font-size: 14px;
       font-weight: 600;
@@ -125,7 +130,6 @@
       gap: 8px;
     }
 
-    /* Asterisco de requerido en rojo neutro */
     .field label span.req { color: #dc2626; margin-left: 4px; }
 
     .icon { font-style: normal; }
@@ -146,7 +150,6 @@
       box-shadow: 0 0 0 3px var(--focus-ring);
     }
 
-    /* Chips Neutros - Estilo Web de Tickets Normal */
     .chips-group {
       display: flex;
       gap: 8px;
@@ -173,7 +176,6 @@
       border-color: var(--primary);
     }
 
-    /* Adjuntos - Simplificado */
     .dropzone {
       border: 1px solid var(--border);
       border-radius: var(--radius-sm);
@@ -200,7 +202,6 @@
       font-size: 13px;
     }
 
-    /* Footer Buttons - Mantenemos los textos */
     .form-actions {
       display: flex;
       justify-content: space-between;
@@ -233,7 +234,7 @@
       text-decoration: underline;
     }
 
-    /* Sidebar - Neutro */
+    /* Sidebar - MODIFICADO CON COLORES SOLICITADOS */
     .sidebar {
       display: flex;
       flex-direction: column;
@@ -247,30 +248,42 @@
       border: 1px solid var(--border);
     }
 
-    .info-card h3 { margin: 0 0 15px; font-size: 17px; color: var(--primary); }
-
-    .step { display: flex; gap: 12px; margin-bottom: 18px; }
-    .step-num {
-      width: 24px; height: 24px;
-      background: #f1f5f9;
-      color: var(--primary);
-      border-radius: 50%;
-      display: flex; align-items: center; justify-content: center;
-      font-weight: 800; font-size: 11px; flex-shrink: 0;
-      border: 1px solid var(--border);
+    .info-card h3 { 
+      margin: 0 0 10px; 
+      font-size: 17px; 
+      color: var(--primary); 
     }
 
-    .step-text h4 { margin: 0; font-size: 13px; font-weight: 600; }
+    .info-card > p {
+      font-size: 13px; 
+      color: var(--text-muted); 
+      margin-bottom: 25px;
+      line-height: 1.4;
+    }
+
+    .step { display: flex; gap: 12px; margin-bottom: 18px; }
+    
+    .step-num {
+      width: 26px; height: 26px;
+      background: var(--soft-blue-bg); /* Azul leve solicitado */
+      color: var(--soft-blue-text);   /* Texto azul profesional */
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 700; font-size: 12px; flex-shrink: 0;
+    }
+
+    .step-text h4 { margin: 0; font-size: 13px; font-weight: 600; color: var(--text-main); }
     .step-text p { margin: 2px 0 0; font-size: 12px; color: var(--text-muted); line-height: 1.4; }
 
     .recommendation {
-      background: #f8fafc;
-      padding: 12px;
+      background: var(--soft-orange-bg); /* Naranja leve solicitado */
+      padding: 15px;
       border-radius: 8px;
       font-size: 12px;
       line-height: 1.5;
-      border: 1px solid var(--border);
-      color: var(--text-muted);
+      border: 1px solid var(--soft-orange-border);
+      color: var(--soft-orange-text); /* Texto en tono café/naranja oscuro para lectura */
+      margin-top: 10px;
     }
 
     @media (max-width: 860px) {
@@ -353,7 +366,7 @@
   <aside class="sidebar">
     <div class="info-card">
       <h3>¿Cómo funciona?</h3>
-      <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 25px;">Portal interno para ingreso rápido de requerimientos comerciales</p>
+      <p>Portal interno para ingreso rápido de requerimientos comerciales</p>
       
       <div class="step">
         <div class="step-num">1</div>
