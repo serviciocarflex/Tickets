@@ -7,9 +7,9 @@
   <style>
     :root {
       /* Paleta neutra profesional (estilo SaaS gris/azul) */
-      --primary: #334155; /* Gris slate oscuro */
+      --primary: #334155;
       --primary-hover: #1e293b;
-      --bg-body: #f1f5f9; /* Gris muy claro de fondo */
+      --bg-body: #f1f5f9;
       --bg-card: #ffffff;
       --text-main: #0f172a;
       --text-muted: #64748b;
@@ -17,13 +17,11 @@
       --radius-lg: 12px;
       --radius-sm: 8px;
       
-      /* Color de acento solo para el botón (Azul profesional) */
       --accent: #2563eb; 
       --accent-hover: #1d4ed8;
-      --focus-ring: rgba(139, 92, 246, 0.2); /* CAMBIADO A MORADO LEVE */
-      --purple-focus: #8b5cf6; /* NUEVO: Morado para bordes */
+      --focus-ring: rgba(139, 92, 246, 0.2);
+      --purple-focus: #8b5cf6;
 
-      /* Colores específicos solicitados para Sidebar */
       --soft-blue-bg: #eff6ff;
       --soft-blue-text: #3b82f6;
       --soft-orange-bg: #fff7ed;
@@ -51,7 +49,6 @@
       gap: 25px;
     }
 
-    /* Header Section - Limpio y Profesional */
     .header {
       grid-column: 1 / -1;
       display: flex;
@@ -99,7 +96,6 @@
       text-transform: uppercase;
     }
 
-    /* Main Card */
     .main-card {
       background: var(--bg-card);
       padding: 30px;
@@ -135,7 +131,6 @@
 
     .icon { font-style: normal; }
 
-    /* CAMBIO: Al hacer foco, se pone morado leve */
     input, textarea, select {
       width: 100%;
       padding: 10px 14px;
@@ -172,7 +167,6 @@
       color: var(--text-main);
     }
 
-    /* CAMBIO: Hover y seleccionado en morado leve */
     .chip-item:hover span {
       border-color: var(--purple-focus);
     }
@@ -209,10 +203,9 @@
       font-size: 13px;
     }
 
-    /* CAMBIO: Acciones alineadas y botones mejorados */
     .form-actions {
       display: flex;
-      justify-content: flex-end; /* Alineados a la derecha */
+      justify-content: flex-end; 
       gap: 12px;
       margin-top: 25px;
       padding-top: 20px;
@@ -233,7 +226,6 @@
 
     .btn-submit:hover { background: var(--accent-hover); transform: translateY(-1px); }
 
-    /* CAMBIO: Botón limpiar ahora es un cuadrado gris que resalta */
     .btn-clear {
       background: #e2e8f0;
       color: #475569;
@@ -243,13 +235,12 @@
       font-weight: 600;
       cursor: pointer;
       font-size: 14px;
-      text-decoration: none; /* Quitamos el subrayado */
+      text-decoration: none; 
       transition: 0.2s;
     }
 
     .btn-clear:hover { background: #cbd5e1; }
 
-    /* Sidebar - Mantenemos exactamente lo anterior */
     .sidebar {
       display: flex;
       flex-direction: column;
@@ -366,7 +357,7 @@
               <span id="file-name" style="font-size: 12px; color: var(--text-muted)">No se ha seleccionado ningún archivo</span>
             </div>
             <p style="margin-top: 8px; font-size: 11px; color: var(--text-muted); text-align: center;">Adjunta archivos - PDF, JPG, PNG (Máx 10MB)</p>
-            <input type="file" id="file-upload" name="archivos" hidden multiple onchange="document.getElementById('file-name').innerText = this.files.length + ' archivos seleccionados'">
+            <input type="file" id="file-upload" hidden multiple onchange="document.getElementById('file-name').innerText = this.files.length + ' archivos seleccionados'">
           </div>
         </div>
       </div>
@@ -420,7 +411,7 @@
     e.target.value = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g,"").slice(0,6);
   });
 
-  // Lógica de envío al Webhook de n8n
+  // Envío de datos compatible con el script de n8n
   const ticketForm = document.getElementById('ticketForm');
   const WEBHOOK_URL = 'https://uncollapsible-melodiously-chung.ngrok-free.dev/webhook/tickets';
 
@@ -430,25 +421,36 @@
     btn.innerText = 'Enviando...';
     btn.disabled = true;
 
-    // Usamos FormData directamente para incluir los archivos binarios
-    const formData = new FormData(ticketForm);
+    const formData = new FormData();
+    
+    // Mapeo de campos de texto
+    formData.append('correo', ticketForm.correo.value);
+    formData.append('cliente', ticketForm.cliente.value);
+    formData.append('patente', ticketForm.patente.value);
+    formData.append('tipo', ticketForm.querySelector('input[name="tipo"]:checked').value);
+    formData.append('detalle', ticketForm.detalle.value);
+
+    // Mapeo de archivos binarios según el formato "adjuntos_X" que busca tu n8n
+    const fileInput = document.getElementById('file-upload');
+    for (let i = 0; i < fileInput.files.length; i++) {
+      formData.append(`adjuntos_${i}`, fileInput.files[i]);
+    }
 
     try {
       const response = await fetch(WEBHOOK_URL, {
         method: 'POST',
-        // NO poner 'Content-Type': 'application/json' porque estamos enviando archivos
         body: formData 
       });
 
       if (response.ok) {
-        alert('Ticket y adjuntos enviados correctamente');
+        alert('Ticket creado con éxito');
         ticketForm.reset();
         document.getElementById('file-name').innerText = "No se ha seleccionado ningún archivo";
       } else {
-        alert('Error al enviar el ticket');
+        alert('Error al enviar datos al servidor');
       }
     } catch (error) {
-      alert('Error de conexión con el servidor (ngrok)');
+      alert('Error de conexión. Verifica que ngrok esté activo.');
     } finally {
       btn.innerText = 'Crear Ticket';
       btn.disabled = false;
