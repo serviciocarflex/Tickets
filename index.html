@@ -131,6 +131,7 @@
       box-shadow: 0 0 0 3px var(--focus-ring);
     }
 
+    /* ESTILO DE CHIPS (Botones de selección) */
     .chips-group { display: flex; gap: 8px; flex-wrap: wrap; }
     .chip-item { cursor: pointer; }
     .chip-item input { display: none; }
@@ -141,11 +142,19 @@
       border-radius: 6px;
       font-size: 13px;
       background: #fff;
-      transition: 0.1s;
+      transition: 0.2s;
       font-weight: 500;
       color: var(--text-main);
     }
 
+    /* Efecto al pasar el cursor */
+    .chip-item:hover span {
+      border-color: var(--purple-focus);
+      background-color: var(--soft-blue-bg);
+      color: var(--purple-focus);
+    }
+
+    /* Estado seleccionado */
     .chip-item input:checked + span {
       background: var(--purple-focus);
       color: white;
@@ -279,7 +288,7 @@
         <div class="field">
           <label><svg class="icon-svg"><use href="#icon-tag"></use></svg> Tipo <span style="color:#dc2626">*</span></label>
           <div class="chips-group">
-            <label class="chip-item"><input type="radio" name="tipo" value="Agendamiento" checked><span>Agendamiento</span></label>
+            <label class="chip-item"><input type="radio" name="tipo" value="Agendamiento" required><span>Agendamiento</span></label>
             <label class="chip-item"><input type="radio" name="tipo" value="Documentación"><span>Documentación</span></label>
             <label class="chip-item"><input type="radio" name="tipo" value="Mecánica"><span>Mecánica</span></label>
             <label class="chip-item"><input type="radio" name="tipo" value="DyP"><span>DyP</span></label>
@@ -307,7 +316,7 @@
       </div>
 
       <div class="form-actions">
-        <button type="reset" class="btn-clear">Limpiar datos</button>
+        <button type="reset" class="btn-clear" onclick="document.getElementById('file-name').innerText = 'No se ha seleccionado ningún archivo'">Limpiar datos</button>
         <button type="submit" class="btn-submit" id="submitBtn">Crear Ticket</button>
       </div>
     </form>
@@ -371,6 +380,14 @@
 
   ticketForm.addEventListener('submit', async (e) => {
     e.preventDefault();
+
+    // Validar que se haya seleccionado un tipo
+    const tipoSelected = ticketForm.querySelector('input[name="tipo"]:checked');
+    if (!tipoSelected) {
+      alert("Por favor, selecciona un Tipo de ticket.");
+      return;
+    }
+
     const patenteInput = document.getElementById('patente');
     if (!/^[A-Z]{4}[0-9]{2}$/.test(patenteInput.value)) {
       alert("La patente debe ser 4 letras y 2 números (Ej: ABCD12)");
@@ -385,7 +402,7 @@
     formData.append('correo', ticketForm.correo.value);
     formData.append('cliente', ticketForm.cliente.value);
     formData.append('patente', patenteInput.value);
-    formData.append('tipo', ticketForm.querySelector('input[name="tipo"]:checked').value);
+    formData.append('tipo', tipoSelected.value);
     formData.append('detalle', ticketForm.detalle.value);
 
     const fileInput = document.getElementById('file-upload');
