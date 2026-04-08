@@ -6,10 +6,9 @@
   <title>Crear ticket de gestión operativa | Carflex</title>
   <style>
     :root {
-      /* Paleta neutra profesional (estilo SaaS gris/azul) */
-      --primary: #334155; /* Gris slate oscuro */
-      --primary-hover: #1e293b;
-      --bg-body: #f1f5f9; /* Gris muy claro de fondo */
+      /* Paleta neutra base */
+      --primary: #334155; 
+      --bg-body: #f8fafc; 
       --bg-card: #ffffff;
       --text-main: #0f172a;
       --text-muted: #64748b;
@@ -17,12 +16,18 @@
       --radius-lg: 12px;
       --radius-sm: 8px;
       
-      /* Color de acento solo para el botón (Azul profesional) */
-      --accent: #2563eb; 
-      --accent-hover: #1d4ed8;
-      --focus-ring: rgba(37, 99, 235, 0.2);
+      /* NUEVO: Morado leve para los campos */
+      --purple-light: #f5f3ff;
+      --purple-focus: #8b5cf6;
+      --purple-ring: rgba(139, 92, 246, 0.15);
 
-      /* Colores específicos solicitados para Sidebar */
+      /* Colores de botones */
+      --btn-create: #6366f1; /* Morado/Índigo profesional */
+      --btn-create-hover: #4f46e5;
+      --btn-clear-bg: #f1f5f9;
+      --btn-clear-text: #475569;
+      
+      /* Sidebar */
       --soft-blue-bg: #eff6ff;
       --soft-blue-text: #3b82f6;
       --soft-orange-bg: #fff7ed;
@@ -50,7 +55,6 @@
       gap: 25px;
     }
 
-    /* Header Section - Limpio y Profesional */
     .header {
       grid-column: 1 / -1;
       display: flex;
@@ -63,66 +67,25 @@
       border: 1px solid var(--border);
     }
 
-    .brand-container {
-      display: flex;
-      gap: 15px;
-      align-items: center;
-    }
+    .brand-container { display: flex; gap: 15px; align-items: center; }
+    .brand-container img { height: 25px; width: auto; }
+    .header-text h1 { margin: 0; font-size: 22px; font-weight: 700; color: var(--primary); }
+    .header-text p { margin: 4px 0 0; color: var(--text-muted); font-size: 14px; }
 
-    .brand-container img {
-      height: 25px;
-      width: auto;
-    }
-
-    .header-text h1 {
-      margin: 0;
-      font-size: 22px;
-      font-weight: 700;
-      color: var(--primary);
-    }
-
-    .header-text p {
-      margin: 4px 0 0;
-      color: var(--text-muted);
-      font-size: 14px;
-    }
-
-    .badge-internal {
-      background: #f8fafc;
-      color: var(--text-muted);
-      padding: 6px 12px;
-      border-radius: 20px;
-      font-size: 11px;
-      font-weight: 600;
-      border: 1px solid var(--border);
-      text-transform: uppercase;
-    }
-
-    /* Main Card */
     .main-card {
       background: var(--bg-card);
       padding: 30px;
       border-radius: var(--radius-lg);
       border: 1px solid var(--border);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.02);
     }
 
-    .form-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 20px;
-    }
-
-    .field {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      margin-bottom: 20px;
-    }
-
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    .field { display: flex; flex-direction: column; gap: 8px; margin-bottom: 20px; }
     .field.full { grid-column: 1 / -1; }
 
     .field label {
-      font-size: 14px;
+      font-size: 13px;
       font-weight: 600;
       color: var(--primary);
       display: flex;
@@ -130,168 +93,121 @@
       gap: 8px;
     }
 
-    .field label span.req { color: #dc2626; margin-left: 4px; }
+    .icon { font-style: normal; opacity: 0.8; }
 
-    .icon { font-style: normal; }
-
+    /* --- CAMBIO: Inputs con foco morado leve --- */
     input, textarea, select {
       width: 100%;
-      padding: 10px 14px;
+      padding: 12px 14px;
       border: 1px solid var(--border);
       border-radius: var(--radius-sm);
       font-size: 14px;
       background: #fff;
-      transition: 0.1s;
+      transition: all 0.2s ease;
     }
 
     input:focus, textarea:focus, select:focus {
       outline: none;
-      border-color: var(--accent);
-      box-shadow: 0 0 0 3px var(--focus-ring);
+      border-color: var(--purple-focus);
+      background-color: var(--purple-light); /* Fondo morado muy leve */
+      box-shadow: 0 0 0 4px var(--purple-ring);
     }
 
-    .chips-group {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-    }
-
+    .chips-group { display: flex; gap: 8px; flex-wrap: wrap; }
     .chip-item { cursor: pointer; }
     .chip-item input { display: none; }
     .chip-item span {
       display: inline-block;
-      padding: 6px 14px;
+      padding: 8px 16px;
       border: 1px solid var(--border);
-      border-radius: 6px;
+      border-radius: 8px;
       font-size: 13px;
       background: #fff;
-      transition: 0.1s;
+      transition: 0.2s;
       font-weight: 500;
-      color: var(--text-main);
     }
 
     .chip-item input:checked + span {
-      background: var(--primary);
+      background: var(--purple-focus);
       color: white;
-      border-color: var(--primary);
+      border-color: var(--purple-focus);
     }
 
-    .dropzone {
-      border: 1px solid var(--border);
-      border-radius: var(--radius-sm);
-      padding: 15px;
-      text-align: center;
-      background: #f8fafc;
-    }
-
-    .dropzone-content {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-    }
-
-    .btn-file {
-      background: #fff;
-      color: var(--primary);
-      padding: 6px 12px;
-      border-radius: 4px;
-      border: 1px solid var(--border);
-      font-weight: 600;
-      cursor: pointer;
-      font-size: 13px;
-    }
-
+    /* --- MEJORA: Botones de Acción --- */
     .form-actions {
       display: flex;
-      justify-content: space-between;
-      gap: 15px;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 12px;
       margin-top: 25px;
-      padding-top: 20px;
+      padding-top: 25px;
       border-top: 1px solid var(--border);
     }
 
-    .btn-submit {
-      background: var(--accent);
+    /* Botón Crear Ticket (Llamativo) */
+    .btn-create {
+      background: var(--btn-create);
       color: white;
       border: none;
-      padding: 12px 30px;
-      border-radius: var(--radius-sm);
+      padding: 12px 28px;
+      border-radius: 10px;
       font-weight: 700;
       cursor: pointer;
       font-size: 14px;
+      transition: all 0.2s;
+      box-shadow: 0 4px 6px -1px rgba(99, 102, 241, 0.2);
     }
 
-    .btn-submit:hover { background: var(--accent-hover); }
+    .btn-create:hover {
+      background: var(--btn-create-hover);
+      transform: translateY(-1px);
+      box-shadow: 0 6px 12px -2px rgba(99, 102, 241, 0.3);
+    }
 
+    /* Botón Limpiar (Ahora es un cuadrado visible) */
     .btn-clear {
-      background: transparent;
-      color: var(--text-muted);
-      border: none;
+      background: var(--btn-clear-bg);
+      color: var(--btn-clear-text);
+      border: 1px solid var(--border);
       padding: 12px 20px;
+      border-radius: 10px;
       font-weight: 600;
       cursor: pointer;
-      text-decoration: underline;
+      font-size: 14px;
+      transition: background 0.2s;
     }
 
-    /* Sidebar - MODIFICADO CON COLORES SOLICITADOS */
-    .sidebar {
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
+    .btn-clear:hover {
+      background: #e2e8f0;
     }
 
-    .info-card {
-      background: var(--bg-card);
-      padding: 25px;
-      border-radius: var(--radius-lg);
-      border: 1px solid var(--border);
-    }
-
-    .info-card h3 { 
-      margin: 0 0 10px; 
-      font-size: 17px; 
-      color: var(--primary); 
-    }
-
-    .info-card > p {
-      font-size: 13px; 
-      color: var(--text-muted); 
-      margin-bottom: 25px;
-      line-height: 1.4;
-    }
-
+    /* Sidebar con colores solicitados anteriormente */
+    .sidebar { display: flex; flex-direction: column; gap: 20px; }
+    .info-card { background: var(--bg-card); padding: 25px; border-radius: var(--radius-lg); border: 1px solid var(--border); }
+    .info-card h3 { margin: 0 0 10px; font-size: 17px; color: var(--primary); }
     .step { display: flex; gap: 12px; margin-bottom: 18px; }
-    
     .step-num {
       width: 26px; height: 26px;
-      background: var(--soft-blue-bg); /* Azul leve solicitado */
-      color: var(--soft-blue-text);   /* Texto azul profesional */
+      background: var(--soft-blue-bg);
+      color: var(--soft-blue-text);
       border-radius: 50%;
       display: flex; align-items: center; justify-content: center;
       font-weight: 700; font-size: 12px; flex-shrink: 0;
     }
-
-    .step-text h4 { margin: 0; font-size: 13px; font-weight: 600; color: var(--text-main); }
-    .step-text p { margin: 2px 0 0; font-size: 12px; color: var(--text-muted); line-height: 1.4; }
-
     .recommendation {
-      background: var(--soft-orange-bg); /* Naranja leve solicitado */
+      background: var(--soft-orange-bg);
       padding: 15px;
       border-radius: 8px;
       font-size: 12px;
       line-height: 1.5;
       border: 1px solid var(--soft-orange-border);
-      color: var(--soft-orange-text); /* Texto en tono café/naranja oscuro para lectura */
-      margin-top: 10px;
+      color: var(--soft-orange-text);
     }
 
     @media (max-width: 860px) {
       .container { grid-template-columns: 1fr; }
-      .form-grid { grid-template-columns: 1fr; }
-      .header { flex-direction: column; align-items: flex-start; gap: 15px; }
-      .form-actions { flex-direction: column; align-items: stretch; }
-      .btn-submit { order: -1; }
+      .form-actions { flex-direction: column-reverse; }
+      .btn-create, .btn-clear { width: 100%; }
     }
   </style>
 </head>
@@ -313,52 +229,39 @@
     <form id="ticketForm">
       <div class="form-grid">
         <div class="field">
-          <label><span class="icon">✉</span> Correo <span class="req">*</span></label>
+          <label><span class="icon">✉</span> Correo</label>
           <input type="email" placeholder="nombre@carflex.cl" required>
         </div>
 
         <div class="field">
-          <label><span class="icon">👤</span> Cliente <span class="req">*</span></label>
+          <label><span class="icon">👤</span> Cliente</label>
           <input type="text" placeholder="Busca o escribe cliente" required>
         </div>
 
         <div class="field">
-          <label><span class="icon">📄</span> Patente <span class="req">*</span></label>
+          <label><span class="icon">📄</span> Patente</label>
           <input type="text" id="patente" placeholder="Ej: DBS321" maxlength="6" required>
         </div>
 
         <div class="field">
-          <label><span class="icon">♡</span> Tipo <span class="req">*</span></label>
+          <label><span class="icon">♡</span> Tipo</label>
           <div class="chips-group">
             <label class="chip-item"><input type="radio" name="tipo" value="Agendamiento" checked><span>Agendamiento</span></label>
             <label class="chip-item"><input type="radio" name="tipo" value="Documentación"><span>Documentación</span></label>
             <label class="chip-item"><input type="radio" name="tipo" value="Mecánica"><span>Mecánica</span></label>
-            <label class="chip-item"><input type="radio" name="tipo" value="DyP"><span>DyP</span></label>
             <label class="chip-item"><input type="radio" name="tipo" value="Otros"><span>Otros</span></label>
           </div>
         </div>
 
         <div class="field full">
-          <label><span class="icon">📝</span> Detalle <span class="req">*</span></label>
-          <textarea placeholder="Describe el requerimiento, contexto y prioridad" rows="4" required></textarea>
-        </div>
-
-        <div class="field full">
-          <label><span class="icon">📎</span> Adjuntos</label>
-          <div class="dropzone">
-            <div class="dropzone-content">
-              <label for="file-upload" class="btn-file">Elegir archivos</label>
-              <span id="file-name" style="font-size: 12px; color: var(--text-muted)">No se ha seleccionado ningún archivo</span>
-            </div>
-            <p style="margin-top: 8px; font-size: 11px; color: var(--text-muted); text-align: center;">Adjunta archivos - PDF, JPG, PNG (Máx 10MB)</p>
-            <input type="file" id="file-upload" hidden multiple onchange="document.getElementById('file-name').innerText = this.files.length + ' archivos seleccionados'">
-          </div>
+          <label><span class="icon">📝</span> Detalle</label>
+          <textarea placeholder="Describe el requerimiento..." rows="4" required></textarea>
         </div>
       </div>
 
       <div class="form-actions">
-        <button type="reset" class="btn-clear">Limpiar</button>
-        <button type="submit" class="btn-submit">Enviar ticket</button>
+        <button type="reset" class="btn-clear">Limpiar formulario</button>
+        <button type="submit" class="btn-create">Crear Ticket</button>
       </div>
     </form>
   </main>
@@ -366,7 +269,7 @@
   <aside class="sidebar">
     <div class="info-card">
       <h3>¿Cómo funciona?</h3>
-      <p>Portal interno para ingreso rápido de requerimientos comerciales</p>
+      <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 25px;">Portal interno para ingreso rápido de requerimientos comerciales</p>
       
       <div class="step">
         <div class="step-num">1</div>
