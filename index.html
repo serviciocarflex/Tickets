@@ -6,7 +6,6 @@
   <title>Crear ticket de gestión operativa | Carflex</title>
   <style>
     :root {
-      /* Paleta neutra profesional (estilo SaaS gris/azul) */
       --primary: #334155;
       --primary-hover: #1e293b;
       --bg-body: #f1f5f9;
@@ -16,12 +15,10 @@
       --border: #e2e8f0;
       --radius-lg: 12px;
       --radius-sm: 8px;
-      
       --accent: #2563eb; 
       --accent-hover: #1d4ed8;
       --focus-ring: rgba(139, 92, 246, 0.2);
       --purple-focus: #8b5cf6;
-
       --soft-blue-bg: #eff6ff;
       --soft-blue-text: #3b82f6;
       --soft-orange-bg: #fff7ed;
@@ -145,6 +142,11 @@
       outline: none;
       border-color: var(--purple-focus);
       box-shadow: 0 0 0 3px var(--focus-ring);
+    }
+
+    /* Estilo para validación visual de patente */
+    input:invalid:not(:placeholder-shown) {
+      border-color: #ef4444;
     }
 
     .chips-group {
@@ -324,22 +326,23 @@
         </div>
 
         <div class="field">
-          <label><span class="icon">👤</span> Cliente <span class="req">*</span></label>
+          <label><span class="icon">🪪</span> Cliente <span class="req">*</span></label>
           <input type="text" name="cliente" placeholder="Busca o escribe cliente" required>
         </div>
 
         <div class="field">
-          <label><span class="icon">📄</span> Patente <span class="req">*</span></label>
-          <input type="text" id="patente" name="patente" placeholder="Ej: DBS321" maxlength="6" required>
+          <label><span class="icon">🚗</span> Patente <span class="req">*</span></label>
+          <input type="text" id="patente" name="patente" placeholder="Ej: ABCD12" maxlength="6" pattern="[A-Z]{4}[0-9]{2}" title="Formato: 4 letras y 2 números (Ej: ABCD12)" required>
         </div>
 
         <div class="field">
-          <label><span class="icon">♡</span> Tipo <span class="req">*</span></label>
+          <label><span class="icon">🏷</span> Tipo <span class="req">*</span></label>
           <div class="chips-group">
             <label class="chip-item"><input type="radio" name="tipo" value="Agendamiento" checked><span>Agendamiento</span></label>
             <label class="chip-item"><input type="radio" name="tipo" value="Documentación"><span>Documentación</span></label>
             <label class="chip-item"><input type="radio" name="tipo" value="Mecánica"><span>Mecánica</span></label>
             <label class="chip-item"><input type="radio" name="tipo" value="DyP"><span>DyP</span></label>
+            <label class="chip-item"><input type="radio" name="tipo" value="Cobranza"><span>Cobranza</span></label>
             <label class="chip-item"><input type="radio" name="tipo" value="Otros"><span>Otros</span></label>
           </div>
         </div>
@@ -406,31 +409,42 @@
 </div>
 
 <script>
-  // Formateo de patente
-  document.getElementById("patente").addEventListener("input", e=>{
-    e.target.value = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g,"").slice(0,6);
+  // Formateo de patente: permite solo letras en los primeros 4 y números en los últimos 2
+  document.getElementById("patente").addEventListener("input", e => {
+    let val = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, "");
+    
+    // Lógica para forzar 4 letras y 2 números
+    let letters = val.slice(0, 4).replace(/[^A-Z]/g, "");
+    let numbers = val.slice(4, 6).replace(/[^0-9]/g, "");
+    
+    e.target.value = (letters + numbers).slice(0, 6);
   });
 
-  // Envío de datos compatible con el script de n8n
   const ticketForm = document.getElementById('ticketForm');
   const WEBHOOK_URL = 'https://uncollapsible-melodiously-chung.ngrok-free.dev/webhook-test/tickets';
 
   ticketForm.addEventListener('submit', async (e) => {
     e.preventDefault();
+
+    // Verificación manual final de patente por seguridad
+    const patenteInput = document.getElementById('patente');
+    const patenteRegex = /^[A-Z]{4}[0-9]{2}$/;
+    if (!patenteRegex.test(patenteInput.value)) {
+      alert("La patente debe tener 4 letras seguidas de 2 números (Ej: ABCD12)");
+      return;
+    }
+
     const btn = document.getElementById('submitBtn');
     btn.innerText = 'Enviando...';
     btn.disabled = true;
 
     const formData = new FormData();
-    
-    // Mapeo de campos de texto
     formData.append('correo', ticketForm.correo.value);
     formData.append('cliente', ticketForm.cliente.value);
-    formData.append('patente', ticketForm.patente.value);
+    formData.append('patente', patenteInput.value);
     formData.append('tipo', ticketForm.querySelector('input[name="tipo"]:checked').value);
     formData.append('detalle', ticketForm.detalle.value);
 
-    // Mapeo de archivos binarios según el formato "adjuntos_X" que busca tu n8n
     const fileInput = document.getElementById('file-upload');
     for (let i = 0; i < fileInput.files.length; i++) {
       formData.append(`adjuntos_${i}`, fileInput.files[i]);
