@@ -6,233 +6,277 @@
   <title>Ticketera Operaciones | Carflex</title>
   <style>
     :root {
-      --primary: #5b21b6;
-      --primary-2: #7c3aed;
-      --accent: #ff7225;
-      --accent-2: #f97316;
-      --dark: #0f172a;
+      --bg: #f3f6fb;
+      --bg-2: #eef2f8;
+      --surface: #ffffff;
+      --surface-2: #f8fafc;
+      --line: #dbe3ef;
+      --line-soft: #e9eef5;
+      --text: #0f172a;
       --muted: #64748b;
-      --line: #e2e8f0;
-      --bg-soft: #f8fafc;
-      --bg-soft-2: #eef2ff;
-      --card: rgba(255, 255, 255, 0.94);
+      --primary: #4f46e5;
+      --primary-2: #6366f1;
+      --primary-soft: rgba(79, 70, 229, 0.08);
+      --accent: #f97316;
       --success: #16a34a;
-      --success-bg: rgba(22, 163, 74, 0.08);
-      --danger: #dc2626;
-      --shadow: 0 20px 50px rgba(15, 23, 42, 0.10);
-      --radius-xl: 24px;
-      --radius-lg: 18px;
-      --radius-md: 14px;
+      --success-soft: rgba(22, 163, 74, 0.10);
+      --warning-soft: rgba(249, 115, 22, 0.12);
+      --shadow-lg: 0 24px 60px rgba(15, 23, 42, 0.10);
+      --shadow-md: 0 12px 30px rgba(15, 23, 42, 0.08);
+      --radius-xl: 28px;
+      --radius-lg: 20px;
+      --radius-md: 16px;
+      --radius-sm: 12px;
     }
 
     * { box-sizing: border-box; }
 
-    html { scroll-behavior: smooth; }
-
     body {
       margin: 0;
       font-family: Inter, "Segoe UI", Arial, sans-serif;
-      color: var(--dark);
+      color: var(--text);
       background:
-        radial-gradient(circle at top left, rgba(91, 33, 182, 0.16), transparent 24%),
-        radial-gradient(circle at top right, rgba(255, 114, 37, 0.13), transparent 22%),
-        linear-gradient(180deg, #eef2ff 0%, #f8fafc 36%, #ffffff 100%);
+        radial-gradient(circle at top left, rgba(79, 70, 229, 0.12), transparent 22%),
+        radial-gradient(circle at top right, rgba(249, 115, 22, 0.09), transparent 20%),
+        linear-gradient(180deg, var(--bg-2) 0%, var(--bg) 35%, #ffffff 100%);
       min-height: 100vh;
     }
 
-    .shell {
-      width: min(1360px, calc(100% - 40px));
-      margin: 28px auto 40px;
+    .app {
+      width: min(1460px, calc(100% - 32px));
+      margin: 18px auto 28px;
     }
 
-    .hero-card,
-    .form-card,
-    .aside-card,
-    .success-card {
-      background: var(--card);
-      border: 1px solid rgba(255,255,255,0.7);
-      box-shadow: var(--shadow);
-      backdrop-filter: blur(14px);
-      border-radius: var(--radius-xl);
-    }
-
-    .hero-card {
-      padding: 22px 30px;
-      position: relative;
-      overflow: hidden;
-      margin-bottom: 14px;
-    }
-
-    .hero-card::before {
-      content: "";
-      position: absolute;
-      right: -60px;
-      top: -50px;
-      width: 220px;
-      height: 220px;
-      border-radius: 50%;
-      background: radial-gradient(circle, rgba(124,58,237,0.12), transparent 70%);
-      pointer-events: none;
-    }
-
-    .eyebrow {
-      display: inline-flex;
-      gap: 8px;
+    .topbar {
+      display: flex;
       align-items: center;
-      background: rgba(91, 33, 182, 0.08);
-      color: var(--primary);
-      border: 1px solid rgba(91, 33, 182, 0.14);
-      padding: 8px 12px;
-      border-radius: 999px;
-      font-size: 12px;
-      font-weight: 800;
-      letter-spacing: .3px;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 14px 18px;
       margin-bottom: 18px;
+      border: 1px solid rgba(255, 255, 255, 0.85);
+      border-radius: 22px;
+      background: rgba(255, 255, 255, 0.84);
+      backdrop-filter: blur(14px);
+      box-shadow: var(--shadow-md);
     }
 
     .brand {
       display: flex;
       align-items: center;
-      justify-content: space-between;
-      gap: 22px;
-      flex-wrap: wrap;
-    }
-
-    .brand-main {
-      display: flex;
-      align-items: center;
-      gap: 16px;
+      gap: 14px;
       min-width: 0;
     }
 
-    .brand img {
-      width: 62px;
-      height: 62px;
-      object-fit: contain;
+    .brand-logo {
+      width: 50px;
+      height: 50px;
+      border-radius: 16px;
       background: #fff;
-      border-radius: 18px;
-      padding: 8px;
-      border: 1px solid var(--line);
+      border: 1px solid var(--line-soft);
+      display: grid;
+      place-items: center;
+      overflow: hidden;
       flex-shrink: 0;
     }
 
-    .hero-copy {
+    .brand-logo img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      padding: 8px;
+    }
+
+    .brand-copy {
       min-width: 0;
     }
 
-    h1 {
+    .brand-copy h1 {
       margin: 0;
-      font-size: clamp(30px, 4vw, 40px);
-      line-height: 1.04;
+      font-size: 22px;
       letter-spacing: -0.03em;
+      line-height: 1.05;
     }
 
-    .hero-copy p {
-      margin: 12px 0 0;
+    .brand-copy p {
+      margin: 5px 0 0;
+      font-size: 13px;
       color: var(--muted);
-      font-size: 15px;
-      line-height: 1.6;
-      max-width: 780px;
+      line-height: 1.5;
     }
 
-    .hero-badge {
+    .topbar-meta {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .pill {
       display: inline-flex;
       align-items: center;
-      padding: 10px 14px;
-      border-radius: 16px;
+      gap: 8px;
+      padding: 9px 12px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 800;
+      border: 1px solid var(--line-soft);
       background: #fff;
-      border: 1px solid rgba(15,23,42,0.08);
       color: #334155;
-      font-size: 13px;
-      font-weight: 700;
       white-space: nowrap;
     }
 
-    .workspace {
+    .pill-primary {
+      background: var(--primary-soft);
+      color: var(--primary);
+      border-color: rgba(79, 70, 229, 0.12);
+    }
+
+    .layout {
       display: grid;
-      grid-template-columns: minmax(0, 1.6fr) minmax(300px, 0.7fr);
-      gap: 24px;
+      grid-template-columns: minmax(0, 1.7fr) minmax(320px, 0.78fr);
+      gap: 20px;
       align-items: start;
     }
 
-    .form-card {
-      padding: 36px;
+    .main-panel,
+    .side-panel,
+    .success-panel {
+      border: 1px solid rgba(255, 255, 255, 0.88);
+      border-radius: var(--radius-xl);
+      background: rgba(255, 255, 255, 0.94);
+      backdrop-filter: blur(10px);
+      box-shadow: var(--shadow-lg);
     }
 
-    .aside-card {
-      padding: 24px;
+    .main-panel {
+      padding: 26px;
+    }
+
+    .side-panel {
+      padding: 20px;
       position: sticky;
-      top: 22px;
+      top: 18px;
     }
 
-    .section-head {
+    .main-head {
       display: flex;
       align-items: flex-start;
       justify-content: space-between;
       gap: 16px;
-      margin-bottom: 26px;
-      padding-bottom: 18px;
-      border-bottom: 1px solid rgba(15,23,42,0.06);
+      margin-bottom: 22px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid var(--line-soft);
     }
 
-    .section-title {
-      margin: 0 0 6px;
-      font-size: 24px;
-      line-height: 1.1;
-    }
-
-    .section-subtitle {
+    .main-head h2 {
       margin: 0;
+      font-size: 28px;
+      line-height: 1.05;
+      letter-spacing: -0.03em;
+    }
+
+    .main-head p {
+      margin: 8px 0 0;
       color: var(--muted);
       font-size: 14px;
       line-height: 1.6;
-      max-width: 720px;
+      max-width: 760px;
     }
 
-    .section-tag {
-      background: rgba(255,114,37,0.10);
+    .head-tag {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 10px 14px;
+      border-radius: 16px;
+      background: var(--warning-soft);
       color: #c2410c;
-      border: 1px solid rgba(255,114,37,0.16);
-      border-radius: 999px;
-      padding: 8px 12px;
       font-size: 12px;
       font-weight: 800;
       white-space: nowrap;
+      border: 1px solid rgba(249, 115, 22, 0.12);
+    }
+
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+      margin-bottom: 20px;
+    }
+
+    .stat-card {
+      padding: 16px;
+      border-radius: 18px;
+      border: 1px solid var(--line-soft);
+      background: linear-gradient(180deg, #ffffff, #f8fafc);
+    }
+
+    .stat-card span {
+      display: block;
+      font-size: 12px;
+      color: var(--muted);
+      font-weight: 700;
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: .04em;
+    }
+
+    .stat-card strong {
+      display: block;
+      font-size: 18px;
+      line-height: 1.2;
+    }
+
+    .stat-card small {
+      display: block;
+      margin-top: 6px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.45;
     }
 
     form {
       display: grid;
-      gap: 24px;
-    }
-
-    .form-block {
-      display: grid;
       gap: 18px;
-      padding: 26px;
-      border: 1px solid rgba(15,23,42,0.06);
-      border-radius: 22px;
-      background: linear-gradient(180deg, #ffffff, #f9fafb);
-      box-shadow: 0 6px 18px rgba(15,23,42,0.04);
     }
 
-    .form-block-title {
+    .section {
+      border: 1px solid var(--line-soft);
+      border-radius: 22px;
+      background: linear-gradient(180deg, #ffffff, #fafcff);
+      overflow: hidden;
+    }
+
+    .section-head-card {
+      padding: 18px 20px;
+      border-bottom: 1px solid var(--line-soft);
+      background: rgba(248, 250, 252, 0.8);
+    }
+
+    .section-head-card h3 {
       margin: 0;
       font-size: 16px;
-      font-weight: 800;
-      color: #1e293b;
     }
 
-    .form-block-subtitle {
-      margin: 4px 0 0;
-      color: var(--muted);
+    .section-head-card p {
+      margin: 5px 0 0;
       font-size: 13px;
+      color: var(--muted);
       line-height: 1.5;
+    }
+
+    .section-body {
+      padding: 20px;
+      display: grid;
+      gap: 18px;
     }
 
     .grid-2 {
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 16px 18px;
+      gap: 18px;
     }
 
     .field {
@@ -246,7 +290,7 @@
       grid-column: 1 / -1;
     }
 
-    .field label {
+    label {
       font-size: 13px;
       font-weight: 800;
       color: #334155;
@@ -254,20 +298,20 @@
 
     .required::after {
       content: " *";
-      color: var(--danger);
+      color: #dc2626;
     }
 
     input[type="text"],
     input[type="email"],
+    input[list],
     textarea,
-    select,
-    input[list] {
+    select {
       width: 100%;
       border: 1.6px solid var(--line);
       border-radius: 14px;
       padding: 14px 15px;
       font-size: 14px;
-      color: var(--dark);
+      color: var(--text);
       background: #fff;
       outline: none;
       transition: border-color .2s ease, box-shadow .2s ease, transform .2s ease;
@@ -276,123 +320,128 @@
     input:focus,
     textarea:focus,
     select:focus {
-      border-color: rgba(91, 33, 182, 0.52);
-      box-shadow: 0 0 0 4px rgba(91, 33, 182, 0.09);
+      border-color: rgba(79, 70, 229, 0.5);
+      box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.09);
     }
 
     textarea {
-      min-height: 138px;
+      min-height: 148px;
       resize: vertical;
     }
 
     .hint {
-      margin: 0;
       font-size: 12px;
       color: var(--muted);
       line-height: 1.5;
+      margin: 0;
     }
 
-    .chips {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      padding-top: 2px;
+    .type-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
     }
 
-    .chip {
+    .type-option {
       position: relative;
     }
 
-    .chip input {
+    .type-option input {
       position: absolute;
       opacity: 0;
       pointer-events: none;
     }
 
-    .chip span {
-      display: inline-flex;
-      align-items: center;
+    .type-card {
+      display: flex;
+      flex-direction: column;
       justify-content: center;
-      min-height: 44px;
-      padding: 0 15px;
-      border-radius: 999px;
+      gap: 4px;
+      min-height: 92px;
+      padding: 16px;
+      border-radius: 18px;
       border: 1.5px solid var(--line);
       background: #fff;
-      font-size: 14px;
-      color: #334155;
       cursor: pointer;
-      transition: 0.18s ease;
-      text-align: center;
+      transition: .18s ease;
     }
 
-    .chip span:hover {
-      border-color: rgba(91, 33, 182, 0.24);
-      transform: translateY(-1px);
-    }
-
-    .chip input:checked + span {
-      background: rgba(91, 33, 182, 0.08);
-      border-color: rgba(91, 33, 182, 0.32);
-      color: var(--primary);
-      font-weight: 800;
-      box-shadow: inset 0 0 0 1px rgba(91, 33, 182, 0.08);
-    }
-
-    .dropzone {
-      border: 1.6px dashed #cbd5e1;
-      border-radius: 18px;
-      background: linear-gradient(180deg, #ffffff, #fbfdff);
-      padding: 24px;
-      text-align: center;
-    }
-
-    .dropzone p {
-      margin: 0;
-      color: var(--muted);
+    .type-card strong {
       font-size: 14px;
-      line-height: 1.6;
+      color: #0f172a;
     }
 
-    .dropzone strong {
-      color: var(--dark);
+    .type-card span {
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.4;
+    }
+
+    .type-card:hover {
+      border-color: rgba(79, 70, 229, 0.24);
+      transform: translateY(-1px);
+      box-shadow: 0 8px 18px rgba(15, 23, 42, 0.05);
+    }
+
+    .type-option input:checked + .type-card {
+      background: linear-gradient(180deg, rgba(79, 70, 229, 0.08), rgba(255,255,255,0.95));
+      border-color: rgba(79, 70, 229, 0.34);
+      box-shadow: inset 0 0 0 1px rgba(79, 70, 229, 0.08);
+    }
+
+    .upload-box {
+      border: 1.6px dashed #c6d0df;
+      border-radius: 20px;
+      background: linear-gradient(180deg, #ffffff, #fbfdff);
+      padding: 22px;
+    }
+
+    .upload-box h4 {
+      margin: 0 0 6px;
       font-size: 15px;
     }
 
-    .dropzone input[type="file"] {
-      margin-top: 16px;
+    .upload-box p {
+      margin: 0 0 14px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.55;
+    }
+
+    .upload-box input[type="file"] {
       width: 100%;
     }
 
     .actions {
       display: flex;
-      justify-content: space-between;
       align-items: center;
+      justify-content: space-between;
       gap: 14px;
-      padding-top: 6px;
+      padding-top: 2px;
     }
 
-    .action-note {
+    .actions p {
+      margin: 0;
       color: var(--muted);
       font-size: 12px;
       line-height: 1.5;
       max-width: 460px;
     }
 
-    .action-buttons {
+    .actions-right {
       display: flex;
       gap: 12px;
       flex-wrap: wrap;
     }
 
-    .btn,
-    button {
+    .btn {
       border: 0;
       cursor: pointer;
       border-radius: 14px;
       padding: 14px 18px;
       font-size: 14px;
       font-weight: 800;
-      transition: 0.2s ease;
+      transition: .2s ease;
     }
 
     .btn-secondary {
@@ -405,387 +454,460 @@
     }
 
     .btn-primary {
-      background: linear-gradient(135deg, var(--primary), var(--primary-2));
+      min-width: 190px;
       color: #fff;
-      box-shadow: 0 10px 24px rgba(91, 33, 182, 0.22);
-      min-width: 180px;
+      background: linear-gradient(135deg, var(--primary), var(--primary-2));
+      box-shadow: 0 14px 28px rgba(79, 70, 229, 0.22);
     }
 
-    .btn-primary:hover {
+    .btn-primary:hover,
+    .btn-accent:hover {
       transform: translateY(-1px);
     }
 
     .btn-accent {
-      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      min-width: 220px;
       color: #fff;
-      box-shadow: 0 10px 24px rgba(249, 115, 22, 0.22);
+      background: linear-gradient(135deg, var(--accent), #fb923c);
+      box-shadow: 0 14px 28px rgba(249, 115, 22, 0.22);
     }
 
-    .aside-title {
+    .side-section + .side-section {
+      margin-top: 18px;
+    }
+
+    .side-title {
       margin: 0 0 8px;
-      font-size: 22px;
+      font-size: 18px;
     }
 
-    .aside-text {
-      margin: 0 0 18px;
-      color: var(--muted);
-      font-size: 14px;
-      line-height: 1.6;
-    }
-
-    .timeline {
-      display: grid;
-      gap: 14px;
-      margin-bottom: 20px;
-    }
-
-    .step {
-      display: grid;
-      grid-template-columns: 42px 1fr;
-      gap: 12px;
-      align-items: start;
-      padding: 12px;
-      border-radius: 16px;
-      background: rgba(248,250,252,0.9);
-      border: 1px solid rgba(15,23,42,0.05);
-    }
-
-    .step-badge {
-      width: 42px;
-      height: 42px;
-      border-radius: 14px;
-      background: rgba(91, 33, 182, 0.10);
-      color: var(--primary);
-      font-weight: 900;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .step h4 {
-      margin: 2px 0 4px;
-      font-size: 15px;
-    }
-
-    .step p {
+    .side-text {
       margin: 0;
       color: var(--muted);
       font-size: 13px;
+      line-height: 1.6;
+    }
+
+    .journey {
+      display: grid;
+      gap: 12px;
+      margin-top: 16px;
+    }
+
+    .journey-item {
+      display: grid;
+      grid-template-columns: 38px 1fr;
+      gap: 12px;
+      padding: 12px;
+      border-radius: 16px;
+      border: 1px solid var(--line-soft);
+      background: #fff;
+    }
+
+    .journey-number {
+      width: 38px;
+      height: 38px;
+      border-radius: 12px;
+      display: grid;
+      place-items: center;
+      background: var(--primary-soft);
+      color: var(--primary);
+      font-size: 14px;
+      font-weight: 900;
+    }
+
+    .journey-item h4 {
+      margin: 2px 0 4px;
+      font-size: 14px;
+    }
+
+    .journey-item p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    .mini-list {
+      display: grid;
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .mini-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 12px;
+      border-radius: 14px;
+      background: var(--surface-2);
+      border: 1px solid var(--line-soft);
+    }
+
+    .mini-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 999px;
+      background: var(--accent);
+      margin-top: 4px;
+      flex-shrink: 0;
+    }
+
+    .mini-item span {
+      font-size: 12px;
+      color: #475569;
       line-height: 1.55;
     }
 
-    .note,
-    .footer-tip {
+    .helper-card {
+      padding: 14px;
       border-radius: 16px;
-      padding: 16px;
-      font-size: 13px;
+      background: var(--success-soft);
+      border: 1px solid rgba(22, 163, 74, 0.12);
+      color: #166534;
+      font-size: 12px;
       line-height: 1.6;
     }
 
-    .note {
-      background: #f8fafc;
-      border: 1px solid var(--line);
-      color: #475569;
-    }
-
-    .note strong,
-    .footer-tip strong {
-      color: #0f172a;
-    }
-
-    .footer-tip {
-      margin-top: 16px;
-      background: var(--success-bg);
-      color: #166534;
-      border: 1px solid rgba(22, 163, 74, 0.14);
-    }
-
-    .success-wrap {
+    .success-view {
       display: none;
     }
 
-    .success-card {
-      padding: 54px 26px;
+    .success-panel {
+      padding: 56px 24px;
       text-align: center;
-      margin-top: 8px;
     }
 
     .success-icon {
-      width: 76px;
-      height: 76px;
-      border-radius: 22px;
+      width: 84px;
+      height: 84px;
       margin: 0 auto 18px;
-      background: var(--success-bg);
-      color: var(--success);
+      border-radius: 24px;
       display: grid;
       place-items: center;
-      font-size: 34px;
+      font-size: 38px;
       font-weight: 900;
-      border: 1px solid rgba(22, 163, 74, 0.14);
+      color: var(--success);
+      background: var(--success-soft);
+      border: 1px solid rgba(22, 163, 74, 0.12);
     }
 
-    .success-card h2 {
+    .success-panel h2 {
       margin: 0 0 10px;
-      font-size: 28px;
-      line-height: 1.15;
+      font-size: 32px;
+      line-height: 1.08;
+      letter-spacing: -0.03em;
     }
 
-    .success-card p {
+    .success-panel p {
       margin: 0 auto 22px;
-      color: var(--muted);
+      max-width: 580px;
       font-size: 15px;
-      line-height: 1.6;
-      max-width: 560px;
+      line-height: 1.65;
+      color: var(--muted);
     }
 
-    .success-meta {
+    .success-pill {
       display: inline-flex;
       align-items: center;
       gap: 8px;
       padding: 10px 14px;
-      margin-bottom: 22px;
+      margin-bottom: 18px;
       border-radius: 999px;
       background: #fff;
-      border: 1px solid rgba(15,23,42,0.08);
-      color: #334155;
+      border: 1px solid var(--line-soft);
       font-size: 13px;
-      font-weight: 700;
+      font-weight: 800;
+      color: #334155;
     }
 
-    @media (max-width: 1100px) {
-      .workspace {
+    @media (max-width: 1180px) {
+      .layout {
         grid-template-columns: 1fr;
       }
 
-      .aside-card {
+      .side-panel {
         position: static;
       }
     }
 
-    @media (max-width: 720px) {
-      .shell {
-        width: min(100% - 20px, 1360px);
-        margin: 18px auto 28px;
+    @media (max-width: 860px) {
+      .app {
+        width: min(100% - 18px, 1460px);
       }
 
-      .hero-card,
-      .form-card,
-      .aside-card,
-      .success-card {
+      .topbar,
+      .main-panel,
+      .side-panel,
+      .success-panel {
         border-radius: 20px;
       }
 
-      .hero-card,
-      .form-card,
-      .aside-card,
-      .success-card {
-        padding-left: 18px;
-        padding-right: 18px;
+      .topbar,
+      .main-panel,
+      .side-panel,
+      .success-panel {
+        padding-left: 16px;
+        padding-right: 16px;
       }
 
-      .brand,
-      .section-head,
+      .topbar,
+      .main-head,
       .actions {
         flex-direction: column;
         align-items: flex-start;
       }
 
-      .brand-main {
-        align-items: flex-start;
+      .topbar-meta,
+      .actions-right {
+        width: 100%;
+        justify-content: flex-start;
       }
 
-      .grid-2 {
+      .grid-2,
+      .stats-row,
+      .type-grid {
         grid-template-columns: 1fr;
       }
 
-      .action-buttons {
+      .btn-secondary,
+      .btn-primary,
+      .btn-accent {
         width: 100%;
       }
 
-      .action-buttons .btn {
-        width: 100%;
-      }
-
-      .chips {
-        gap: 8px;
-      }
-
-      .chip span {
-        width: 100%;
-      }
-
-      h1 {
-        font-size: 29px;
-      }
-
-      .success-card h2 {
-        font-size: 24px;
+      .main-head h2,
+      .success-panel h2 {
+        font-size: 26px;
       }
     }
   </style>
 </head>
 <body>
-  <main class="shell">
-    <section class="hero-wrap" id="pantallaFormulario">
-      <div class="hero-card">
-        <div class="eyebrow">Mesa interna · Comercial → Operaciones</div>
-
+  <main class="app">
+    <section id="formView">
+      <header class="topbar">
         <div class="brand">
-          <div class="brand-main">
+          <div class="brand-logo">
             <img src="Logo carflex.jpg" alt="Carflex" />
-            <div class="hero-copy">
-              <h1>Formulario de ingreso</h1>
-              <p>Se mantiene la misma información y los mismos campos. Solo se reorganizó el formulario para que aproveche mejor el ancho de la página y se vea más limpio y profesional.</p>
+          </div>
+          <div class="brand-copy">
+            <h1>Ticketera interna de operaciones</h1>
+            <p>Portal interno para el ingreso y seguimiento inicial de requerimientos comerciales hacia el área de operaciones.</p>
+          </div>
+        </div>
+
+        <div class="topbar-meta">
+          <span class="pill pill-primary">Mesa interna</span>
+          <span class="pill">Comercial → Operaciones</span>
+        </div>
+      </header>
+
+      <section class="layout">
+        <section class="main-panel">
+          <div class="main-head">
+            <div>
+              <h2>Formulario de ingreso</h2>
+              <p>Se mantiene la misma información y los mismos campos. Solo se reorganizó el formulario para que aproveche mejor el ancho de la página y se vea más limpio, ordenado y profesional, con una estética más cercana a un sistema real de tickets.</p>
             </div>
+            <div class="head-tag">Nuevo ticket</div>
           </div>
 
-          <div class="hero-badge">Ticketera Operaciones</div>
-        </div>
-      </div>
-
-          <div class="hero-badge">Formulario interno de gestión</div>
-        </div>
-      </div>
-
-      <section class="workspace">
-        <div class="form-card">
-          <div class="section-head">
-            <div>
-              <h2 class="section-title">Formulario de ingreso</h2>
-              <p class="section-subtitle">Se mantiene la misma información y los mismos campos. Solo se reorganizó el formulario para que aproveche mejor el ancho de la página y se vea más limpio y profesional.</p>
+          <div class="stats-row">
+            <div class="stat-card">
+              <span>Canal</span>
+              <strong>Ingreso interno</strong>
+              <small>Uso exclusivo para requerimientos del equipo comercial hacia operaciones.</small>
             </div>
-            <div class="section-tag">Ticketera Operaciones</div>
+            <div class="stat-card">
+              <span>Objetivo</span>
+              <strong>Registrar y derivar</strong>
+              <small>La solicitud queda lista para su tratamiento dentro del flujo operativo.</small>
+            </div>
+            <div class="stat-card">
+              <span>Adjuntos</span>
+              <strong>Soporte opcional</strong>
+              <small>Se pueden incorporar archivos para facilitar contexto y revisión del caso.</small>
+            </div>
           </div>
 
           <form id="ticketForm" enctype="multipart/form-data">
-            <div class="form-block">
-              <div>
-                <h3 class="form-block-title">Datos principales</h3>
-                <p class="form-block-subtitle">Completa la información base del caso antes de enviarlo al flujo interno.</p>
+            <section class="section">
+              <div class="section-head-card">
+                <h3>Datos base del requerimiento</h3>
+                <p>Información principal para identificar el caso y su origen.</p>
               </div>
+              <div class="section-body">
+                <div class="grid-2">
+                  <div class="field">
+                    <label class="required" for="correo">Correo</label>
+                    <input type="email" id="correo" name="correo" placeholder="nombre@carflex.cl" required />
+                  </div>
 
-              <div class="grid-2">
-                <div class="field">
-                  <label class="required" for="correo">Correo</label>
-                  <input type="email" id="correo" name="correo" placeholder="nombre@carflex.cl" required />
-                </div>
+                  <div class="field">
+                    <label class="required" for="cliente">Cliente</label>
+                    <input list="clientes" id="cliente" name="cliente" placeholder="Busca o escribe cliente" required />
+                    <datalist id="clientes">
+                      <option value="Cliente Demo 1"></option>
+                      <option value="Cliente Demo 2"></option>
+                      <option value="Cliente Demo 3"></option>
+                      <option value="Cliente Demo 4"></option>
+                    </datalist>
+                  </div>
 
-                <div class="field">
-                  <label class="required" for="cliente">Cliente</label>
-                  <input list="clientes" id="cliente" name="cliente" placeholder="Busca o escribe cliente" required />
-                  <datalist id="clientes">
-                    <option value="Cliente Demo 1"></option>
-                    <option value="Cliente Demo 2"></option>
-                    <option value="Cliente Demo 3"></option>
-                    <option value="Cliente Demo 4"></option>
-                  </datalist>
-                </div>
-
-                <div class="field">
-                  <label class="required" for="patente">Patente</label>
-                  <input type="text" id="patente" name="patente" placeholder="Ej: DBS321" required />
-                </div>
-
-                <div class="field">
-                  <label class="required">Tipo</label>
-                  <div class="chips">
-                    <label class="chip"><input type="radio" name="tipo" value="Agendamiento" required><span>Agendamiento</span></label>
-                    <label class="chip"><input type="radio" name="tipo" value="Documentación"><span>Documentación</span></label>
-                    <label class="chip"><input type="radio" name="tipo" value="Mecánica"><span>Mecánica</span></label>
-                    <label class="chip"><input type="radio" name="tipo" value="DyP"><span>DyP</span></label>
-                    <label class="chip"><input type="radio" name="tipo" value="Otros"><span>Otros</span></label>
+                  <div class="field">
+                    <label class="required" for="patente">Patente</label>
+                    <input type="text" id="patente" name="patente" placeholder="Ej: DBS321" required />
                   </div>
                 </div>
               </div>
-            </div>
+            </section>
 
-            <div class="form-block">
-              <div>
-                <h3 class="form-block-title">Detalle del requerimiento</h3>
-                <p class="form-block-subtitle">Mientras más claro sea el contexto del caso, más rápida será la gestión operativa.</p>
+            <section class="section">
+              <div class="section-head-card">
+                <h3>Clasificación del ticket</h3>
+                <p>Selecciona el tipo de requerimiento para orientar la gestión operativa.</p>
               </div>
+              <div class="section-body">
+                <div class="type-grid">
+                  <label class="type-option">
+                    <input type="radio" name="tipo" value="Agendamiento" required>
+                    <span class="type-card">
+                      <strong>Agendamiento</strong>
+                      <span>Coordinación de fecha, gestión de agenda o reagendamiento.</span>
+                    </span>
+                  </label>
 
-              <div class="grid-2">
+                  <label class="type-option">
+                    <input type="radio" name="tipo" value="Documentación">
+                    <span class="type-card">
+                      <strong>Documentación</strong>
+                      <span>Solicitudes relacionadas con papeles, respaldo o documentación.</span>
+                    </span>
+                  </label>
+
+                  <label class="type-option">
+                    <input type="radio" name="tipo" value="Mecánica">
+                    <span class="type-card">
+                      <strong>Mecánica</strong>
+                      <span>Casos de mantención, reparación o revisión técnica mecánica.</span>
+                    </span>
+                  </label>
+
+                  <label class="type-option">
+                    <input type="radio" name="tipo" value="DyP">
+                    <span class="type-card">
+                      <strong>DyP</strong>
+                      <span>Daños y pintura, ingreso a taller o revisión de carrocería.</span>
+                    </span>
+                  </label>
+
+                  <label class="type-option">
+                    <input type="radio" name="tipo" value="Otros">
+                    <span class="type-card">
+                      <strong>Otros</strong>
+                      <span>Casos que no entren en las categorías anteriores.</span>
+                    </span>
+                  </label>
+                </div>
+              </div>
+            </section>
+
+            <section class="section">
+              <div class="section-head-card">
+                <h3>Detalle y respaldo</h3>
+                <p>Entrega el contexto necesario para revisar y derivar el ticket correctamente.</p>
+              </div>
+              <div class="section-body">
                 <div class="field field-full">
                   <label class="required" for="detalle">Detalle</label>
                   <textarea id="detalle" name="detalle" placeholder="Describe el requerimiento, contexto del caso, prioridad comercial u observaciones relevantes" required></textarea>
-                  <p class="hint">Incluye solo la información necesaria para acelerar la revisión del ticket.</p>
+                  <p class="hint">Procura indicar información concreta para reducir tiempos de revisión y evitar reprocesos.</p>
                 </div>
-              </div>
-            </div>
 
-            <div class="form-block">
-              <div>
-                <h3 class="form-block-title">Adjuntos</h3>
-                <p class="form-block-subtitle">Puedes adjuntar respaldo visual o documental relacionado con el caso.</p>
-              </div>
-
-              <div class="field field-full">
-                <label for="adjuntos">Adjuntos</label>
-                <div class="dropzone">
-                  <p><strong>Adjunta fotos o documentos</strong><br>Admite uno o varios archivos: PDF, JPG, PNG u otros soportados por tu flujo.</p>
+                <div class="upload-box">
+                  <h4>Adjuntos</h4>
+                  <p>Adjunta fotos o documentos relacionados con el caso. Se admiten uno o varios archivos: PDF, JPG, PNG u otros soportados por tu flujo.</p>
                   <input type="file" id="adjuntos" name="adjuntos" multiple />
                 </div>
               </div>
-            </div>
+            </section>
 
             <div class="actions">
-              <div class="action-note">Al enviar el ticket, la solicitud quedará disponible para seguimiento en el flujo interno de operaciones.</div>
-              <div class="action-buttons">
+              <p>Al enviar el ticket, la solicitud quedará registrada para su seguimiento dentro del flujo interno de operaciones.</p>
+              <div class="actions-right">
                 <button type="reset" class="btn btn-secondary">Limpiar</button>
                 <button type="submit" class="btn btn-primary" id="btnEnviar">Enviar ticket</button>
               </div>
             </div>
           </form>
-        </div>
+        </section>
 
-        <aside class="aside-card">
-          <h3 class="aside-title">¿Cómo funciona?</h3>
-          <p class="aside-text">Este portal está pensado para que el área comercial ingrese requerimientos de forma rápida, mientras operaciones los gestiona desde la plataforma interna.</p>
+        <aside class="side-panel">
+          <section class="side-section">
+            <h3 class="side-title">Flujo del ticket</h3>
+            <p class="side-text">Vista rápida del recorrido esperado del requerimiento una vez ingresado al sistema interno.</p>
 
-          <div class="timeline">
-            <div class="step">
-              <div class="step-badge">1</div>
-              <div>
-                <h4>Ingreso del ticket</h4>
-                <p>Comercial completa el formulario con cliente, patente, tipo y detalle del caso.</p>
+            <div class="journey">
+              <div class="journey-item">
+                <div class="journey-number">1</div>
+                <div>
+                  <h4>Ingreso</h4>
+                  <p>Comercial registra cliente, patente, tipo y detalle del caso.</p>
+                </div>
+              </div>
+
+              <div class="journey-item">
+                <div class="journey-number">2</div>
+                <div>
+                  <h4>Registro automático</h4>
+                  <p>El ticket se envía al flujo definido y queda disponible para seguimiento.</p>
+                </div>
+              </div>
+
+              <div class="journey-item">
+                <div class="journey-number">3</div>
+                <div>
+                  <h4>Gestión operativa</h4>
+                  <p>Operaciones revisa, asigna, actualiza estado y gestiona el cierre cuando corresponda.</p>
+                </div>
               </div>
             </div>
+          </section>
 
-            <div class="step">
-              <div class="step-badge">2</div>
-              <div>
-                <h4>Registro automático</h4>
-                <p>La solicitud se envía al flujo interno y queda registrada para seguimiento.</p>
+          <section class="side-section">
+            <h3 class="side-title">Buenas prácticas</h3>
+            <div class="mini-list">
+              <div class="mini-item">
+                <div class="mini-dot"></div>
+                <span>Usa un detalle claro y directo para facilitar la derivación inicial.</span>
+              </div>
+              <div class="mini-item">
+                <div class="mini-dot"></div>
+                <span>Adjunta respaldo cuando exista evidencia documental o visual del caso.</span>
+              </div>
+              <div class="mini-item">
+                <div class="mini-dot"></div>
+                <span>Selecciona correctamente el tipo de ticket para mejorar tiempos de gestión.</span>
               </div>
             </div>
+          </section>
 
-            <div class="step">
-              <div class="step-badge">3</div>
-              <div>
-                <h4>Gestión operativa</h4>
-                <p>Operaciones revisa, asigna responsable, actualiza el estado y cierra el ticket cuando corresponde.</p>
-              </div>
+          <section class="side-section">
+            <div class="helper-card">
+              <strong>Uso interno:</strong> este portal está pensado para una experiencia más cercana a una plataforma real de tickets, manteniendo exactamente los mismos campos e información base del formulario original.
             </div>
-          </div>
-
-          <div class="note">
-            <strong>Recomendación:</strong> utiliza información clara y concreta. Si existe documentación de respaldo, súbela junto con el ticket para facilitar la gestión.
-          </div>
-
-          <div class="footer-tip">
-            <strong>Mejora aplicada:</strong> ahora el formulario usa mejor el ancho de la hoja, separa visualmente los bloques y muestra una pantalla de confirmación al enviar correctamente.
-          </div>
+          </section>
         </aside>
       </section>
     </section>
 
-    <section class="success-wrap" id="pantallaExito">
-      <div class="success-card">
+    <section id="successView" class="success-view">
+      <div class="success-panel">
         <div class="success-icon">✓</div>
-        <div class="success-meta">Ticket enviado correctamente</div>
-        <h2>La solicitud fue registrada con éxito</h2>
-        <p>El ticket ya fue enviado al flujo interno de operaciones. Si necesitas cargar otro caso, puedes volver al formulario con el botón inferior.</p>
+        <div class="success-pill">Ticket registrado correctamente</div>
+        <h2>La solicitud fue enviada con éxito</h2>
+        <p>El ticket ya quedó registrado en el flujo interno de operaciones. Si necesitas ingresar un nuevo requerimiento, puedes volver a cargar otro caso desde el botón inferior.</p>
         <button type="button" class="btn btn-accent" id="btnOtroTicket">Volver a ingresar otro ticket</button>
       </div>
     </section>
@@ -796,8 +918,8 @@
 
     const form = document.getElementById('ticketForm');
     const btnEnviar = document.getElementById('btnEnviar');
-    const pantallaFormulario = document.getElementById('pantallaFormulario');
-    const pantallaExito = document.getElementById('pantallaExito');
+    const formView = document.getElementById('formView');
+    const successView = document.getElementById('successView');
     const btnOtroTicket = document.getElementById('btnOtroTicket');
 
     form.addEventListener('submit', async function (e) {
@@ -819,8 +941,8 @@
           throw new Error('No se pudo enviar el ticket');
         }
 
-        pantallaFormulario.style.display = 'none';
-        pantallaExito.style.display = 'block';
+        formView.style.display = 'none';
+        successView.style.display = 'block';
         window.scrollTo({ top: 0, behavior: 'smooth' });
         form.reset();
       } catch (error) {
