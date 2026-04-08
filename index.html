@@ -3,369 +3,348 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Sistema de Gestión Operativa | Carflex</title>
+  <title>Crear ticket de gestión operativa | Carflex</title>
   <style>
     :root {
-      --primary: #6366f1; /* Indigo moderno */
-      --primary-dark: #4f46e5;
-      --bg: #f8fafc;
-      --text-dark: #1e293b;
+      /* Colores Carflex extraídos de tu referencia */
+      --primary: #ff7225;
+      --primary-700: #e5631f;
+      --focus: rgba(255, 114, 37, 0.22);
+      --text-main: #0f172a;
       --text-muted: #64748b;
-      --border: #e2e8f0;
-      --radius-lg: 12px;
-      --radius-sm: 8px;
-      --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+      --bg-card: rgba(255, 255, 255, 0.96);
+      --border: rgba(15, 23, 42, 0.12);
+      --radius: 14px;
+      --shadow: 0 12px 35px rgba(2, 6, 23, 0.12);
     }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+    * { box-sizing: border-box; font-family: system-ui, -apple-system, sans-serif; }
 
     body {
-      font-family: 'Inter', -apple-system, sans-serif;
-      background-color: var(--bg);
-      color: var(--text-dark);
-      line-height: 1.5;
+      margin: 0;
+      /* Referencia al fondo que usas en el otro portal */
+      background: url("fondo formulario.jpg") center/cover no-repeat fixed;
+      color: var(--text-main);
+      min-height: 100vh;
       display: flex;
       justify-content: center;
       padding: 30px 20px;
     }
 
-    .app-container {
+    .container {
       width: 100%;
-      max-width: 1050px;
+      max-width: 1200px;
+      display: grid;
+      grid-template-columns: 1fr 340px;
+      gap: 25px;
     }
 
-    /* Compact Header */
+    /* Header Section */
     .header {
+      grid-column: 1 / -1;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 24px; /* Espacio reducido */
+      background: var(--bg-card);
+      padding: 15px 25px;
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+      margin-bottom: 5px;
     }
 
-    .brand {
+    .brand-container {
       display: flex;
+      gap: 20px;
       align-items: center;
-      gap: 12px;
     }
 
-    .logo {
-      width: 40px;
-      height: 40px;
-      background: var(--primary);
-      border-radius: 10px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: white;
-      font-weight: bold;
-      font-size: 20px;
+    /* Logo según tu código de referencia */
+    .brand-container img {
+      height: 28px;
+      width: auto;
+      max-width: 200px;
     }
 
-    .header-info h1 {
+    .header-text h1 {
+      margin: 0;
       font-size: 20px;
       font-weight: 700;
-      letter-spacing: -0.02em;
     }
 
-    .header-info p {
-      font-size: 13px;
-      color: var(--text-muted);
-    }
-
-    .badge-status {
-      font-size: 11px;
+    .badge-internal {
+      background: #fff;
+      color: var(--text-main);
+      padding: 6px 14px;
+      border-radius: 999px;
+      font-size: 12px;
       font-weight: 600;
-      background: #eef2ff;
-      color: var(--primary);
-      padding: 4px 12px;
-      border-radius: 20px;
-      border: 1px solid #e0e7ff;
-    }
-
-    /* Layout Grid */
-    .main-grid {
-      display: grid;
-      grid-template-columns: 1fr 300px;
-      gap: 20px;
-    }
-
-    .card {
-      background: white;
       border: 1px solid var(--border);
-      border-radius: var(--radius-lg);
-      padding: 24px;
-      box-shadow: var(--shadow);
     }
 
-    /* Form Styles */
-    .form-row {
+    /* Main Card */
+    .main-card {
+      background: var(--bg-card);
+      padding: 30px;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border);
+    }
+
+    .form-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 16px;
-      margin-bottom: 16px;
+      gap: 20px;
     }
 
     .field {
       display: flex;
       flex-direction: column;
-      gap: 6px;
+      gap: 8px;
     }
 
-    .full-width { grid-column: 1 / -1; }
+    .field.full { grid-column: 1 / -1; }
 
-    label {
-      font-size: 12px;
-      font-weight: 600;
-      color: #475569;
-      text-transform: uppercase;
-      letter-spacing: 0.025em;
+    .field label {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text-main);
     }
 
-    label span { color: #ef4444; }
+    .field label span { color: var(--primary); margin-left: 4px; }
 
     input, textarea, select {
       width: 100%;
-      padding: 10px 14px;
+      padding: 12px 16px;
       border: 1px solid var(--border);
-      border-radius: var(--radius-sm);
+      border-radius: 12px;
       font-size: 14px;
-      background-color: #fcfcfd;
-      transition: all 0.2s;
+      background: #fff;
+      transition: 0.2s;
     }
 
-    input:focus, textarea:focus {
+    input:focus, textarea:focus, select:focus {
       outline: none;
       border-color: var(--primary);
-      box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
-      background-color: #fff;
+      box-shadow: 0 0 0 4px var(--focus);
     }
 
-    /* Compact Chips */
-    .chip-container {
+    /* Chips con color corporativo */
+    .chips-group {
       display: flex;
-      flex-wrap: wrap;
       gap: 8px;
-      margin-top: 2px;
+      flex-wrap: wrap;
     }
 
-    .chip {
-      cursor: pointer;
-    }
-
-    .chip input { display: none; }
-
-    .chip span {
-      padding: 6px 12px;
+    .chip-item { cursor: pointer; }
+    .chip-item input { display: none; }
+    .chip-item span {
+      display: inline-block;
+      padding: 8px 16px;
       border: 1px solid var(--border);
-      border-radius: 6px;
+      border-radius: 10px;
       font-size: 13px;
       background: white;
+      transition: 0.2s;
+      font-weight: 600;
+    }
+
+    .chip-item input:checked + span {
+      background: var(--primary);
+      color: white;
+      border-color: var(--primary);
+    }
+
+    /* Adjuntos Dropzone mejorado */
+    .dropzone {
+      border: 2px dashed var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+      text-align: center;
+      background: rgba(255,255,255,0.5);
+    }
+
+    .btn-file {
+      background: #fff;
+      color: var(--text-main);
+      padding: 8px 16px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      font-weight: 700;
+      cursor: pointer;
+      margin-bottom: 10px;
       display: inline-block;
     }
 
-    .chip input:checked + span {
-      background: var(--text-dark);
-      color: white;
-      border-color: var(--text-dark);
-    }
-
-    /* File Dropzone Compact */
-    .dropzone {
-      border: 2px dashed var(--border);
-      border-radius: var(--radius-sm);
-      padding: 16px;
-      text-align: center;
-      background: #fbfcfe;
-    }
-
-    .btn-upload {
-      background: #eee;
-      padding: 6px 12px;
-      border-radius: 4px;
-      font-size: 12px;
-      font-weight: 600;
-      cursor: pointer;
-      margin-right: 10px;
-    }
-
-    /* Sidebar Compact */
-    .sidebar-card {
-      height: fit-content;
-    }
-
-    .sidebar-card h3 {
-      font-size: 16px;
-      margin-bottom: 16px;
+    /* Footer Buttons */
+    .form-actions {
       display: flex;
+      justify-content: space-between;
       align-items: center;
-      gap: 8px;
+      margin-top: 25px;
+      padding-top: 20px;
+      border-top: 1px solid var(--border);
     }
 
-    .step-item {
-      display: flex;
-      gap: 12px;
-      margin-bottom: 16px;
-    }
-
-    .step-number {
-      width: 24px;
-      height: 24px;
+    .btn-submit {
       background: var(--primary);
       color: white;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 11px;
-      font-weight: bold;
-      flex-shrink: 0;
-    }
-
-    .step-content h4 { font-size: 13px; margin-bottom: 2px; }
-    .step-content p { font-size: 12px; color: var(--text-muted); line-height: 1.4; }
-
-    .alert-box {
-      margin-top: 20px;
-      background: #fffbeb;
-      border: 1px solid #fde68a;
-      padding: 12px;
-      border-radius: var(--radius-sm);
-      font-size: 12px;
-      color: #92400e;
-    }
-
-    /* Action Buttons */
-    .actions {
-      display: flex;
-      justify-content: flex-end;
-      gap: 12px;
-      padding-top: 10px;
-    }
-
-    .btn {
-      padding: 10px 24px;
-      border-radius: var(--radius-sm);
-      font-size: 14px;
-      font-weight: 600;
+      border: none;
+      padding: 14px 40px;
+      border-radius: 14px;
+      font-weight: 700;
       cursor: pointer;
       transition: 0.2s;
+    }
+
+    .btn-submit:hover { background: var(--primary-700); }
+
+    .btn-clear {
+      background: transparent;
+      color: var(--text-muted);
       border: none;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: underline;
     }
 
-    .btn-ghost { background: transparent; color: var(--text-muted); }
-    .btn-ghost:hover { background: #f1f5f9; }
-
-    .btn-primary { 
-      background: var(--primary); 
-      color: white;
-      box-shadow: 0 4px 10px rgba(99, 102, 241, 0.3);
+    /* Sidebar */
+    .sidebar {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
     }
-    .btn-primary:hover { background: var(--primary-dark); transform: translateY(-1px); }
 
-    @media (max-width: 850px) {
-      .main-grid { grid-template-columns: 1fr; }
-      .form-row { grid-template-columns: 1fr; }
+    .info-card {
+      background: var(--bg-card);
+      padding: 25px;
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+    }
+
+    .info-card h3 { margin: 0 0 15px; font-size: 18px; color: var(--primary); }
+
+    .step { display: flex; gap: 12px; margin-bottom: 15px; }
+    .step-num {
+      width: 26px; height: 26px;
+      background: var(--focus);
+      color: var(--primary);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 800; font-size: 12px; flex-shrink: 0;
+    }
+
+    .step-text h4 { margin: 0; font-size: 14px; }
+    .step-text p { margin: 2px 0 0; font-size: 12px; color: var(--text-muted); line-height: 1.4; }
+
+    @media (max-width: 860px) {
+      .container { grid-template-columns: 1fr; }
+      .form-grid { grid-template-columns: 1fr; }
+      .header { flex-direction: column; align-items: flex-start; gap: 10px; }
     }
   </style>
 </head>
 <body>
 
-<div class="app-container">
+<div class="container">
   <header class="header">
-    <div class="brand">
-      <div class="logo">C</div>
-      <div class="header-info">
-        <h1>Crear ticket de gestión operativa</h1>
-        <p>Portal interno para requerimientos comerciales</p>
+    <div class="brand-container">
+      <img src="Logo carflex.jpg" alt="Carflex">
+      <div class="header-text">
+        <h1>Gestión Operativa</h1>
       </div>
     </div>
-    <div class="badge-status">SISTEMA ACTIVO</div>
+    <span class="badge-internal">Portal Interno de Tickets</span>
   </header>
 
-  <div class="main-grid">
-    <main class="card">
-      <form id="ticketForm">
-        <div class="form-row">
-          <div class="field">
-            <label>Correo Electrónico <span>*</span></label>
-            <input type="email" placeholder="nombre@carflex.cl" required>
-          </div>
-          <div class="field">
-            <label>Cliente <span>*</span></label>
-            <input type="text" placeholder="Nombre o Razón Social" required>
+  <main class="main-card">
+    <form id="ticketForm">
+      <div class="form-grid">
+        <div class="field">
+          <label>Correo Electrónico <span>*</span></label>
+          <input type="email" placeholder="nombre@carflex.cl" required>
+        </div>
+
+        <div class="field">
+          <label>Cliente / Razón Social <span>*</span></label>
+          <input type="text" placeholder="Nombre del cliente" required>
+        </div>
+
+        <div class="field">
+          <label>Patente <span>*</span></label>
+          <input type="text" id="patente" placeholder="AB1234" maxlength="6" required>
+        </div>
+
+        <div class="field">
+          <label>Tipo de Requerimiento <span>*</span></label>
+          <div class="chips-group">
+            <label class="chip-item"><input type="radio" name="tipo" value="Agendamiento" checked><span>Agendamiento</span></label>
+            <label class="chip-item"><input type="radio" name="tipo" value="Documentación"><span>Documentación</span></label>
+            <label class="chip-item"><input type="radio" name="tipo" value="Mecánica"><span>Mecánica</span></label>
+            <label class="chip-item"><input type="radio" name="tipo" value="DyP"><span>DyP</span></label>
           </div>
         </div>
 
-        <div class="form-row">
-          <div class="field">
-            <label>Patente Vehículo <span>*</span></label>
-            <input type="text" placeholder="EJ: ABCD12" required>
-          </div>
-          <div class="field">
-            <label>Tipo de Requerimiento <span>*</span></label>
-            <div class="chip-container">
-              <label class="chip"><input type="radio" name="tipo" checked><span>Agendamiento</span></label>
-              <label class="chip"><input type="radio" name="tipo"><span>Documentación</span></label>
-              <label class="chip"><input type="radio" name="tipo"><span>Mecánica</span></label>
-              <label class="chip"><input type="radio" name="tipo"><span>Otros</span></label>
-            </div>
-          </div>
+        <div class="field full">
+          <label>Detalle del Requerimiento <span>*</span></label>
+          <textarea placeholder="Describe el caso, prioridad y cualquier observación importante..." rows="4" required></textarea>
         </div>
 
-        <div class="field full-width" style="margin-bottom: 16px;">
-          <label>Detalle del requerimiento <span>*</span></label>
-          <textarea rows="3" placeholder="Contexto, prioridad y observaciones relevantes..."></textarea>
-        </div>
-
-        <div class="field full-width" style="margin-bottom: 24px;">
-          <label>Archivos adjuntos</label>
+        <div class="field full">
+          <label>Adjuntar Documentación</label>
           <div class="dropzone">
-            <label for="files" class="btn-upload">Elegir archivos</label>
-            <span style="font-size: 12px; color: var(--text-muted)">PDF, JPG, PNG (Máx 5MB)</span>
-            <input type="file" id="files" hidden multiple>
+            <label for="file-upload" class="btn-file">Seleccionar archivos</label>
+            <div id="file-name" style="font-size: 13px; color: var(--text-muted);">No hay archivos seleccionados</div>
+            <input type="file" id="file-upload" hidden multiple onchange="document.getElementById('file-name').innerText = this.files.length + ' archivos seleccionados'">
           </div>
         </div>
-
-        <div class="actions">
-          <button type="reset" class="btn btn-ghost">Limpiar Formulario</button>
-          <button type="submit" class="btn btn-primary">Crear Ticket</button>
-        </div>
-      </form>
-    </main>
-
-    <aside class="card sidebar-card">
-      <h3>Guía de flujo</h3>
-      
-      <div class="step-item">
-        <div class="step-number">1</div>
-        <div class="step-content">
-          <h4>Registro</h4>
-          <p>Ingresa los datos críticos del caso comercial.</p>
-        </div>
       </div>
 
-      <div class="step-item">
-        <div class="step-number">2</div>
-        <div class="step-content">
-          <h4>Notificación</h4>
-          <p>Operaciones recibe una alerta automática.</p>
+      <div class="form-actions">
+        <button type="reset" class="btn-clear">Limpiar formulario</button>
+        <button type="submit" class="btn-submit">Enviar Ticket</button>
+      </div>
+    </form>
+  </main>
+
+  <aside class="sidebar">
+    <div class="info-card">
+      <h3>Flujo de Atención</h3>
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-text">
+          <h4>Ingreso</h4>
+          <p>Se registra el requerimiento en el sistema central.</p>
         </div>
       </div>
-
-      <div class="step-item">
-        <div class="step-number">3</div>
-        <div class="step-content">
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-text">
           <h4>Asignación</h4>
-          <p>Se deriva a un técnico según la categoría.</p>
+          <p>Operaciones deriva al área correspondiente.</p>
         </div>
       </div>
-
-      <div class="alert-box">
-        <strong>Nota:</strong> Los tickets creados después de las 18:00 serán procesados el siguiente día hábil.
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-text">
+          <h4>Resolución</h4>
+          <p>Recibirás la confirmación vía correo corporativo.</p>
+        </div>
       </div>
-    </aside>
-  </div>
+      <div style="margin-top: 15px; font-size: 12px; color: var(--text-muted); border-top: 1px solid var(--border); padding-top: 10px;">
+        Soporte Carflex: Responde este formulario para incidencias técnicas.
+      </div>
+    </div>
+  </aside>
 </div>
+
+<script>
+  // Validación de patente igual a tu referencia
+  document.getElementById("patente").addEventListener("input", e=>{
+    e.target.value = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g,"").slice(0,6);
+  });
+</script>
 
 </body>
 </html>
