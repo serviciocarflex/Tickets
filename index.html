@@ -366,7 +366,7 @@
               <span id="file-name" style="font-size: 12px; color: var(--text-muted)">No se ha seleccionado ningún archivo</span>
             </div>
             <p style="margin-top: 8px; font-size: 11px; color: var(--text-muted); text-align: center;">Adjunta archivos - PDF, JPG, PNG (Máx 10MB)</p>
-            <input type="file" id="file-upload" hidden multiple onchange="document.getElementById('file-name').innerText = this.files.length + ' archivos seleccionados'">
+            <input type="file" id="file-upload" name="archivos" hidden multiple onchange="document.getElementById('file-name').innerText = this.files.length + ' archivos seleccionados'">
           </div>
         </div>
       </div>
@@ -430,25 +430,25 @@
     btn.innerText = 'Enviando...';
     btn.disabled = true;
 
+    // Usamos FormData directamente para incluir los archivos binarios
     const formData = new FormData(ticketForm);
-    const data = Object.fromEntries(formData.entries());
 
     try {
       const response = await fetch(WEBHOOK_URL, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data)
+        // NO poner 'Content-Type': 'application/json' porque estamos enviando archivos
+        body: formData 
       });
 
       if (response.ok) {
-        alert('Ticket enviado correctamente');
+        alert('Ticket y adjuntos enviados correctamente');
         ticketForm.reset();
         document.getElementById('file-name').innerText = "No se ha seleccionado ningún archivo";
       } else {
         alert('Error al enviar el ticket');
       }
     } catch (error) {
-      alert('Error de conexión con el servidor');
+      alert('Error de conexión con el servidor (ngrok)');
     } finally {
       btn.innerText = 'Crear Ticket';
       btn.disabled = false;
