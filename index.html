@@ -6,37 +6,34 @@
   <title>Crear ticket de gestión operativa | Carflex</title>
   <style>
     :root {
-      /* Colores Carflex extraídos de tu referencia */
-      --primary: #ff7225;
-      --primary-700: #e5631f;
+      --primary: #ff7225; /* Naranja Carflex */
+      --primary-hover: #e5631f;
       --focus: rgba(255, 114, 37, 0.22);
-      --text-main: #0f172a;
+      --text-main: #1e293b;
       --text-muted: #64748b;
-      --bg-card: rgba(255, 255, 255, 0.96);
-      --border: rgba(15, 23, 42, 0.12);
+      --border: #e2e8f0;
       --radius: 14px;
-      --shadow: 0 12px 35px rgba(2, 6, 23, 0.12);
+      --bg-card: rgba(255, 255, 255, 0.97);
     }
 
-    * { box-sizing: border-box; font-family: system-ui, -apple-system, sans-serif; }
+    * { box-sizing: border-box; font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
 
     body {
       margin: 0;
-      /* Referencia al fondo que usas en el otro portal */
       background: url("fondo formulario.jpg") center/cover no-repeat fixed;
       color: var(--text-main);
       min-height: 100vh;
       display: flex;
       justify-content: center;
-      padding: 30px 20px;
+      padding: 40px 20px;
     }
 
     .container {
       width: 100%;
-      max-width: 1200px;
+      max-width: 1150px;
       display: grid;
-      grid-template-columns: 1fr 340px;
-      gap: 25px;
+      grid-template-columns: 1fr 320px;
+      gap: 30px;
     }
 
     /* Header Section */
@@ -44,39 +41,42 @@
       grid-column: 1 / -1;
       display: flex;
       justify-content: space-between;
-      align-items: center;
+      align-items: flex-start;
+      margin-bottom: 10px;
       background: var(--bg-card);
-      padding: 15px 25px;
+      padding: 20px;
       border-radius: var(--radius);
-      border: 1px solid var(--border);
-      box-shadow: var(--shadow);
-      margin-bottom: 5px;
+      border: 1px solid rgba(15,23,42,.08);
     }
 
     .brand-container {
       display: flex;
-      gap: 20px;
+      gap: 15px;
       align-items: center;
     }
 
-    /* Logo según tu código de referencia */
     .brand-container img {
-      height: 28px;
+      height: 30px;
       width: auto;
-      max-width: 200px;
     }
 
     .header-text h1 {
       margin: 0;
-      font-size: 20px;
+      font-size: 24px;
       font-weight: 700;
+    }
+
+    .header-text p {
+      margin: 4px 0 0;
+      color: var(--text-muted);
+      font-size: 14px;
     }
 
     .badge-internal {
       background: #fff;
       color: var(--text-main);
       padding: 6px 14px;
-      border-radius: 999px;
+      border-radius: 20px;
       font-size: 12px;
       font-weight: 600;
       border: 1px solid var(--border);
@@ -86,9 +86,9 @@
     .main-card {
       background: var(--bg-card);
       padding: 30px;
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      border: 1px solid var(--border);
+      border-radius: 20px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+      border: 1px solid rgba(15,23,42,.08);
     }
 
     .form-grid {
@@ -101,6 +101,7 @@
       display: flex;
       flex-direction: column;
       gap: 8px;
+      margin-bottom: 20px;
     }
 
     .field.full { grid-column: 1 / -1; }
@@ -109,15 +110,20 @@
       font-size: 14px;
       font-weight: 700;
       color: var(--text-main);
+      display: flex;
+      align-items: center;
+      gap: 8px;
     }
 
-    .field label span { color: var(--primary); margin-left: 4px; }
+    .field label span.req { color: var(--primary); }
+
+    .icon { font-style: normal; }
 
     input, textarea, select {
       width: 100%;
       padding: 12px 16px;
       border: 1px solid var(--border);
-      border-radius: 12px;
+      border-radius: var(--radius);
       font-size: 14px;
       background: #fff;
       transition: 0.2s;
@@ -129,10 +135,10 @@
       box-shadow: 0 0 0 4px var(--focus);
     }
 
-    /* Chips con color corporativo */
+    /* Chips con Naranja Carflex */
     .chips-group {
       display: flex;
-      gap: 8px;
+      gap: 10px;
       flex-wrap: wrap;
     }
 
@@ -142,7 +148,7 @@
       display: inline-block;
       padding: 8px 16px;
       border: 1px solid var(--border);
-      border-radius: 10px;
+      border-radius: 20px;
       font-size: 13px;
       background: white;
       transition: 0.2s;
@@ -155,79 +161,69 @@
       border-color: var(--primary);
     }
 
-    /* Adjuntos Dropzone mejorado */
+    /* Adjuntos */
     .dropzone {
       border: 2px dashed var(--border);
       border-radius: var(--radius);
-      padding: 20px;
+      padding: 25px;
       text-align: center;
       background: rgba(255,255,255,0.5);
     }
 
     .btn-file {
-      background: #fff;
-      color: var(--text-main);
+      background: var(--primary);
+      color: white;
       padding: 8px 16px;
-      border-radius: 10px;
-      border: 1px solid var(--border);
-      font-weight: 700;
-      cursor: pointer;
-      margin-bottom: 10px;
+      border-radius: 8px;
       display: inline-block;
+      margin-right: 10px;
+      font-weight: 600;
+      cursor: pointer;
     }
 
     /* Footer Buttons */
     .form-actions {
       display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-top: 25px;
-      padding-top: 20px;
-      border-top: 1px solid var(--border);
+      gap: 15px;
+      margin-top: 20px;
     }
 
     .btn-submit {
+      flex: 1;
       background: var(--primary);
       color: white;
       border: none;
-      padding: 14px 40px;
-      border-radius: 14px;
+      padding: 14px;
+      border-radius: 20px;
       font-weight: 700;
       cursor: pointer;
-      transition: 0.2s;
+      box-shadow: 0 4px 12px rgba(255, 114, 37, 0.3);
+      font-size: 15px;
     }
 
-    .btn-submit:hover { background: var(--primary-700); }
-
     .btn-clear {
-      background: transparent;
+      background: #f1f5f9;
       color: var(--text-muted);
       border: none;
+      padding: 14px 25px;
+      border-radius: 20px;
       font-weight: 600;
       cursor: pointer;
-      text-decoration: underline;
     }
 
     /* Sidebar */
-    .sidebar {
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
-    }
-
     .info-card {
       background: var(--bg-card);
       padding: 25px;
-      border-radius: var(--radius);
-      border: 1px solid var(--border);
-      box-shadow: var(--shadow);
+      border-radius: 20px;
+      border: 1px solid rgba(15,23,42,.08);
     }
 
     .info-card h3 { margin: 0 0 15px; font-size: 18px; color: var(--primary); }
 
-    .step { display: flex; gap: 12px; margin-bottom: 15px; }
+    .step { display: flex; gap: 15px; margin-bottom: 20px; }
     .step-num {
-      width: 26px; height: 26px;
+      width: 28px; height: 28px;
       background: var(--focus);
       color: var(--primary);
       border-radius: 50%;
@@ -236,12 +232,21 @@
     }
 
     .step-text h4 { margin: 0; font-size: 14px; }
-    .step-text p { margin: 2px 0 0; font-size: 12px; color: var(--text-muted); line-height: 1.4; }
+    .step-text p { margin: 4px 0 0; font-size: 12px; color: var(--text-muted); line-height: 1.4; }
+
+    .recommendation {
+      background: #f8fafc;
+      padding: 15px;
+      border-radius: 12px;
+      font-size: 12px;
+      line-height: 1.5;
+      border-left: 4px solid var(--primary);
+    }
 
     @media (max-width: 860px) {
       .container { grid-template-columns: 1fr; }
       .form-grid { grid-template-columns: 1fr; }
-      .header { flex-direction: column; align-items: flex-start; gap: 10px; }
+      .header { flex-direction: column; gap: 15px; }
     }
   </style>
 </head>
@@ -252,95 +257,104 @@
     <div class="brand-container">
       <img src="Logo carflex.jpg" alt="Carflex">
       <div class="header-text">
-        <h1>Gestión Operativa</h1>
+        <h1>Crear ticket de gestión operativa</h1>
+        <p>Registra y gestiona requerimientos comerciales para el equipo de operaciones</p>
       </div>
     </div>
-    <span class="badge-internal">Portal Interno de Tickets</span>
+    <div class="badge-internal">● Mesa interna</div>
   </header>
 
   <main class="main-card">
     <form id="ticketForm">
       <div class="form-grid">
         <div class="field">
-          <label>Correo Electrónico <span>*</span></label>
+          <label><span class="icon">✉</span> Correo <span class="req">*</span></label>
           <input type="email" placeholder="nombre@carflex.cl" required>
         </div>
 
         <div class="field">
-          <label>Cliente / Razón Social <span>*</span></label>
-          <input type="text" placeholder="Nombre del cliente" required>
+          <label><span class="icon">👤</span> Cliente <span class="req">*</span></label>
+          <input type="text" placeholder="Busca o escribe cliente" required>
         </div>
 
         <div class="field">
-          <label>Patente <span>*</span></label>
-          <input type="text" id="patente" placeholder="AB1234" maxlength="6" required>
+          <label><span class="icon">📄</span> Patente <span class="req">*</span></label>
+          <input type="text" id="patente" placeholder="Ej: DBS321" maxlength="6" required>
         </div>
 
         <div class="field">
-          <label>Tipo de Requerimiento <span>*</span></label>
+          <label><span class="icon">♡</span> Tipo <span class="req">*</span></label>
           <div class="chips-group">
             <label class="chip-item"><input type="radio" name="tipo" value="Agendamiento" checked><span>Agendamiento</span></label>
             <label class="chip-item"><input type="radio" name="tipo" value="Documentación"><span>Documentación</span></label>
             <label class="chip-item"><input type="radio" name="tipo" value="Mecánica"><span>Mecánica</span></label>
             <label class="chip-item"><input type="radio" name="tipo" value="DyP"><span>DyP</span></label>
+            <label class="chip-item"><input type="radio" name="tipo" value="Otros"><span>Otros</span></label>
           </div>
         </div>
 
         <div class="field full">
-          <label>Detalle del Requerimiento <span>*</span></label>
-          <textarea placeholder="Describe el caso, prioridad y cualquier observación importante..." rows="4" required></textarea>
+          <label><span class="icon">📝</span> Detalle <span class="req">*</span></label>
+          <textarea placeholder="Describe el requerimiento, contexto y prioridad" rows="4" required></textarea>
         </div>
 
         <div class="field full">
-          <label>Adjuntar Documentación</label>
+          <label><span class="icon">📎</span> Adjuntos</label>
           <div class="dropzone">
-            <label for="file-upload" class="btn-file">Seleccionar archivos</label>
-            <div id="file-name" style="font-size: 13px; color: var(--text-muted);">No hay archivos seleccionados</div>
+            <div class="dropzone-content">
+              <label for="file-upload" class="btn-file">Elegir archivos</label>
+              <span id="file-name" style="font-size: 13px; color: var(--text-muted)">No se ha seleccionado ningún archivo</span>
+              <p style="margin-top: 10px; font-size: 11px; color: var(--text-muted)">Adjunta archivos - PDF, JPG, PNG</p>
+            </div>
             <input type="file" id="file-upload" hidden multiple onchange="document.getElementById('file-name').innerText = this.files.length + ' archivos seleccionados'">
           </div>
         </div>
       </div>
 
       <div class="form-actions">
-        <button type="reset" class="btn-clear">Limpiar formulario</button>
-        <button type="submit" class="btn-submit">Enviar Ticket</button>
+        <button type="reset" class="btn-clear">Limpiar</button>
+        <button type="submit" class="btn-submit">Enviar ticket</button>
       </div>
     </form>
   </main>
 
   <aside class="sidebar">
     <div class="info-card">
-      <h3>Flujo de Atención</h3>
+      <h3>¿Cómo funciona?</h3>
+      <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 25px;">Portal interno para ingreso rápido de requerimientos comerciales</p>
+      
       <div class="step">
         <div class="step-num">1</div>
         <div class="step-text">
-          <h4>Ingreso</h4>
-          <p>Se registra el requerimiento en el sistema central.</p>
+          <h4>Ingreso del ticket</h4>
+          <p>Completa formulario con cliente, patente, tipo y detalle</p>
         </div>
       </div>
+
       <div class="step">
         <div class="step-num">2</div>
         <div class="step-text">
-          <h4>Asignación</h4>
-          <p>Operaciones deriva al área correspondiente.</p>
+          <h4>Registro automático</h4>
+          <p>Se envía al flujo interno para seguimiento</p>
         </div>
       </div>
+
       <div class="step">
         <div class="step-num">3</div>
         <div class="step-text">
-          <h4>Resolución</h4>
-          <p>Recibirás la confirmación vía correo corporativo.</p>
+          <h4>Gestión operativa</h4>
+          <p>Operaciones asigna, actualiza y cierra el ticket</p>
         </div>
       </div>
-      <div style="margin-top: 15px; font-size: 12px; color: var(--text-muted); border-top: 1px solid var(--border); padding-top: 10px;">
-        Soporte Carflex: Responde este formulario para incidencias técnicas.
+
+      <div class="recommendation">
+        <strong>Recomendación:</strong> información clara y documentación adjunta facilitan la gestión.
       </div>
     </div>
   </aside>
 </div>
 
 <script>
-  // Validación de patente igual a tu referencia
   document.getElementById("patente").addEventListener("input", e=>{
     e.target.value = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g,"").slice(0,6);
   });
