@@ -21,9 +21,11 @@
       --purple-focus: #8b5cf6;
       --soft-blue-bg: #eff6ff;
       --soft-blue-text: #3b82f6;
-      --airtable-bg: #f0f9ff;
+      /* Colores para el cuadrante resaltado */
+      --airtable-bg: #e0f2fe;
       --airtable-text: #0369a1;
-      --airtable-border: #bae6fd;
+      --airtable-border: #7dd3fc;
+      --airtable-accent: #0284c7;
     }
 
     * { box-sizing: border-box; font-family: 'Inter', system-ui, -apple-system, sans-serif; }
@@ -233,27 +235,32 @@
     .step-text h4 { margin: 0; font-size: 13px; font-weight: 600; color: var(--text-main); }
     .step-text p { margin: 2px 0 0; font-size: 12px; color: var(--text-muted); line-height: 1.4; }
 
-    /* Nueva sección Airtable */
+    /* CUADRANTE AIRTABLE RESALTADO */
     .airtable-section {
       background: var(--airtable-bg);
       padding: 20px;
       border-radius: 10px;
       border: 1px solid var(--airtable-border);
+      border-left: 5px solid var(--airtable-accent); /* Borde lateral para énfasis */
       text-align: center;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
     }
 
     .airtable-section h4 {
-      margin: 0 0 10px;
-      font-size: 14px;
+      margin: 0 0 8px;
+      font-size: 15px;
       color: var(--airtable-text);
-      font-weight: 700;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
     }
 
     .airtable-section p {
-      font-size: 12px;
-      color: #475569;
+      font-size: 12.5px;
+      color: #334155;
       margin-bottom: 15px;
-      line-height: 1.4;
+      line-height: 1.5;
+      font-weight: 500;
     }
 
     .btn-airtable {
@@ -261,20 +268,22 @@
       align-items: center;
       justify-content: center;
       gap: 8px;
-      background: #fff;
-      color: var(--airtable-text);
+      background: var(--airtable-accent);
+      color: #fff;
       text-decoration: none;
-      padding: 10px;
+      padding: 12px;
       border-radius: 6px;
       font-size: 13px;
       font-weight: 700;
-      border: 1px solid var(--airtable-border);
+      border: none;
       transition: 0.2s;
+      box-shadow: 0 2px 4px rgba(2, 132, 199, 0.2);
     }
 
     .btn-airtable:hover {
       background: var(--airtable-text);
-      color: #fff;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 8px rgba(2, 132, 199, 0.3);
     }
 
     @media (max-width: 860px) {
@@ -384,9 +393,9 @@
       <div class="airtable-section">
         <h4>Consulta de Estados</h4>
         <p>¿Quieres ver tus tickets pendientes o cerrados? Filtra por tu correo en el portal comercial.</p>
-        <a href="https://airtable.com/invite/l?inviteId=invMtt0DFvaYjnKJn&inviteToken=97a3919af693a4359ab444017dd1f8429baefe6a399b2a8f91cf629e89bf0b1f&utm_medium=email&utm_source=product_team&utm_content=transactional-alerts" target="_blank" class="btn-airtable">
+        <a href="https://airtable.com/appWtUxJCERJPn1cf/shrfRir5Mr0lfD2pS" target="_blank" class="btn-airtable">
           <svg class="icon-svg" style="stroke: currentColor;"><use href="#icon-external"></use></svg>
-          Portal Comercial
+          Ir al Portal Comercial
         </a>
       </div>
     </div>
@@ -404,7 +413,6 @@
 </svg>
 
 <script>
-  // Validación de Patente: 4 letras y 2 números
   document.getElementById("patente").addEventListener("input", e => {
     let val = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, "");
     let letters = val.slice(0, 4).replace(/[^A-Z]/g, "");
