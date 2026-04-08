@@ -22,11 +22,10 @@
       --soft-blue-bg: #eff6ff;
       --soft-blue-text: #3b82f6;
       
-      /* Colores para el cuadrante de Airtable (Actualizados) */
       --airtable-bg: #f8fafc;
       --airtable-text: #1e293b;
       --airtable-border: #cbd5e1;
-      --airtable-btn: #f97316; /* Naranja para resaltar la acción */
+      --airtable-btn: #f97316;
       --airtable-btn-hover: #ea580c;
     }
 
@@ -78,6 +77,7 @@
       padding: 30px;
       border-radius: var(--radius-lg);
       border: 1px solid var(--border);
+      position: relative;
     }
 
     .form-grid {
@@ -118,11 +118,7 @@
       transition: 0.1s;
     }
 
-    /* Ajuste para el campo de detalle fijo */
-    textarea {
-      resize: none; 
-      overflow-y: auto;
-    }
+    textarea { resize: none; overflow-y: auto; }
 
     input:focus, textarea:focus {
       outline: none;
@@ -208,6 +204,33 @@
       font-size: 14px;
     }
 
+    /* ESTADO DE ÉXITO - REFERENCIA OTRA WEB */
+    .success-container {
+      display: none;
+      text-align: center;
+      padding: 40px 0;
+    }
+
+    .success-container h2 {
+      color: var(--primary);
+      margin-bottom: 10px;
+    }
+
+    .success-container p {
+      color: var(--text-muted);
+      margin-bottom: 25px;
+    }
+
+    .btn-reload {
+      background: var(--purple-focus);
+      color: white;
+      border: none;
+      padding: 12px 25px;
+      border-radius: var(--radius-sm);
+      font-weight: 700;
+      cursor: pointer;
+    }
+
     .sidebar { display: flex; flex-direction: column; gap: 20px; }
     .info-card {
       background: var(--bg-card);
@@ -232,7 +255,6 @@
     .step-text h4 { margin: 0; font-size: 13px; font-weight: 600; color: var(--text-main); }
     .step-text p { margin: 2px 0 0; font-size: 12px; color: var(--text-muted); line-height: 1.4; }
 
-    /* CUADRANTE AIRTABLE ACTUALIZADO */
     .airtable-section {
       background: var(--airtable-bg);
       padding: 20px;
@@ -272,9 +294,7 @@
       transition: background 0.2s;
     }
 
-    .btn-airtable:hover {
-      background: var(--airtable-btn-hover);
-    }
+    .btn-airtable:hover { background: var(--airtable-btn-hover); }
 
     @media (max-width: 860px) {
       .container { grid-template-columns: 1fr; }
@@ -293,7 +313,7 @@
         <p>Registra y gestiona requerimientos comerciales para el equipo de operaciones</p>
       </div>
     </div>
-    </header>
+  </header>
 
   <main class="main-card">
     <form id="ticketForm">
@@ -310,7 +330,7 @@
 
         <div class="field">
           <label><svg class="icon-svg"><use href="#icon-car"></use></svg> Patente <span style="color:#dc2626">*</span></label>
-          <input type="text" id="patente" name="patente" placeholder="Ej: ABCD12" maxlength="6" pattern="[A-Z]{4}[0-9]{2}" title="4 letras y 2 números" required>
+          <input type="text" id="patente" name="patente" placeholder="Ej: ABCD12" maxlength="6" required>
         </div>
 
         <div class="field">
@@ -337,7 +357,7 @@
               <label for="file-upload" class="btn-file">Elegir archivos</label>
               <span id="file-name" style="font-size: 12px; color: var(--text-muted)">No se ha seleccionado ningún archivo</span>
             </div>
-            <p style="margin-top: 8px; font-size: 11px; color: var(--text-muted); text-align: center;">Adjunta archivos - PDF, JPG, PNG (Máx 10MB)</p>
+            <p style="margin-top: 8px; font-size: 11px; color: var(--text-muted); text-align: center;">PDF, JPG, PNG (Máx 10MB)</p>
             <input type="file" id="file-upload" hidden multiple onchange="document.getElementById('file-name').innerText = this.files.length + ' archivos seleccionados'">
           </div>
         </div>
@@ -348,6 +368,13 @@
         <button type="submit" class="btn-submit" id="submitBtn">Crear Ticket</button>
       </div>
     </form>
+
+    <div id="successMessage" class="success-container">
+      <div style="font-size: 50px; margin-bottom: 20px;">✅</div>
+      <h2>¡Ticket creado con éxito!</h2>
+      <p>El requerimiento ha sido ingresado al sistema para su gestión operativa.</p>
+      <button type="button" class="btn-reload" onclick="window.location.reload()">Crear otro ticket</button>
+    </div>
   </main>
 
   <aside class="sidebar">
@@ -381,9 +408,8 @@
 
       <div class="airtable-section">
         <h4>Consulta de Estados</h4>
-        <p>¿Quieres ver tus tickets pendientes o cerrados? Filtra por tu correo en el portal comercial.</p>
+        <p>¿Quieres ver tus tickets pendientes o cerrados?</p>
         <a href="https://airtable.com/appWtUxJCERJPn1cf/shrfRir5Mr0lfD2pS" target="_blank" class="btn-airtable">
-          <svg class="icon-svg" style="stroke: currentColor;"><use href="#icon-external"></use></svg>
           Ir al Portal Comercial
         </a>
       </div>
@@ -398,60 +424,50 @@
   <symbol id="icon-tag" viewBox="0 0 24 24"><path d="M12 2H2v10l9.29 9.29c.94.94 2.48.94 3.42 0l6.58-6.58c.94-.94.94-2.48 0-3.42L12 2Z"/><path d="M7 7h.01"/></symbol>
   <symbol id="icon-edit" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></symbol>
   <symbol id="icon-paperclip" viewBox="0 0 24 24"><path d="m21.44 11.05-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></symbol>
-  <symbol id="icon-external" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></symbol>
 </svg>
 
 <script>
+  // Validación de patente
   document.getElementById("patente").addEventListener("input", e => {
-    let val = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, "");
-    let letters = val.slice(0, 4).replace(/[^A-Z]/g, "");
-    let numbers = val.slice(4, 6).replace(/[^0-9]/g, "");
-    e.target.value = (letters + numbers).slice(0, 6);
+    e.target.value = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, "").slice(0, 6);
   });
 
   const ticketForm = document.getElementById('ticketForm');
+  const successMessage = document.getElementById('successMessage');
   const WEBHOOK_URL = 'https://uncollapsible-melodiously-chung.ngrok-free.dev/webhook/tickets';
 
   ticketForm.addEventListener('submit', async (e) => {
     e.preventDefault();
 
-    const tipoSelected = ticketForm.querySelector('input[name="tipo"]:checked');
-    if (!tipoSelected) {
-      alert("Por favor, selecciona un Tipo de ticket.");
-      return;
-    }
-
-    const patenteInput = document.getElementById('patente');
-    if (!/^[A-Z]{4}[0-9]{2}$/.test(patenteInput.value)) {
-      alert("La patente debe ser 4 letras y 2 números (Ej: ABCD12)");
-      return;
-    }
-
     const btn = document.getElementById('submitBtn');
     btn.innerText = 'Enviando...';
     btn.disabled = true;
 
-    const formData = new FormData();
-    formData.append('correo', ticketForm.correo.value);
-    formData.append('cliente', ticketForm.cliente.value);
-    formData.append('patente', patenteInput.value);
-    formData.append('tipo', tipoSelected.value);
-    formData.append('detalle', ticketForm.detalle.value);
-
+    const formData = new FormData(ticketForm);
+    
+    // Adjuntos manuales para asegurar compatibilidad
     const fileInput = document.getElementById('file-upload');
     for (let i = 0; i < fileInput.files.length; i++) {
-      formData.append(`adjuntos_${i}`, fileInput.files[i]);
+      formData.append(`adjunto_${i}`, fileInput.files[i]);
     }
 
     try {
       const response = await fetch(WEBHOOK_URL, { method: 'POST', body: formData });
+      
       if (response.ok) {
-        alert('Ticket creado con éxito');
-        ticketForm.reset();
-        document.getElementById('file-name').innerText = "No se ha seleccionado ningún archivo";
-      } else { alert('Error en el servidor'); }
-    } catch (error) { alert('Error de conexión'); }
-    finally { btn.innerText = 'Crear Ticket'; btn.disabled = false; }
+        // CAMBIO: Ocultar form y mostrar éxito sin usar ALERT
+        ticketForm.style.display = 'none';
+        successMessage.style.display = 'block';
+      } else {
+        alert('Error al procesar el ticket en el servidor.');
+        btn.innerText = 'Crear Ticket';
+        btn.disabled = false;
+      }
+    } catch (error) {
+      alert('Error de conexión con el servidor.');
+      btn.innerText = 'Crear Ticket';
+      btn.disabled = false;
+    }
   });
 </script>
 
