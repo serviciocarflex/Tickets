@@ -3,667 +3,458 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Ticketera Operaciones | Carflex</title>
+  <title>Crear ticket de gestión operativa | Carflex</title>
   <style>
     :root {
-      --primary: #6d28d9;
-      --primary-2: #7c3aed;
-      --dark: #0f172a;
-      --muted: #64748b;
-      --line: #d8e1ee;
-      --bg: #f8fafc;
-      --card: rgba(255, 255, 255, 0.92);
-      --success: #16a34a;
+      /* Paleta neutra profesional (estilo SaaS gris/azul) */
+      --primary: #334155; /* Gris slate oscuro */
+      --primary-hover: #1e293b;
+      --bg-body: #f1f5f9; /* Gris muy claro de fondo */
+      --bg-card: #ffffff;
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      --border: #e2e8f0;
+      --radius-lg: 12px;
+      --radius-sm: 8px;
+      
+      /* Color de acento solo para el botón (Azul profesional) */
+      --accent: #2563eb; 
+      --accent-hover: #1d4ed8;
+      --focus-ring: rgba(139, 92, 246, 0.2); /* CAMBIADO A MORADO LEVE */
+      --purple-focus: #8b5cf6; /* NUEVO: Morado para bordes */
+
+      /* Colores específicos solicitados para Sidebar */
+      --soft-blue-bg: #eff6ff;
+      --soft-blue-text: #3b82f6;
+      --soft-orange-bg: #fff7ed;
+      --soft-orange-border: #ffedd5;
+      --soft-orange-text: #c2410c;
     }
 
-    * { box-sizing: border-box; }
+    * { box-sizing: border-box; font-family: 'Inter', system-ui, -apple-system, sans-serif; }
 
     body {
       margin: 0;
-      font-family: Inter, "Segoe UI", Arial, sans-serif;
-      color: var(--dark);
-      background:
-        radial-gradient(circle at top left, rgba(109, 40, 217, 0.18), transparent 24%),
-        radial-gradient(circle at top right, rgba(255, 114, 37, 0.10), transparent 20%),
-        linear-gradient(180deg, #eef2ff 0%, #f8fafc 36%, #ffffff 100%);
+      background-color: var(--bg-body);
+      color: var(--text-main);
       min-height: 100vh;
-    }
-
-    .shell {
-      width: min(1260px, calc(100% - 36px));
-      margin: 24px auto 30px;
-    }
-
-    .header-row {
       display: flex;
-      align-items: flex-start;
+      justify-content: center;
+      padding: 40px 20px;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 1150px;
+      display: grid;
+      grid-template-columns: 1fr 300px;
+      gap: 25px;
+    }
+
+    /* Header Section - Limpio y Profesional */
+    .header {
+      grid-column: 1 / -1;
+      display: flex;
       justify-content: space-between;
-      gap: 18px;
-      margin-bottom: 26px;
-    }
-
-    .brand {
-      display: flex;
-      align-items: flex-start;
-      gap: 14px;
-      min-width: 0;
-    }
-
-    .brand img {
-      width: 50px;
-      height: 50px;
-      object-fit: contain;
-      background: linear-gradient(180deg, var(--primary), var(--primary-2));
-      border-radius: 14px;
-      padding: 8px;
-      box-shadow: 0 8px 18px rgba(109, 40, 217, 0.18);
-      flex-shrink: 0;
-    }
-
-    .brand-copy h1 {
-      margin: 0;
-      font-size: 31px;
-      line-height: 1.08;
-      letter-spacing: -0.03em;
-    }
-
-    .brand-copy p {
-      margin: 8px 0 0;
-      color: var(--muted);
-      font-size: 15px;
-      line-height: 1.5;
-    }
-
-    .badge {
-      display: inline-flex;
       align-items: center;
-      gap: 8px;
-      background: rgba(109, 40, 217, 0.08);
-      color: var(--primary);
-      border: 1px solid rgba(109, 40, 217, 0.14);
-      padding: 10px 14px;
-      border-radius: 999px;
-      font-size: 13px;
+      margin-bottom: 15px;
+      background: var(--bg-card);
+      padding: 20px;
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border);
+    }
+
+    .brand-container {
+      display: flex;
+      gap: 15px;
+      align-items: center;
+    }
+
+    .brand-container img {
+      height: 25px;
+      width: auto;
+    }
+
+    .header-text h1 {
+      margin: 0;
+      font-size: 22px;
       font-weight: 700;
-      white-space: nowrap;
+      color: var(--primary);
     }
 
-    .badge::before {
-      content: "";
-      width: 7px;
-      height: 7px;
-      border-radius: 999px;
-      background: #a855f7;
-      display: inline-block;
+    .header-text p {
+      margin: 4px 0 0;
+      color: var(--text-muted);
+      font-size: 14px;
     }
 
-    .workspace {
-      display: grid;
-      grid-template-columns: minmax(0, 1.35fr) minmax(320px, 0.65fr);
-      gap: 24px;
-      align-items: start;
+    .badge-internal {
+      background: #f8fafc;
+      color: var(--text-muted);
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 600;
+      border: 1px solid var(--border);
+      text-transform: uppercase;
     }
 
-    .form-card,
-    .aside-card,
-    .success-card {
-      background: rgba(255, 255, 255, 0.88);
-      border: 1px solid rgba(255,255,255,0.7);
-      box-shadow: 0 18px 45px rgba(15, 23, 42, 0.07);
-      backdrop-filter: blur(14px);
-      border-radius: 26px;
+    /* Main Card */
+    .main-card {
+      background: var(--bg-card);
+      padding: 30px;
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border);
     }
 
-    .form-card {
-      padding: 26px;
-      min-height: 620px;
-    }
-
-    .aside-card {
-      padding: 26px 20px;
-    }
-
-    form {
-      display: grid;
-      gap: 18px;
-    }
-
-    .grid-2 {
+    .form-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 18px;
+      gap: 20px;
     }
 
     .field {
       display: flex;
       flex-direction: column;
       gap: 8px;
+      margin-bottom: 20px;
     }
+
+    .field.full { grid-column: 1 / -1; }
 
     .field label {
-      display: flex;
-      align-items: center;
-      gap: 7px;
       font-size: 14px;
-      font-weight: 700;
-      color: #334155;
-    }
-
-    .field label svg {
-      width: 14px;
-      height: 14px;
-      color: #475569;
-      flex-shrink: 0;
-    }
-
-    .required::after {
-      content: " *";
-      color: #dc2626;
-    }
-
-    input[type="text"],
-    input[type="email"],
-    textarea,
-    select {
-      width: 100%;
-      border: 2px solid var(--line);
-      border-radius: 20px;
-      padding: 14px 15px;
-      font-size: 14px;
-      color: var(--dark);
-      background: rgba(255,255,255,0.9);
-      outline: none;
-      transition: 0.2s ease;
-      box-shadow: inset 0 1px 0 rgba(255,255,255,0.5);
-    }
-
-    input:focus,
-    textarea:focus,
-    select:focus {
-      border-color: rgba(109, 40, 217, 0.45);
-      box-shadow: 0 0 0 4px rgba(109, 40, 217, 0.08);
-    }
-
-    input[list] {
-      width: 100%;
-      border: 2px solid var(--line);
-      border-radius: 20px;
-      padding: 14px 15px;
-      font-size: 14px;
-      color: var(--dark);
-      background: rgba(255,255,255,0.9);
-      outline: none;
-      transition: 0.2s ease;
-    }
-
-    textarea {
-      min-height: 78px;
-      resize: none;
-      border-radius: 20px;
-    }
-
-    .chips {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      padding-top: 2px;
-    }
-
-    .chip {
-      position: relative;
-    }
-
-    .chip input {
-      position: absolute;
-      opacity: 0;
-      pointer-events: none;
-    }
-
-    .chip span {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      min-height: 32px;
-      padding: 0 13px;
-      border-radius: 999px;
-      border: 2px solid var(--line);
-      background: #fff;
-      font-size: 13px;
-      font-weight: 500;
-      cursor: pointer;
-      transition: 0.18s ease;
-    }
-
-    .chip input:checked + span {
-      background: rgba(109, 40, 217, 0.08);
-      border-color: rgba(109, 40, 217, 0.30);
+      font-weight: 600;
       color: var(--primary);
-      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .field label span.req { color: #dc2626; margin-left: 4px; }
+
+    .icon { font-style: normal; }
+
+    /* CAMBIO: Al hacer foco, se pone morado leve */
+    input, textarea, select {
+      width: 100%;
+      padding: 10px 14px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      font-size: 14px;
+      background: #fff;
+      transition: 0.1s;
+    }
+
+    input:focus, textarea:focus, select:focus {
+      outline: none;
+      border-color: var(--purple-focus);
+      box-shadow: 0 0 0 3px var(--focus-ring);
+    }
+
+    .chips-group {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .chip-item { cursor: pointer; }
+    .chip-item input { display: none; }
+    .chip-item span {
+      display: inline-block;
+      padding: 6px 14px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      font-size: 13px;
+      background: #fff;
+      transition: 0.1s;
+      font-weight: 500;
+      color: var(--text-main);
+    }
+
+    /* CAMBIO: Hover y seleccionado en morado leve */
+    .chip-item:hover span {
+      border-color: var(--purple-focus);
+    }
+
+    .chip-item input:checked + span {
+      background: var(--purple-focus);
+      color: white;
+      border-color: var(--purple-focus);
     }
 
     .dropzone {
-      border: 2px dashed #c6d2e3;
-      border-radius: 22px;
-      background: #fbfdff;
-      padding: 16px 16px 14px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 15px;
       text-align: center;
-    }
-
-    .dropzone p {
-      margin: 0 0 10px;
-      color: var(--muted);
-      font-size: 13px;
-      line-height: 1.5;
-    }
-
-    .dropzone strong {
-      color: var(--dark);
-    }
-
-    .dropzone input[type="file"] {
-      width: 100%;
-      font-size: 13px;
-      color: var(--muted);
-    }
-
-    .dropzone input[type="file"]::file-selector-button {
-      border: 0;
-      margin-right: 12px;
-      border-radius: 999px;
-      padding: 10px 16px;
-      background: linear-gradient(135deg, var(--primary), var(--primary-2));
-      color: #fff;
-      font-weight: 700;
-      cursor: pointer;
-    }
-
-    .actions {
-      display: flex;
-      justify-content: space-between;
-      gap: 12px;
-      margin-top: 8px;
-    }
-
-    .btn,
-    button {
-      border: 0;
-      cursor: pointer;
-      border-radius: 999px;
-      padding: 14px 20px;
-      font-size: 14px;
-      font-weight: 700;
-      transition: 0.2s ease;
-    }
-
-    .btn-secondary {
-      background: #eef2f7;
-      color: #475569;
-      min-width: 96px;
-    }
-
-    .btn-primary {
-      flex: 1;
-      background: linear-gradient(135deg, var(--primary), var(--primary-2));
-      color: #fff;
-      box-shadow: 0 10px 24px rgba(109, 40, 217, 0.20);
-    }
-
-    .btn-primary:hover,
-    .btn-success:hover {
-      transform: translateY(-1px);
-    }
-
-    .aside-title {
-      margin: 0 0 10px;
-      font-size: 19px;
-    }
-
-    .aside-text {
-      margin: 0 0 22px;
-      color: var(--muted);
-      font-size: 14px;
-      line-height: 1.55;
-    }
-
-    .timeline {
-      display: grid;
-      gap: 18px;
-      margin-bottom: 22px;
-    }
-
-    .step {
-      display: grid;
-      grid-template-columns: 32px 1fr;
-      gap: 12px;
-      align-items: start;
-    }
-
-    .step-badge {
-      width: 32px;
-      height: 32px;
-      border-radius: 999px;
-      background: rgba(109, 40, 217, 0.10);
-      color: var(--primary);
-      font-weight: 800;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .step h4 {
-      margin: 2px 0 4px;
-      font-size: 15px;
-    }
-
-    .step p {
-      margin: 0;
-      color: var(--muted);
-      font-size: 13px;
-      line-height: 1.5;
-    }
-
-    .note {
       background: #f8fafc;
-      border: 1px solid var(--line);
-      border-radius: 20px;
-      padding: 16px;
-      font-size: 13px;
-      color: #475569;
-      line-height: 1.6;
     }
 
-    .note strong { color: #0f172a; }
-
-    .success-wrap {
-      display: none;
+    .dropzone-content {
+      display: flex;
       align-items: center;
       justify-content: center;
-      min-height: 70vh;
+      gap: 10px;
     }
 
-    .success-card {
-      padding: 42px 26px;
-      text-align: center;
-      width: min(700px, 100%);
-    }
-
-    .success-icon {
-      width: 78px;
-      height: 78px;
-      margin: 0 auto 16px;
-      border-radius: 24px;
-      display: grid;
-      place-items: center;
-      font-size: 34px;
-      font-weight: 900;
-      color: var(--success);
-      background: rgba(22, 163, 74, 0.10);
-    }
-
-    .success-card h2 {
-      margin: 0 0 10px;
-      font-size: 30px;
-      line-height: 1.1;
-    }
-
-    .success-card p {
-      margin: 0 auto 22px;
-      color: var(--muted);
-      font-size: 15px;
-      line-height: 1.6;
-      max-width: 520px;
-    }
-
-    .success-pill {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 10px 14px;
-      border-radius: 999px;
+    .btn-file {
       background: #fff;
-      border: 1px solid var(--line);
-      color: #334155;
+      color: var(--primary);
+      padding: 6px 12px;
+      border-radius: 4px;
+      border: 1px solid var(--border);
+      font-weight: 600;
+      cursor: pointer;
       font-size: 13px;
+    }
+
+    /* CAMBIO: Acciones alineadas y botones mejorados */
+    .form-actions {
+      display: flex;
+      justify-content: flex-end; /* Alineados a la derecha */
+      gap: 12px;
+      margin-top: 25px;
+      padding-top: 20px;
+      border-top: 1px solid var(--border);
+    }
+
+    .btn-submit {
+      background: var(--accent);
+      color: white;
+      border: none;
+      padding: 12px 30px;
+      border-radius: var(--radius-sm);
       font-weight: 700;
-      margin-bottom: 16px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: 0.2s;
     }
 
-    .success-pill::before {
-      content: "";
-      width: 8px;
-      height: 8px;
-      border-radius: 999px;
-      background: var(--success);
-      display: inline-block;
+    .btn-submit:hover { background: var(--accent-hover); transform: translateY(-1px); }
+
+    /* CAMBIO: Botón limpiar ahora es un cuadrado gris que resalta */
+    .btn-clear {
+      background: #e2e8f0;
+      color: #475569;
+      border: 1px solid var(--border);
+      padding: 12px 20px;
+      border-radius: var(--radius-sm);
+      font-weight: 600;
+      cursor: pointer;
+      font-size: 14px;
+      text-decoration: none; /* Quitamos el subrayado */
+      transition: 0.2s;
     }
 
-    .btn-success {
-      background: linear-gradient(135deg, var(--primary), var(--primary-2));
-      color: #fff;
-      box-shadow: 0 10px 24px rgba(109, 40, 217, 0.18);
-      min-width: 250px;
+    .btn-clear:hover { background: #cbd5e1; }
+
+    /* Sidebar - Mantenemos exactamente lo anterior */
+    .sidebar {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
     }
 
-    @media (max-width: 960px) {
-      .workspace {
-        grid-template-columns: 1fr;
-      }
+    .info-card {
+      background: var(--bg-card);
+      padding: 25px;
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border);
     }
 
-    @media (max-width: 720px) {
-      .shell {
-        width: min(100% - 20px, 1260px);
-        margin: 18px auto;
-      }
+    .info-card h3 { 
+      margin: 0 0 10px; 
+      font-size: 17px; 
+      color: var(--primary); 
+    }
 
-      .header-row {
-        flex-direction: column;
-        align-items: flex-start;
-      }
+    .info-card > p {
+      font-size: 13px; 
+      color: var(--text-muted); 
+      margin-bottom: 25px;
+      line-height: 1.4;
+    }
 
-      .grid-2 {
-        grid-template-columns: 1fr;
-      }
+    .step { display: flex; gap: 12px; margin-bottom: 18px; }
+    
+    .step-num {
+      width: 26px; height: 26px;
+      background: var(--soft-blue-bg);
+      color: var(--soft-blue-text);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 700; font-size: 12px; flex-shrink: 0;
+    }
 
-      .actions {
-        flex-direction: column;
-      }
+    .step-text h4 { margin: 0; font-size: 13px; font-weight: 600; color: var(--text-main); }
+    .step-text p { margin: 2px 0 0; font-size: 12px; color: var(--text-muted); line-height: 1.4; }
 
-      .btn-secondary,
-      .btn-primary,
-      .btn-success {
-        width: 100%;
-      }
+    .recommendation {
+      background: var(--soft-orange-bg);
+      padding: 15px;
+      border-radius: 8px;
+      font-size: 12px;
+      line-height: 1.5;
+      border: 1px solid var(--soft-orange-border);
+      color: var(--soft-orange-text);
+      margin-top: 10px;
+    }
 
-      .brand-copy h1 {
-        font-size: 27px;
-      }
+    @media (max-width: 860px) {
+      .container { grid-template-columns: 1fr; }
+      .form-grid { grid-template-columns: 1fr; }
+      .header { flex-direction: column; align-items: flex-start; gap: 15px; }
+      .form-actions { flex-direction: column; align-items: stretch; }
+      .btn-submit { order: -1; }
     }
   </style>
 </head>
 <body>
-  <main class="shell">
-    <section id="formView">
-      <div class="header-row">
-        <div class="brand">
-          <img src="Logo carflex.jpg" alt="Carflex" />
-          <div class="brand-copy">
-            <h1>Crear ticket de gestión operativa</h1>
-            <p>Registra y gestiona requerimientos comerciales para el equipo de operaciones</p>
-          </div>
-        </div>
-        <div class="badge">Mesa interna</div>
+
+<div class="container">
+  <header class="header">
+    <div class="brand-container">
+      <img src="Logo carflex.jpg" alt="Carflex">
+      <div class="header-text">
+        <h1>Crear ticket de gestión operativa</h1>
+        <p>Registra y gestiona requerimientos comerciales para el equipo de operaciones</p>
       </div>
+    </div>
+    <div class="badge-internal">● Mesa interna</div>
+  </header>
 
-      <section class="workspace">
-        <div class="form-card">
-          <form id="ticketForm" enctype="multipart/form-data">
-            <div class="grid-2">
-              <div class="field">
-                <label class="required" for="correo">
-                  <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
-                  Correo
-                </label>
-                <input type="email" id="correo" name="correo" placeholder="nombre@carflex.cl" required />
-              </div>
-
-              <div class="field">
-                <label class="required" for="cliente">
-                  <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
-                  Cliente
-                </label>
-                <input list="clientes" id="cliente" name="cliente" placeholder="Busca o escribe cliente" required />
-                <datalist id="clientes">
-                  <option value="Cliente Demo 1"></option>
-                  <option value="Cliente Demo 2"></option>
-                  <option value="Cliente Demo 3"></option>
-                  <option value="Cliente Demo 4"></option>
-                </datalist>
-              </div>
-            </div>
-
-            <div class="grid-2">
-              <div class="field">
-                <label class="required" for="patente">
-                  <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-                  Patente
-                </label>
-                <input type="text" id="patente" name="patente" placeholder="Ej: DBS321" required />
-              </div>
-
-              <div class="field">
-                <label class="required">
-                  <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"/></svg>
-                  Tipo
-                </label>
-                <div class="chips">
-                  <label class="chip"><input type="radio" name="tipo" value="Agendamiento" required><span>Agendamiento</span></label>
-                  <label class="chip"><input type="radio" name="tipo" value="Documentación"><span>Documentación</span></label>
-                  <label class="chip"><input type="radio" name="tipo" value="Mecánica"><span>Mecánica</span></label>
-                  <label class="chip"><input type="radio" name="tipo" value="DyP"><span>DyP</span></label>
-                  <label class="chip"><input type="radio" name="tipo" value="Otros"><span>Otros</span></label>
-                </div>
-              </div>
-            </div>
-
-            <div class="field">
-              <label class="required" for="detalle">
-                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-                Detalle
-              </label>
-              <textarea id="detalle" name="detalle" placeholder="Describe el requerimiento, contexto y prioridad" required></textarea>
-            </div>
-
-            <div class="field">
-              <label for="adjuntos">
-                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"/></svg>
-                Adjuntos
-              </label>
-              <div class="dropzone">
-                <p><strong>Adjunta archivos</strong> · PDF, JPG, PNG</p>
-                <input type="file" id="adjuntos" name="adjuntos" multiple />
-              </div>
-            </div>
-
-            <div class="actions">
-              <button type="reset" class="btn btn-secondary">Limpiar</button>
-              <button type="submit" class="btn btn-primary" id="submitBtn">Enviar ticket</button>
-            </div>
-          </form>
+  <main class="main-card">
+    <form id="ticketForm">
+      <div class="form-grid">
+        <div class="field">
+          <label><span class="icon">✉</span> Correo <span class="req">*</span></label>
+          <input type="email" name="correo" placeholder="nombre@carflex.cl" required>
         </div>
 
-        <aside class="aside-card">
-          <h3 class="aside-title">¿Cómo funciona?</h3>
-          <p class="aside-text">Portal interno para ingreso rápido de requerimientos comerciales</p>
+        <div class="field">
+          <label><span class="icon">👤</span> Cliente <span class="req">*</span></label>
+          <input type="text" name="cliente" placeholder="Busca o escribe cliente" required>
+        </div>
 
-          <div class="timeline">
-            <div class="step">
-              <div class="step-badge">1</div>
-              <div>
-                <h4>Ingreso del ticket</h4>
-                <p>Completa formulario con cliente, patente, tipo y detalle</p>
-              </div>
-            </div>
+        <div class="field">
+          <label><span class="icon">📄</span> Patente <span class="req">*</span></label>
+          <input type="text" id="patente" name="patente" placeholder="Ej: DBS321" maxlength="6" required>
+        </div>
 
-            <div class="step">
-              <div class="step-badge">2</div>
-              <div>
-                <h4>Registro automático</h4>
-                <p>Se envía al flujo interno para seguimiento</p>
-              </div>
-            </div>
-
-            <div class="step">
-              <div class="step-badge">3</div>
-              <div>
-                <h4>Gestión operativa</h4>
-                <p>Operaciones asigna, actualiza y cierra el ticket</p>
-              </div>
-            </div>
+        <div class="field">
+          <label><span class="icon">♡</span> Tipo <span class="req">*</span></label>
+          <div class="chips-group">
+            <label class="chip-item"><input type="radio" name="tipo" value="Agendamiento" checked><span>Agendamiento</span></label>
+            <label class="chip-item"><input type="radio" name="tipo" value="Documentación"><span>Documentación</span></label>
+            <label class="chip-item"><input type="radio" name="tipo" value="Mecánica"><span>Mecánica</span></label>
+            <label class="chip-item"><input type="radio" name="tipo" value="DyP"><span>DyP</span></label>
+            <label class="chip-item"><input type="radio" name="tipo" value="Otros"><span>Otros</span></label>
           </div>
+        </div>
 
-          <div class="note">
-            <strong>Recomendación:</strong> información clara y documentación adjunta facilitan la gestión.
+        <div class="field full">
+          <label><span class="icon">📝</span> Detalle <span class="req">*</span></label>
+          <textarea name="detalle" placeholder="Describe el requerimiento, contexto y prioridad" rows="4" required></textarea>
+        </div>
+
+        <div class="field full">
+          <label><span class="icon">📎</span> Adjuntos</label>
+          <div class="dropzone">
+            <div class="dropzone-content">
+              <label for="file-upload" class="btn-file">Elegir archivos</label>
+              <span id="file-name" style="font-size: 12px; color: var(--text-muted)">No se ha seleccionado ningún archivo</span>
+            </div>
+            <p style="margin-top: 8px; font-size: 11px; color: var(--text-muted); text-align: center;">Adjunta archivos - PDF, JPG, PNG (Máx 10MB)</p>
+            <input type="file" id="file-upload" hidden multiple onchange="document.getElementById('file-name').innerText = this.files.length + ' archivos seleccionados'">
           </div>
-        </aside>
-      </section>
-    </section>
-
-    <section class="success-wrap" id="successView">
-      <div class="success-card">
-        <div class="success-icon">✓</div>
-        <div class="success-pill">Ticket enviado correctamente</div>
-        <h2>La solicitud fue registrada con éxito</h2>
-        <p>El ticket ya fue enviado al flujo interno de operaciones. Si necesitas ingresar otro requerimiento, puedes volver al formulario desde el botón inferior.</p>
-        <button type="button" class="btn btn-success" id="btnOtroTicket">Volver a ingresar otro ticket</button>
+        </div>
       </div>
-    </section>
+
+      <div class="form-actions">
+        <button type="reset" class="btn-clear">Limpiar datos</button>
+        <button type="submit" class="btn-submit" id="submitBtn">Crear Ticket</button>
+      </div>
+    </form>
   </main>
 
-  <script>
-    const WEBHOOK_URL = 'https://uncollapsible-melodiously-chung.ngrok-free.dev/webhook-test/tickets';
+  <aside class="sidebar">
+    <div class="info-card">
+      <h3>¿Cómo funciona?</h3>
+      <p>Portal interno para ingreso rápido de requerimientos comerciales</p>
+      
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-text">
+          <h4>Ingreso del ticket</h4>
+          <p>Completa formulario con cliente, patente, tipo y detalle</p>
+        </div>
+      </div>
 
-    const form = document.getElementById('ticketForm');
-    const formView = document.getElementById('formView');
-    const successView = document.getElementById('successView');
-    const submitBtn = document.getElementById('submitBtn');
-    const btnOtroTicket = document.getElementById('btnOtroTicket');
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-text">
+          <h4>Registro automático</h4>
+          <p>Se envía al flujo interno para seguimiento</p>
+        </div>
+      </div>
 
-    form.addEventListener('submit', async function (e) {
-      e.preventDefault();
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-text">
+          <h4>Gestión operativa</h4>
+          <p>Operaciones asigna, actualiza y cierra el ticket</p>
+        </div>
+      </div>
 
-      const formData = new FormData(form);
-      const originalText = submitBtn.textContent;
+      <div class="recommendation">
+        <strong>Recomendación:</strong> información clara y documentación adjunta facilitan la gestión.
+      </div>
+    </div>
+  </aside>
+</div>
 
-      try {
-        submitBtn.disabled = true;
-        submitBtn.textContent = 'Enviando...';
+<script>
+  // Formateo de patente
+  document.getElementById("patente").addEventListener("input", e=>{
+    e.target.value = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g,"").slice(0,6);
+  });
 
-        const response = await fetch(WEBHOOK_URL, {
-          method: 'POST',
-          body: formData
-        });
+  // Lógica de envío al Webhook de n8n
+  const ticketForm = document.getElementById('ticketForm');
+  const WEBHOOK_URL = 'https://uncollapsible-melodiously-chung.ngrok-free.dev/webhook/tickets';
 
-        if (!response.ok) throw new Error('No se pudo enviar el ticket');
+  ticketForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const btn = document.getElementById('submitBtn');
+    btn.innerText = 'Enviando...';
+    btn.disabled = true;
 
-        formView.style.display = 'none';
-        successView.style.display = 'flex';
-        form.reset();
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-      } catch (error) {
-        alert('No se pudo enviar el ticket. Revisa el webhook o la conexión.');
-      } finally {
-        submitBtn.disabled = false;
-        submitBtn.textContent = originalText;
+    const formData = new FormData(ticketForm);
+    const data = Object.fromEntries(formData.entries());
+
+    try {
+      const response = await fetch(WEBHOOK_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      });
+
+      if (response.ok) {
+        alert('Ticket enviado correctamente');
+        ticketForm.reset();
+        document.getElementById('file-name').innerText = "No se ha seleccionado ningún archivo";
+      } else {
+        alert('Error al enviar el ticket');
       }
-    });
+    } catch (error) {
+      alert('Error de conexión con el servidor');
+    } finally {
+      btn.innerText = 'Crear Ticket';
+      btn.disabled = false;
+    }
+  });
+</script>
 
-    btnOtroTicket.addEventListener('click', function () {
-      successView.style.display = 'none';
-      formView.style.display = 'block';
-      form.reset();
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    });
-  </script>
 </body>
 </html>
