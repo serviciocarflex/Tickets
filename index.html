@@ -1,345 +1,19 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Crear ticket de gestión operativa | Carflex</title>
-  <style>
-    :root {
-      /* Paleta neutra profesional (estilo SaaS gris/azul) */
-      --primary: #334155; /* Gris slate oscuro */
-      --primary-hover: #1e293b;
-      --bg-body: #f1f5f9; /* Gris muy claro de fondo */
-      --bg-card: #ffffff;
-      --text-main: #0f172a;
-      --text-muted: #64748b;
-      --border: #e2e8f0;
-      --radius-lg: 12px;
-      --radius-sm: 8px;
-      
-      /* Color de acento solo para el botón (Azul profesional) */
-      --accent: #2563eb; 
-      --accent-hover: #1d4ed8;
-      --focus-ring: rgba(139, 92, 246, 0.2); /* CAMBIADO A MORADO LEVE */
-      --purple-focus: #8b5cf6; /* NUEVO: Morado para bordes */
-
-      /* Colores específicos solicitados para Sidebar */
-      --soft-blue-bg: #eff6ff;
-      --soft-blue-text: #3b82f6;
-      --soft-orange-bg: #fff7ed;
-      --soft-orange-border: #ffedd5;
-      --soft-orange-text: #c2410c;
-    }
-
-    * { box-sizing: border-box; font-family: 'Inter', system-ui, -apple-system, sans-serif; }
-
-    body {
-      margin: 0;
-      background-color: var(--bg-body);
-      color: var(--text-main);
-      min-height: 100vh;
-      display: flex;
-      justify-content: center;
-      padding: 40px 20px;
-    }
-
-    .container {
-      width: 100%;
-      max-width: 1150px;
-      display: grid;
-      grid-template-columns: 1fr 300px;
-      gap: 25px;
-    }
-
-    /* Header Section - Limpio y Profesional */
-    .header {
-      grid-column: 1 / -1;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 15px;
-      background: var(--bg-card);
-      padding: 20px;
-      border-radius: var(--radius-lg);
-      border: 1px solid var(--border);
-    }
-
-    .brand-container {
-      display: flex;
-      gap: 15px;
-      align-items: center;
-    }
-
-    .brand-container img {
-      height: 25px;
-      width: auto;
-    }
-
-    .header-text h1 {
-      margin: 0;
-      font-size: 22px;
-      font-weight: 700;
-      color: var(--primary);
-    }
-
-    .header-text p {
-      margin: 4px 0 0;
-      color: var(--text-muted);
-      font-size: 14px;
-    }
-
-    .badge-internal {
-      background: #f8fafc;
-      color: var(--text-muted);
-      padding: 6px 12px;
-      border-radius: 20px;
-      font-size: 11px;
-      font-weight: 600;
-      border: 1px solid var(--border);
-      text-transform: uppercase;
-    }
-
-    /* Main Card */
-    .main-card {
-      background: var(--bg-card);
-      padding: 30px;
-      border-radius: var(--radius-lg);
-      border: 1px solid var(--border);
-    }
-
-    .form-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 20px;
-    }
-
-    .field {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      margin-bottom: 20px;
-    }
-
-    .field.full { grid-column: 1 / -1; }
-
-    .field label {
-      font-size: 14px;
-      font-weight: 600;
-      color: var(--primary);
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .field label span.req { color: #dc2626; margin-left: 4px; }
-
-    .icon { font-style: normal; }
-
-    /* CAMBIO: Al hacer foco, se pone morado leve */
-    input, textarea, select {
-      width: 100%;
-      padding: 10px 14px;
-      border: 1px solid var(--border);
-      border-radius: var(--radius-sm);
-      font-size: 14px;
-      background: #fff;
-      transition: 0.1s;
-    }
-
-    input:focus, textarea:focus, select:focus {
-      outline: none;
-      border-color: var(--purple-focus);
-      box-shadow: 0 0 0 3px var(--focus-ring);
-    }
-
-    .chips-group {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-    }
-
-    .chip-item { cursor: pointer; }
-    .chip-item input { display: none; }
-    .chip-item span {
-      display: inline-block;
-      padding: 6px 14px;
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      font-size: 13px;
-      background: #fff;
-      transition: 0.1s;
-      font-weight: 500;
-      color: var(--text-main);
-    }
-
-    /* CAMBIO: Hover y seleccionado en morado leve */
-    .chip-item:hover span {
-      border-color: var(--purple-focus);
-    }
-
-    .chip-item input:checked + span {
-      background: var(--purple-focus);
-      color: white;
-      border-color: var(--purple-focus);
-    }
-
-    .dropzone {
-      border: 1px solid var(--border);
-      border-radius: var(--radius-sm);
-      padding: 15px;
-      text-align: center;
-      background: #f8fafc;
-    }
-
-    .dropzone-content {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-    }
-
-    .btn-file {
-      background: #fff;
-      color: var(--primary);
-      padding: 6px 12px;
-      border-radius: 4px;
-      border: 1px solid var(--border);
-      font-weight: 600;
-      cursor: pointer;
-      font-size: 13px;
-    }
-
-    /* CAMBIO: Acciones alineadas y botones mejorados */
-    .form-actions {
-      display: flex;
-      justify-content: flex-end; /* Alineados a la derecha */
-      gap: 12px;
-      margin-top: 25px;
-      padding-top: 20px;
-      border-top: 1px solid var(--border);
-    }
-
-    .btn-submit {
-      background: var(--accent);
-      color: white;
-      border: none;
-      padding: 12px 30px;
-      border-radius: var(--radius-sm);
-      font-weight: 700;
-      cursor: pointer;
-      font-size: 14px;
-      transition: 0.2s;
-    }
-
-    .btn-submit:hover { background: var(--accent-hover); transform: translateY(-1px); }
-
-    /* CAMBIO: Botón limpiar ahora es un cuadrado gris que resalta */
-    .btn-clear {
-      background: #e2e8f0;
-      color: #475569;
-      border: 1px solid var(--border);
-      padding: 12px 20px;
-      border-radius: var(--radius-sm);
-      font-weight: 600;
-      cursor: pointer;
-      font-size: 14px;
-      text-decoration: none; /* Quitamos el subrayado */
-      transition: 0.2s;
-    }
-
-    .btn-clear:hover { background: #cbd5e1; }
-
-    /* Sidebar - Mantenemos exactamente lo anterior */
-    .sidebar {
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
-    }
-
-    .info-card {
-      background: var(--bg-card);
-      padding: 25px;
-      border-radius: var(--radius-lg);
-      border: 1px solid var(--border);
-    }
-
-    .info-card h3 { 
-      margin: 0 0 10px; 
-      font-size: 17px; 
-      color: var(--primary); 
-    }
-
-    .info-card > p {
-      font-size: 13px; 
-      color: var(--text-muted); 
-      margin-bottom: 25px;
-      line-height: 1.4;
-    }
-
-    .step { display: flex; gap: 12px; margin-bottom: 18px; }
-    
-    .step-num {
-      width: 26px; height: 26px;
-      background: var(--soft-blue-bg);
-      color: var(--soft-blue-text);
-      border-radius: 50%;
-      display: flex; align-items: center; justify-content: center;
-      font-weight: 700; font-size: 12px; flex-shrink: 0;
-    }
-
-    .step-text h4 { margin: 0; font-size: 13px; font-weight: 600; color: var(--text-main); }
-    .step-text p { margin: 2px 0 0; font-size: 12px; color: var(--text-muted); line-height: 1.4; }
-
-    .recommendation {
-      background: var(--soft-orange-bg);
-      padding: 15px;
-      border-radius: 8px;
-      font-size: 12px;
-      line-height: 1.5;
-      border: 1px solid var(--soft-orange-border);
-      color: var(--soft-orange-text);
-      margin-top: 10px;
-    }
-
-    @media (max-width: 860px) {
-      .container { grid-template-columns: 1fr; }
-      .form-grid { grid-template-columns: 1fr; }
-      .header { flex-direction: column; align-items: flex-start; gap: 15px; }
-      .form-actions { flex-direction: column; align-items: stretch; }
-      .btn-submit { order: -1; }
-    }
-  </style>
-</head>
-<body>
-
-<div class="container">
-  <header class="header">
-    <div class="brand-container">
-      <img src="Logo carflex.jpg" alt="Carflex">
-      <div class="header-text">
-        <h1>Crear ticket de gestión operativa</h1>
-        <p>Registra y gestiona requerimientos comerciales para el equipo de operaciones</p>
-      </div>
-    </div>
-    <div class="badge-internal">● Mesa interna</div>
-  </header>
-
-  <main class="main-card">
+<main class="main-card">
     <form id="ticketForm">
       <div class="form-grid">
         <div class="field">
           <label><span class="icon">✉</span> Correo <span class="req">*</span></label>
-          <input type="email" placeholder="nombre@carflex.cl" required>
+          <input type="email" name="correo" placeholder="nombre@carflex.cl" required>
         </div>
 
         <div class="field">
           <label><span class="icon">👤</span> Cliente <span class="req">*</span></label>
-          <input type="text" placeholder="Busca o escribe cliente" required>
+          <input type="text" name="cliente" placeholder="Busca o escribe cliente" required>
         </div>
 
         <div class="field">
           <label><span class="icon">📄</span> Patente <span class="req">*</span></label>
-          <input type="text" id="patente" placeholder="Ej: DBS321" maxlength="6" required>
+          <input type="text" id="patente" name="patente" placeholder="Ej: DBS321" maxlength="6" required>
         </div>
 
         <div class="field">
@@ -355,7 +29,7 @@
 
         <div class="field full">
           <label><span class="icon">📝</span> Detalle <span class="req">*</span></label>
-          <textarea placeholder="Describe el requerimiento, contexto y prioridad" rows="4" required></textarea>
+          <textarea name="detalle" placeholder="Describe el requerimiento, contexto y prioridad" rows="4" required></textarea>
         </div>
 
         <div class="field full">
@@ -373,52 +47,54 @@
 
       <div class="form-actions">
         <button type="reset" class="btn-clear">Limpiar datos</button>
-        <button type="submit" class="btn-submit">Crear Ticket</button>
+        <button type="submit" class="btn-submit" id="submitBtn">Crear Ticket</button>
       </div>
     </form>
-  </main>
-
-  <aside class="sidebar">
-    <div class="info-card">
-      <h3>¿Cómo funciona?</h3>
-      <p>Portal interno para ingreso rápido de requerimientos comerciales</p>
-      
-      <div class="step">
-        <div class="step-num">1</div>
-        <div class="step-text">
-          <h4>Ingreso del ticket</h4>
-          <p>Completa formulario con cliente, patente, tipo y detalle</p>
-        </div>
-      </div>
-
-      <div class="step">
-        <div class="step-num">2</div>
-        <div class="step-text">
-          <h4>Registro automático</h4>
-          <p>Se envía al flujo interno para seguimiento</p>
-        </div>
-      </div>
-
-      <div class="step">
-        <div class="step-num">3</div>
-        <div class="step-text">
-          <h4>Gestión operativa</h4>
-          <p>Operaciones asigna, actualiza y cierra el ticket</p>
-        </div>
-      </div>
-
-      <div class="recommendation">
-        <strong>Recomendación:</strong> información clara y documentación adjunta facilitan la gestión.
-      </div>
-    </div>
-  </aside>
-</div>
+</main>
 
 <script>
-  document.getElementById("patente").addEventListener("input", e=>{
-    e.target.value = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g,"").slice(0,6);
+  // Formateo de patente (Tu código original corregido)
+  document.getElementById("patente").addEventListener("input", e => {
+    e.target.value = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, "").slice(0, 6);
+  });
+
+  // LÓGICA DE ENVÍO A N8N
+  const ticketForm = document.getElementById('ticketForm');
+  const WEBHOOK_URL = 'https://uncollapsible-melodiously-chung.ngrok-free.dev/webhook/tickets';
+
+  ticketForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    const btn = document.getElementById('submitBtn');
+    btn.innerText = 'Enviando...';
+    btn.disabled = true;
+
+    // Recolectar datos del formulario
+    const formData = new FormData(ticketForm);
+    const data = Object.fromEntries(formData.entries());
+
+    try {
+      const response = await fetch(WEBHOOK_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+      });
+
+      if (response.ok) {
+        alert('✅ Ticket creado con éxito en n8n');
+        ticketForm.reset();
+        document.getElementById('file-name').innerText = "No se ha seleccionado ningún archivo";
+      } else {
+        throw new Error('Error en la respuesta del servidor');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      alert('❌ Error al enviar el ticket. Revisa que ngrok esté activo.');
+    } finally {
+      btn.innerText = 'Crear Ticket';
+      btn.disabled = false;
+    }
   });
 </script>
-
-</body>
-</html>
